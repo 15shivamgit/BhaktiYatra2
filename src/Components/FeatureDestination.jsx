@@ -1,11 +1,14 @@
 import React from 'react'
-import Bali from '../assets/Bali.jpg'
-import Paris from '../assets/Paris.jpg'
-import Tokyo from '../assets/Tokyo.jpg'
-import India from '../assets/India.jpg'
-import Venice from '../assets/Venice.jpg'
+import kashi from '../assets/kash1.jpg'
+import prem from '../assets/prerm10.jpg'
+import ram from '../assets/ram7.jpg'
+import rames from '../assets/rames.jpg'
+import kedar from '../assets/kedar6.jpg'
+import vaishno from '../assets/vaishno4.jpg'
 import next from '../assets/next.png'
 import back from '../assets/back.png'
+import tiru from '../assets/tiru3.jpg'
+import dhari from '../assets/dharidevi3.jpg'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -56,12 +59,14 @@ const FeatureDestination = () => {
         ]
     };
     const destinationJson = [
-        { name: 'Baliya', img: Bali, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-        { name: 'Venice', img: Venice, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-        { name: 'Tokyo', img: Tokyo, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-        { name: 'India', img: India, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-        { name: 'Paris', img: Paris, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-        { name: 'Tokyo', img: Tokyo, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Kashi Vishwanath', img: kashi, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Vaishno Devi', img: vaishno, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Kedar-nath Temple', img: kedar, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Rameshwaram', img: rames, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Prem Mandir', img: prem, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Ram Mandir', img: ram, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Tri-Puri', img: tiru, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+        { name: 'Dhari Devi', img: dhari, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
     ]
     return (
         <>
@@ -88,7 +93,7 @@ const FeatureDestination = () => {
                                                 <p className='flex gap-1 items-center'><Star width={20} fill='red'/>{destination.star}</p>
                                                 <p className='text-gray-600 mb-4 mt-2'>Experience the beauty and culture of {destination.name}</p>
                                                 <div className='flex gap-4'>
-                                                    <button className='px-3 py-2 bg-red-500 rounded-md text-white'>${destination.price}</button>
+                                                    <button className='px-3 py-2 bg-red-500 rounded-md text-white'>₹{destination.price}</button>
                                                     <button className='px-3 py-2 bg-black rounded-md text-white'>Learn More</button>
                                                 </div>
                                             </div>

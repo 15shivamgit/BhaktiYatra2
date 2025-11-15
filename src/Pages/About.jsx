@@ -3,6 +3,7 @@ import TopBanner from '../Components/TopBanner'
 import trip from '../assets/trip.gif'
 import time from '../assets/fire-time.gif'
 import price from '../assets/best-price.gif'
+import banner1 from '../assets/vaishnodevi.jpg'
 
 const About = () => {
   return (
@@ -12,7 +13,7 @@ const About = () => {
       <div className='flex flex-col md:flex-row px-4 md:px-0 gap-4'>
         <div className='flex-1'>
           <div className='relative'>
-            <img src="https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=600" alt="travel" className='rounded-lg'/>
+            <img src={banner1} alt="travel" className='rounded-lg'/>
             <div className='absolute bottom-[45%] right-0 p-4 bg-red-500 text-white font-bold md:text-4xl rounded-lg'>
               HOW WE ARE BEST <br /> FOR TRAVEL!
             </div>

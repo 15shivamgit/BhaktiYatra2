@@ -1,20 +1,25 @@
 import React from 'react'
 import TopBanner from '../Components/TopBanner'
-import Bali from '../assets/Bali.jpg'
-import Paris from '../assets/Paris.jpg'
-import Tokyo from '../assets/Tokyo.jpg'
-import India from '../assets/India.jpg'
-import Venice from '../assets/Venice.jpg'
+import kashi from '../assets/kash1.jpg'
+import prem from '../assets/prerm10.jpg'
+import ram from '../assets/ram7.jpg'
+import rames from '../assets/rames.jpg'
+import kedar from '../assets/kedar6.jpg'
+import vaishno from '../assets/vaishno4.jpg'
+import tiru from '../assets/tiru3.jpg'
+import dhari from '../assets/dharidevi3.jpg'
 import { Clock, Star } from 'lucide-react'
 
 const Tours = () => {
   const destinationJson = [
-    { name: 'Baliya', img: Bali, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-    { name: 'Venice', img: Venice, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-    { name: 'Tokyo', img: Tokyo, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-    { name: 'India', img: India, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-    { name: 'Paris', img: Paris, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
-    { name: 'Tokyo', img: Tokyo, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Kashi Vishwanath', img: kashi, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Vaishno Devi', img: vaishno, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Kedar-nath Temple', img: kedar, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Rameshwaram', img: rames, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Prem Mandir', img: prem, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Ram Mandir', img: ram, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Tri-Puri', img: tiru, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
+    { name: 'Dhari Devi', img: dhari, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
   ]
   return (
     <>

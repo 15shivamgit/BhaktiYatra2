@@ -6,8 +6,10 @@ import Tours from './Pages/Tours'
 import Gallery from './Pages/Gallery'
 import About from './Pages/About'
 import Contact from './Pages/Contact'
+import Login from './Pages/Login'
 import Footer from './Components/Footer'
 import ScrollToTop from "react-scroll-to-top";
+import AdminDashboard from './Pages/AdminDashboard'
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,18 @@ const router = createBrowserRouter([
   {
     path:'/contact',
     element: <><Navbar/><Contact/><Footer/></>
+  },
+  {
+    path:'/contact',
+    element: <><Navbar/><Contact/><Footer/></>
+  },
+  {
+    path:'/login',
+    element: <><Navbar/><Login/><Footer/></>
+  },
+  {
+    path:'/AdminDashboard',
+    element: <><Navbar/><AdminDashboard/><Footer/></>
   },
 ])
 

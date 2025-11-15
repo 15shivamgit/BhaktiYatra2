@@ -1,5 +1,5 @@
 import React from 'react'
-import banner from '../assets/TopBanner.jpg'
+import banner from '../assets/about.jpg'
 
 const TopBanner = (props) => {
     return (
