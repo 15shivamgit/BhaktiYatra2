@@ -1,20 +1,20 @@
 import React from 'react'
 import LightGallery from 'lightgallery/react';
-import prem from '../Assets/prerm2.jpg'
-import ps1 from '../Assets/vaishno5.jpg'
-import ashok from '../Assets/ashok.jpg'
-import pashupati from '../Assets/pashupati2.jpg'
-import sai from '../Assets/sai.jpg'
-import kashi from '../Assets/kash2.jpg'
-import kedar from '../Assets/kedar6.jpg'
-import dwarka from '../Assets/dwarka1.jpg'
-import ambaji from '../Assets/ambaji1.jpg'
-import haridwar from '../Assets/haridwar.jpg'
-import sarnath from '../Assets/sarnath.jpg'
-import sri from '../Assets/sri2.jpg'
-import aayodhya from '../Assets/ram7.jpg'
-import akshardham from '../Assets/akshardham4.jpg'
-import tiru from '../Assets/tiru4.jpg'
+import prem from '../assets/prerm2.jpg'
+import ps1 from '../assets/vaishno5.jpg'
+import ashok from '../assets/ashok.jpg'
+import pashupati from '../assets/pashupati2.jpg'
+import sai from '../assets/sai.jpg'
+import kashi from '../assets/kash2.jpg'
+import kedar from '../assets/kedar6.jpg'
+import dwarka from '../assets/dwarka1.jpg'
+import ambaji from '../assets/ambaji1.jpg'
+import haridwar from '../assets/haridwar.jpg'
+import sarnath from '../assets/sarnath.jpg'
+import sri from '../assets/sri2.jpg'
+import aayodhya from '../assets/ram7.jpg'
+import akshardham from '../assets/akshardham4.jpg'
+import tiru from '../assets/tiru4.jpg'
 
 import './Css/Gallery.css'
 
@@ -90,6 +90,9 @@ const GalleryComp = () => {
                 </a>
                 <a href={sri}>
                     <img alt="img2" src={sri} />
+                </a>
+                <a href={haridwar}>
+                    <img alt="img2" src={haridwar} />
                 </a>
             </LightGallery>
         </div>
