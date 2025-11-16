@@ -1,4 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { getTours } from "../api";
+
+
+// import React from 'react'
 import TopBanner from '../Components/TopBanner'
 import kashi from '../assets/kash1.jpg'
 import prem from '../assets/prerm10.jpg'
@@ -11,6 +15,16 @@ import dhari from '../assets/dharidevi3.jpg'
 import { Clock, Star } from 'lucide-react'
 
 const Tours = () => {
+  const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+    const loadTours = async () => {
+      const data = await getTours();
+      if (data.success) setTours(data.tours);
+    };
+    loadTours();
+  }, []);
+
   const destinationJson = [
     { name: 'Kashi Vishwanath', img: kashi, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
     { name: 'Vaishno Devi', img: vaishno, time: '5 Days - 4 Nights', star: '3 (12 reviews)', price: '69,999' },
@@ -62,3 +76,51 @@ const Tours = () => {
 }
 
 export default Tours
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { getTours } from '../api';
+// import SearchFilter from '../components/SearchFilter';
+// import { useNavigate } from 'react-router-dom';
+
+// const ToursPage = () => {
+//   const [tours, setTours] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const nav = useNavigate();
+
+//   const load = async (params = {}) => {
+//     setLoading(true);
+//     const res = await getTours(params);
+//     if (res.success) setTours(res.tours);
+//     setLoading(false);
+//   };
+
+//   useEffect(()=> { load(); }, []);
+
+//   return (
+//     <div className='max-w-7xl mx-auto p-6'>
+//       <SearchFilter onSearch={(p)=>load(p)} />
+//       <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6'>
+//         {loading ? <p>Loading...</p> : tours.map(t => (
+//           <div key={t._id} className='border rounded overflow-hidden'>
+//             <img src={t.images?.[0] || '/placeholder.jpg'} alt={t.title} className='w-full h-40 object-cover' />
+//             <div className='p-3'>
+//               <h3 className='font-bold'>{t.title}</h3>
+//               <p className='text-sm text-gray-600'>{t.location}</p>
+//               <p className='mt-2 font-semibold'>₹{t.price}</p>
+//               <div className='mt-3 flex gap-2'>
+//                 <button onClick={()=>nav(`/tours/${t._id}`)} className='px-3 py-1 bg-black text-white rounded'>Details</button>
+//               </div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ToursPage;

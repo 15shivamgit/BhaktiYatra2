@@ -10,6 +10,14 @@ import Login from './Pages/Login'
 import Footer from './Components/Footer'
 import ScrollToTop from "react-scroll-to-top";
 import AdminDashboard from './Pages/AdminDashboard'
+import ProtectedAdminRoute from './Components/ProtectedAdminRoute'
+import AdminTours from './Pages/AdminTours'
+import AddTour from './Pages/AddTour'
+import EditTour from './Pages/EditTour'
+import SearchFilter from './Pages/SearchFilter'
+import TourDetail from './Pages/TourDetail'
+import TourForm from './Pages/TourForm'
+import ProfileMenu from './Components/ProfileMenu'
 
 const router = createBrowserRouter([
   {
@@ -33,16 +41,56 @@ const router = createBrowserRouter([
     element: <><Navbar/><Contact/><Footer/></>
   },
   {
-    path:'/contact',
-    element: <><Navbar/><Contact/><Footer/></>
-  },
-  {
     path:'/login',
     element: <><Navbar/><Login/><Footer/></>
   },
+
+  {
+  path: "/AdminDashboard",
+  element: <><Navbar /><AdminDashboard /><Footer /></>     
+  },
+  {
+    path: "/AdminTours",
+    element: <><Navbar /><AdminTours /><Footer /></>
+  },
+  {
+    path: "/AddTour",
+    element: <><Navbar /><AddTour /><Footer /></>
+  },
+  {
+    path: "/EditTour/:id",
+    element: <><Navbar /><EditTour /><Footer /></>
+  },
+  {
+    path: "/ProfileMenu",
+    element: <><Navbar /><ProfileMenu /><Footer /></>
+  },
+  {
+    path: "/SearchFilter",
+    element: <><Navbar /><SearchFilter /><Footer /></>
+  },
+  {
+    path: "/TourDetail",
+    element: <><Navbar /><TourDetail /><Footer /></>
+  },
+  {
+    path: "/TourForm",
+    element: <><Navbar /><TourForm /><Footer /></>
+  },
+
+
+  // 🔐 Admin Protected Route
   {
     path:'/AdminDashboard',
-    element: <><Navbar/><AdminDashboard/><Footer/></>
+    element: (
+      <ProtectedAdminRoute>
+        <>
+          <Navbar />
+          <AdminDashboard />
+          <Footer />
+        </>
+      </ProtectedAdminRoute>
+    )
   },
 ])
 
@@ -50,7 +98,16 @@ const App = () => {
   return (
     <>
       <RouterProvider router={router}/>
-      <ScrollToTop color='white' smooth style={{backgroundColor:'#EF4444', display:'flex', alignItems:'center', justifyContent:'center'}}/>
+      <ScrollToTop
+        color='white'
+        smooth
+        style={{
+          backgroundColor:'#EF4444',
+          display:'flex',
+          alignItems:'center',
+          justifyContent:'center'
+        }}
+      />
     </>
   )
 }
