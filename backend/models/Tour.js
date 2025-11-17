@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
 
 const tourSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  location: { type: String, required: true },
-  images: [String], // array of image urls (/uploads/...)
+  name: { type: String, required: true },
   price: { type: Number, required: true },
-  durationDays: Number,
-  itinerary: String,
-  inclusions: [String],
+  image: { type: String, required: true },  // single image now
   description: String,
+  durationDays: Number,
   seatsAvailable: { type: Number, default: 0 }
 }, { timestamps: true });
 
