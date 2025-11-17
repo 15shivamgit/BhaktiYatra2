@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { getTours, deleteTour } from '../api';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { getTours, deleteTour } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const AdminTours = () => {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   const load = async () => {
     setLoading(true);
@@ -15,32 +15,87 @@ const AdminTours = () => {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this tour?')) return;
+    if (!confirm("Delete this tour?")) return;
     const res = await deleteTour(id, token);
     if (res.success) load();
-    else alert('Failed: ' + res.message);
+    else alert("Failed: " + res.message);
   };
 
   return (
-    <div className='p-6'>
-      <div className='flex justify-between items-center mb-4'>
-        <h2 className='text-2xl font-bold'>Manage Tours</h2>
-        <button onClick={() => nav('/TourForm')} className='bg-red-500 text-white px-4 py-2 rounded'>Add New</button>
+    <div className="max-w-7xl mx-auto p-6">
+      {/* Heading */}
+      <div className="flex justify-between items-center pb-3 mb-6 border-b">
+        <h2 className="text-3xl font-bold text-gray-800">Manage Tours</h2>
+        <button
+          onClick={() => nav("/admin/tours/new")}
+          className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-md"
+        >
+          ➕ Add New Tour
+        </button>
       </div>
-      {loading ? <p>Loading...</p> : (
-        <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {tours.map(t => (
-            <div key={t._id} className='border rounded p-3'>
-              <img src={t.images?.[0] || '/placeholder.jpg'} alt={t.title} className='h-40 w-full object-cover rounded' />
-              <h3 className='text-lg font-semibold mt-2'>{t.title}</h3>
-              <p className='text-sm text-gray-600'>{t.location}</p>
-              <div className='flex gap-2 mt-3'>
-                <button onClick={() => nav(`/admin/tours/edit/${t._id}`)} className='px-3 py-1 bg-black text-white rounded'>Edit</button>
-                <button onClick={() => handleDelete(t._id)} className='px-3 py-1 bg-red-500 text-white rounded'>Delete</button>
-                <button onClick={() => nav(`/tours/${t._id}`)} className='px-3 py-1 bg-gray-200 rounded'>View</button>
+
+      {/* Loader */}
+      {loading ? (
+        <p className="text-center text-lg font-semibold">Loading...</p>
+      ) : tours.length === 0 ? (
+        <p className="text-center text-gray-600 text-lg">
+          No tours found. Click "Add New Tour".
+        </p>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tours.map((t) => (
+            <div
+              key={t._id}
+              className="bg-white shadow-xl hover:shadow-2xl transition rounded-xl overflow-hidden border"
+            >
+              {/* Image */}
+              <img
+                //src={`http://localhost:5000${t.image}`}
+                src={
+                  t.image?.startsWith("http")
+                    ? t.image
+                    : `http://localhost:5000${t.image}`
+                }
+                alt={t.name}
+                className="h-48 w-full object-cover hover:scale-105 transition duration-300"
+              />
+
+              {/* Content */}
+              <div className="p-4 space-y-1">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {t.name}
+                </h3>
+                <p className="text-gray-600">{t.description?.slice(0, 50)}...</p>
+                <p className="text-red-600 font-bold text-lg">
+                  ₹ {t.price}
+                </p>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex border-t">
+                <button
+                  onClick={() => nav(`/admin/tours/edit/${t._id}`)}
+                  className="flex-1 py-2 text-blue-600 hover:bg-blue-50 font-medium"
+                >
+                  ✏ Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(t._id)}
+                  className="flex-1 py-2 text-red-600 hover:bg-red-50 font-medium"
+                >
+                  🗑 Delete
+                </button>
+                <button
+                  onClick={() => nav(`/tours/${t._id}`)}
+                  className="flex-1 py-2 text-green-600 hover:bg-green-50 font-medium"
+                >
+                  👁 View
+                </button>
               </div>
             </div>
           ))}

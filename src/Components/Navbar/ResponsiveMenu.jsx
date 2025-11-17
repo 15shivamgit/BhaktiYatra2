@@ -69,7 +69,7 @@ const ResponsiveMenu = ({ showMenu, setShowMenu }) => {
 
             {/* Admin item only when role === admin */}
             {user?.role === "admin" && (
-              <Link to="/AdminDashboard">
+              <Link to="/admin/dashboard">
                 <li
                   onClick={() => setShowMenu(false)}
                   className="text-red-600 font-semibold"

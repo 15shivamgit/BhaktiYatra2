@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN || '*' }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/tours", tourRoutes);
 app.use('/api/tours', require('./routes/tourRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));

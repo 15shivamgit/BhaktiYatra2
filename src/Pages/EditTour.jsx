@@ -19,7 +19,7 @@ const EditTour = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tour)
     });
-    navigate("/AdminTours");
+    navigate("/admin/tours");
   };
 
   return (
