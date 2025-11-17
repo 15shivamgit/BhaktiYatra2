@@ -57,12 +57,12 @@ const ProfileMenu = () => {
                 {user.name}
               </p>
 
-              <Link to="/my-bookings" onClick={() => setOpen(false)}>
+              <Link to="/tours" onClick={() => setOpen(false)}>
                 <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer">My Bookings</p>
               </Link>
 
               {user.role === "admin" && (
-                <Link to="/AdminDashboard" onClick={() => setOpen(false)}>
+                <Link to="/admin/dashboard" onClick={() => setOpen(false)}>
                   <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer font-semibold text-red-500">
                     Admin Dashboard
                   </p>
