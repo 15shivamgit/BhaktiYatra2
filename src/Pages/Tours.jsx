@@ -76,8 +76,8 @@
 
 import React, { useEffect, useState } from "react";
 import { getTours } from "../api";
-import SearchFilter from "../Pages/SearchFilter";
 import { useNavigate } from "react-router-dom";
+import SearchFilter from "./SearchFilter";
 
 const Tours = () => {
   const [tours, setTours] = useState([]);
