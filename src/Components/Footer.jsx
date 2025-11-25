@@ -103,10 +103,10 @@ const Footer = () => {
               <Link to="https://facebook.com">
                 <FaFacebook className="hover:text-red-500" />
               </Link>
-              <Link to="https://instagram.com">
+              <Link to="https://instagram.com/15shivambgs">
                 <FaInstagram className="hover:text-red-500" />
               </Link>
-              <Link to="https://twitter.com">
+              <Link to="https://x.com/Shivam748888">
                 <FaTwitter className="hover:text-red-500" />
               </Link>
               <Link to="https://linkedin.com/in/15shivambgs">
