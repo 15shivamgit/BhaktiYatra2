@@ -1,4 +1,5 @@
-# 🕉️ BhaktiYatra – Pilgrimage Travel & Booking Platform  
+# 🕉️ BhaktiYatra – Pilgrimage Travel & Booking Platform
+
 A full-stack MERN travel booking system designed for pilgrimage tours across India with online payments, admin management, ticket PDF + QR code, and email booking confirmation.
 
 ---
@@ -6,6 +7,7 @@ A full-stack MERN travel booking system designed for pilgrimage tours across Ind
 ## 🚀 Features
 
 ### 👤 User Features
+
 ✔ Browse tours & pilgrimage destinations  
 ✔ View tour details  
 ✔ Seat availability in real-time  
@@ -15,6 +17,7 @@ A full-stack MERN travel booking system designed for pilgrimage tours across Ind
 ✔ User authentication (JWT based)
 
 ### 🔐 Admin Features
+
 ✔ Admin dashboard with live stats  
 ✔ Add / Edit / Delete tours  
 ✔ Upload tour image  
@@ -27,16 +30,16 @@ A full-stack MERN travel booking system designed for pilgrimage tours across Ind
 
 ## 🛠 Tech Stack
 
-| Category | Technology |
-|--------|------------|
-| Frontend | React.js, TailwindCSS |
-| Backend | Node.js, Express.js |
-| Database | MongoDB Atlas |
-| Authentication | JWT |
-| Payments | Razorpay |
-| Email | Nodemailer |
-| Ticket | PDFKit + QRCode |
-| Deployment | Vercel / Render / AWS (optional) |
+| Category       | Technology                       |
+| -------------- | -------------------------------- |
+| Frontend       | React.js, TailwindCSS            |
+| Backend        | Node.js, Express.js              |
+| Database       | MongoDB Atlas                    |
+| Authentication | JWT                              |
+| Payments       | Razorpay                         |
+| Email          | Nodemailer                       |
+| Ticket         | PDFKit + QRCode                  |
+| Deployment     | Vercel / Render / AWS (optional) |
 
 ---
 
@@ -64,8 +67,6 @@ BhaktiYatra/
 │
 └─ README.md
 
-
-
 ---
 
 ## 🔧 Environment Variables
@@ -76,22 +77,20 @@ PORT=5000
 MONGO_URL=...............
 JWT_SECRET=################
 
-RAZORPAY_KEY_ID=****************************
-RAZORPAY_KEY_SECRET=****************
+RAZORPAY_KEY_ID=************\*\*\*\*************
+RAZORPAY_KEY_SECRET=******\*\*\*\*******
 
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=1****@gmail.com
-SMTP_PASS=**************
-
-
-
+SMTP_USER=1\***\*@gmail.com
+SMTP_PASS=****\*\*\*\*******
 
 ---
 
 ## ▶ Run Locally
 
 ### 1️⃣ Backend
+
 ```bash
 cd backend
 npm install
@@ -143,3 +142,4 @@ This project is licensed under the MIT License — free to use and modify.
 
 Developed with ❤️ by Shivam Singh
 If this project helped you, please ⭐ the repo!
+```
