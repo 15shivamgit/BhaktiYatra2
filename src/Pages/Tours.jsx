@@ -107,7 +107,9 @@ const Tours = () => {
               <img
                 src={`http://localhost:5000${t.image}`}
                 alt={t.title}
-                className="w-full h-40 object-cover"
+                width={600}
+                height={400}
+                className='object-cover w-full h-48 hover:scale-110 transition-all'
               />
               <div className="p-3">
                 <h3 className="font-bold">{t.title}</h3>

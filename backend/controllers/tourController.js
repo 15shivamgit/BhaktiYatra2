@@ -22,12 +22,13 @@ exports.getTourById = async (req, res) => {
 
 exports.createTour = async (req, res) => {
   try {
-    const { name, price } = req.body;
+    const { name, price, seatsAvailable } = req.body;
     const image = req.file ? "/uploads/" + req.file.filename : null; // single image
 
     const newTour = new Tour({
       name,
       price,
+      seatsAvailable: Number(seatsAvailable),
       image
     });
 
@@ -48,6 +49,7 @@ exports.updateTour = async (req, res) => {
     // update normal fields
     tour.name = name || tour.name;
     tour.price = price || tour.price;
+    tour.seatsAvailable = seatsAvailable || tour.seatsAvailable;
 
     // update image if new file selected
     if (req.file) {

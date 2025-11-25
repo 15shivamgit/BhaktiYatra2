@@ -143,6 +143,10 @@ import EditTour from "./Pages/EditTour";
 import ProtectedAdminRoute from "./Components/ProtectedAdminRoute";
 import SearchFilter from "./pages/SearchFilter";
 
+import BookTour from "./Pages/BookTour";
+import MyBookings from "./Pages/MyBookings";
+import AdminBookings from "./Pages/AdminBookings";
+
 const Layout = (page) => (
   <>
     <Navbar />
@@ -152,7 +156,7 @@ const Layout = (page) => (
 );
 
 const router = createBrowserRouter([
-  // 🌍 Public Routes
+  // Public Routes
   { path: "/", element: Layout(<Home />) },
   { path: "/tours", element: Layout(<Tours />) },
   { path: "/tours/:id", element: Layout(<TourDetail />) }, // dynamic detail page
@@ -162,7 +166,21 @@ const router = createBrowserRouter([
   { path: "/login", element: Layout(<Login />) },
   { path: "/search", element: Layout(<SearchFilter />) },
 
-  // 🔐 Admin Routes (Protected)
+
+  {
+    path: "/book/:id",
+    element: <><Navbar/><BookTour/><Footer/></>
+  },
+  {
+    path: "/my-bookings",
+    element: <><Navbar/><MyBookings/><Footer/></>
+  },
+  {
+    path: "/AdminBookings",
+    element: <><Navbar /><AdminBookings /><Footer /></>
+  },
+
+  // Admin Routes (Protected)
   {
     path: "/admin/dashboard",
     element: (

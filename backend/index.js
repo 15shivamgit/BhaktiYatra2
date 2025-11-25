@@ -15,7 +15,11 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/tours", tourRoutes);
 app.use('/api/tours', require('./routes/tourRoutes'));
-app.use('/api/bookings', require('./routes/bookingRoutes'));
+app.use("/api/bookings", require("./routes/bookingRoutes"));
+app.use("/api/payments", require("./routes/paymentRoutes"));
+app.use("/tickets", express.static(path.join(__dirname, "tickets")));
+
+
 
 
 // Connect DB
