@@ -2,9 +2,9 @@ import React from 'react'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import banner1 from '../assets/amarnath.jpg'
+import banner3 from '../assets/amarnath.jpg'
 import banner2 from '../assets/banaras.jpg'
-import banner3 from '../assets/ramMandir.jpg'
+import banner1 from '../assets/ramMandir.jpg'
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,8 +31,8 @@ const Hero = () => {
                <div className='relative max-w-7xl mx-auto'>
                 <div className='flex h-[650px] justify-center items-center lg:pt-0 pt-20'>
                     <div className='flex flex-col space-y-8 justify-center items-center text-center px-5 md:px-0'>
-                        <h1 className='text-white font-bold text-4xl lg:text-6xl'>Discover Your Next Adventure</h1>
-                        <p className='text-white lg:text-lg lg:w-[700px]'>Explore breathtaking destinations, create unforgettable memories and embark on the journey of a lifetime.</p>
+                        <h1 className='text-white font-bold text-4xl lg:text-6xl'>Embark on a Divine Journey</h1>
+                        <p className='text-white lg:text-lg lg:w-[700px]'>Book Your Pligrimage to Sacred Hindu Tirth Places.</p>
                         <button onClick={() => {navigate('/gallery')}} className='bg-red-500 px-3 py-2 text-white rounded-md font-semibold'>Start Exploring</button>
                     </div>
                 </div>

@@ -13,6 +13,8 @@ const AddTour = () => {
     data.append("name", form.name);
     data.append("price", form.price);
     data.append("image", image);
+    data.append("seatsAvailable", form.seatsAvailable);
+
 
     await fetch("http://localhost:5000/api/tours", {
       method: "POST",
@@ -37,6 +39,15 @@ const AddTour = () => {
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
         />
+
+        <input
+          type="number"
+          placeholder="Total Seats"
+          className="border p-3 w-full rounded"
+          onChange={(e) => setForm({ ...form, seatsAvailable: Number(e.target.value) })}
+          required
+        />
+
 
         <input
           className="border p-3 w-full rounded"

@@ -8,6 +8,12 @@ const AdminTours = () => {
   const nav = useNavigate();
   const token = localStorage.getItem("token");
 
+  const handleSeats = async (id, newSeats) => {
+    const res = await updateSeats(id, newSeats, token);
+    if (res.success) load();
+    else alert(res.message);
+  };
+
   const load = async () => {
     setLoading(true);
     const res = await getTours();
@@ -70,10 +76,29 @@ const AdminTours = () => {
                 <h3 className="text-xl font-semibold text-gray-800">
                   {t.name}
                 </h3>
-                <p className="text-gray-600">{t.description?.slice(0, 50)}...</p>
-                <p className="text-red-600 font-bold text-lg">
-                  ₹ {t.price}
+                <p className="text-gray-600">
+                  {t.description?.slice(0, 50)}...
                 </p>
+                <p className="text-red-600 font-bold text-lg">₹ {t.price}</p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  onClick={() => handleSeats(t._id, t.seatsAvailable - 1)}
+                  className="px-2 bg-gray-200 rounded"
+                  disabled={t.seatsAvailable <= 0}
+                >
+                  −
+                </button>
+
+                <span className="font-semibold">{t.seatsAvailable} seats</span>
+
+                <button
+                  onClick={() => handleSeats(t._id, t.seatsAvailable + 1)}
+                  className="px-2 bg-gray-200 rounded"
+                >
+                  +
+                </button>
               </div>
 
               {/* Buttons */}

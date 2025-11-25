@@ -78,6 +78,14 @@ const AdminDashboard = () => {
           </button>
 
           <button
+            onClick={() => navigate("/AdminBookings")}
+            className="px-4 py-2 bg-black text-white rounded-md hover:bg-orange-500"
+          >
+            📖 Manage Bookings
+          </button>
+
+
+          <button
             onClick={() => navigate("/admin/tours")}
             className={`flex items-center gap-3 hover:bg-[#222] w-full px-4 py-2 rounded-md transition ${
               collapsed ? "justify-center" : ""

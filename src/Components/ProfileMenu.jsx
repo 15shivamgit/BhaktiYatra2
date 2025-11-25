@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
@@ -17,6 +18,7 @@ const ProfileMenu = () => {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -26,56 +28,71 @@ const ProfileMenu = () => {
     localStorage.removeItem("user");
     setUser(null);
     navigate("/login");
+    window.location.reload();
   };
 
   return (
     <div className="relative" ref={menuRef}>
+      {/* Avatar Icon */}
       <FaUserCircle
         size={42}
-        className="cursor-pointer text-white hover:text-red-400 transition"
+        className="cursor-pointer text-white hover:text-red-400 transition duration-300"
         onClick={() => setOpen(!open)}
       />
 
+      {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-lg w-48 py-2 z-50 animate-slideDown">
-          {/* If NOT logged in */}
+        <div
+          className="absolute right-0 mt-2 w-56 rounded-xl shadow-md bg-white text-black py-3 animate-dropdown z-50"
+          style={{ animation: "dropdown 0.25s ease" }}
+        >
+          {/* User Info */}
+          {user && (
+            <div className="px-4 pb-3 border-b">
+              <p className="font-semibold">{user.name}</p>
+              <p className="text-sm text-gray-600">{user.email}</p>
+            </div>
+          )}
+
+          {/* Guest Menu */}
           {!user && (
             <>
               <Link to="/login" onClick={() => setOpen(false)}>
-                <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer">Login</p>
-              </Link>
-              <Link to="/login" onClick={() => setOpen(false)}>
-                <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer">Register</p>
+                <p className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  Login / Register
+                </p>
               </Link>
             </>
           )}
 
-          {/* If logged in */}
-          {user && (
+          {/* Logged In – Normal User */}
+          {user && user.role !== "admin" && (
             <>
-              <p className="px-3 py-2 text-sm text-gray-500 border-b">
-                {user.name}
-              </p>
-
-              <Link to="/tours" onClick={() => setOpen(false)}>
-                <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer">My Bookings</p>
+              <Link to="/my-bookings" onClick={() => setOpen(false)}>
+                <p className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  My Bookings
+                </p>
               </Link>
-
-              {user.role === "admin" && (
-                <Link to="/admin/dashboard" onClick={() => setOpen(false)}>
-                  <p className="px-3 py-2 hover:bg-gray-100 cursor-pointer font-semibold text-red-500">
-                    Admin Dashboard
-                  </p>
-                </Link>
-              )}
-
-              <p
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
-                onClick={logout}
-              >
-                Logout
-              </p>
             </>
+          )}
+
+          {/* Logged In – Admin User */}
+          {user?.role === "admin" && (
+            <Link to="/admin/dashboard" onClick={() => setOpen(false)}>
+              <p className="px-4 py-2 font-semibold text-red-600 hover:bg-red-50 cursor-pointer">
+                Admin Dashboard
+              </p>
+            </Link>
+          )}
+
+          {/* Logout Button */}
+          {user && (
+            <p
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500 font-semibold"
+              onClick={logout}
+            >
+              Logout
+            </p>
           )}
         </div>
       )}
