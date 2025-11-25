@@ -141,11 +141,11 @@ import AddTour from "./Pages/AddTour";
 import EditTour from "./Pages/EditTour";
 
 import ProtectedAdminRoute from "./Components/ProtectedAdminRoute";
-import SearchFilter from "./pages/SearchFilter";
 
 import BookTour from "./Pages/BookTour";
 import MyBookings from "./Pages/MyBookings";
 import AdminBookings from "./Pages/AdminBookings";
+import SearchFilter from './Pages/SearchFilter'
 
 const Layout = (page) => (
   <>
