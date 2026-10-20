@@ -11,6 +11,7 @@ import { createLogger } from '../src/config/logger.js';
 import { User } from '../src/models/User.js';
 import { hashPassword } from '../src/modules/auth/password.js';
 import { seedContent } from './lib/content-seed.js';
+import { seedSampleTours } from './lib/tour-seed.js';
 
 export const E2E_ACCOUNTS = Object.freeze({
   admin: { email: 'admin@e2e.test', password: 'E2e-Admin-Pass-1', name: 'E2E Admin' },
@@ -48,6 +49,7 @@ for (const [role, account] of Object.entries(E2E_ACCOUNTS)) {
   });
 }
 await seedContent({ status: 'published' });
+await seedSampleTours();
 
 let uploads = 0;
 const fakeImages = {

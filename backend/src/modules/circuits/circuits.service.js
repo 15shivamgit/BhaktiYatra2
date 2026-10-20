@@ -11,6 +11,7 @@ import { recordAudit } from '../audit/audit.service.js';
 import { destroyIfManaged, uploadImages } from '../content/images.service.js';
 import { revalidateContent } from '../content/revalidate.js';
 import { toTempleCard } from '../temples/temples.mapper.js';
+import { toursCoveringTemples } from '../tours/tours.public.service.js';
 
 const MIN_PUBLISHED_TEMPLES = 2;
 
@@ -99,6 +100,7 @@ export async function getCircuitBySlug(slug) {
   const temples = await Temple.find({ _id: { $in: circuit.temples }, status: 'published' });
   const byId = new Map(temples.map((t) => [t._id.toString(), t]));
   const ordered = circuit.temples.map((id) => byId.get(id.toString())).filter(Boolean);
+  const tours = await toursCoveringTemples(ordered.map((t) => t._id));
   return {
     circuit: {
       ...toCircuitCard(circuit, ordered.length),
@@ -106,6 +108,7 @@ export async function getCircuitBySlug(slug) {
       seo: circuit.seo ?? null,
       updatedAt: circuit.updatedAt,
       temples: ordered.map((t, index) => toTempleCard(t, { position: index + 1 })),
+      tours,
     },
   };
 }

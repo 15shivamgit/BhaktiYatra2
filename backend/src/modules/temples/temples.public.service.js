@@ -5,6 +5,7 @@ import { Temple } from '../../models/Temple.js';
 import { AppError } from '../../utils/app-error.js';
 import { escapeRegex } from '../../utils/crypto.js';
 import { pageMeta, skipFor } from '../../utils/pagination.js';
+import { toursCoveringTemples } from '../tours/tours.public.service.js';
 import { toTempleCard, toTemplePublic } from './temples.mapper.js';
 
 const EARTH_RADIUS_KM = 6378.1;
@@ -139,18 +140,19 @@ export async function getTempleBySlug(slug) {
     if (redirectTo) return { redirectTo };
     throw AppError.notFound('Temple not found');
   }
-  const [circuits, nearby] = await Promise.all([
+  const [circuits, nearby, tours] = await Promise.all([
     Circuit.find({ status: 'published', temples: temple._id })
       .select('slug name')
       .sort({ name: 1 }),
     nearbyTemples(temple),
+    toursCoveringTemples([temple._id]),
   ]);
   return {
     temple: {
       ...toTemplePublic(temple),
       circuits: circuits.map((c) => ({ id: c._id.toString(), slug: c.slug, name: c.name })),
       nearby,
-      tours: [], // Phase 4
+      tours,
     },
   };
 }

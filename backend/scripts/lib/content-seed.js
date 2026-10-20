@@ -11,7 +11,7 @@ import { createTempleSchema } from '../../src/modules/temples/temples.schemas.js
 import { sanitizeRichText } from '../../src/utils/html.js';
 import { CIRCUITS, REVIEW_NOTE, TEMPLES } from '../data/temples.data.js';
 
-function loadImageManifest() {
+export function loadImageManifest() {
   const manifest = JSON.parse(
     readFileSync(new URL('../data/cloudinary-images.json', import.meta.url), 'utf8'),
   );
@@ -19,7 +19,7 @@ function loadImageManifest() {
   return new Map(all.map((image) => [image.publicId, image]));
 }
 
-function toImage(manifest, [publicId, alt], index) {
+export function toImage(manifest, [publicId, alt], index) {
   const found = manifest.get(publicId);
   if (!found) throw new Error(`Image "${publicId}" is not in cloudinary-images.json`);
   return {
