@@ -35,3 +35,23 @@ export function createFakeImages({ enabled = true } = {}) {
 export function createFakeFrontend() {
   return { enabled: true, revalidate: vi.fn(async () => {}) };
 }
+
+/** Stub-like payment provider whose next order creations can be made to fail. */
+export function createFakePayments({ simulate = true } = {}) {
+  let counter = 0;
+  const fake = {
+    name: 'stub',
+    keyId: null,
+    simulate,
+    failNext: 0,
+    createOrder: vi.fn(async ({ amountPaise, currency = 'INR' }) => {
+      if (fake.failNext > 0) {
+        fake.failNext -= 1;
+        throw new Error('simulated provider outage');
+      }
+      counter += 1;
+      return { id: `order_fake_${counter}`, amount: amountPaise, currency };
+    }),
+  };
+  return fake;
+}

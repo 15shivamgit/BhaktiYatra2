@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { ERROR_CODES } from '../../config/constants.js';
 import { SEAT_HOLDING_STATUSES, UPCOMING_DEPARTURE_STATUSES } from '../../config/tours.js';
 import { Booking } from '../../models/Booking.js';
+import { Payment } from '../../models/Payment.js';
 import { Tour } from '../../models/Tour.js';
 import { TourDeparture } from '../../models/TourDeparture.js';
 import { AppError } from '../../utils/app-error.js';
@@ -398,6 +399,11 @@ export async function cancelDeparture(ctx, id, { reason }, actor, req, now = new
         { session },
       );
       const released = pending.reduce((sum, b) => sum + b.seats, 0);
+      await Payment.updateMany(
+        { booking: { $in: pending.map((b) => b._id) }, status: 'created' },
+        { $set: { status: 'failed', failureReason: 'departure_cancelled' } },
+        { session },
+      );
       const timelineEntry = (event) => ({
         at: now,
         event,

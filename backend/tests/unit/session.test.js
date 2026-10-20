@@ -66,7 +66,12 @@ describe('session tokens', () => {
 
 describe('TC-AUTH-11 cookie flags', () => {
   it('production: HttpOnly, Secure, SameSite=Lax, shared domain', () => {
-    const env = parseEnv({ ...base, NODE_ENV: 'production', COOKIE_DOMAIN: '.bhaktiyatra.in' });
+    const env = parseEnv({
+      ...base,
+      NODE_ENV: 'production',
+      PAYMENTS_PROVIDER: 'razorpay',
+      COOKIE_DOMAIN: '.bhaktiyatra.in',
+    });
     expect(sessionCookieOptions(env)).toMatchObject({
       httpOnly: true,
       secure: true,

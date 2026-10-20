@@ -41,6 +41,8 @@ const envSchema = z.object({
   RATE_LIMIT_AUTH_WINDOW_MIN: z.coerce.number().int().positive().default(15),
   RATE_LIMIT_CONTACT_MAX: z.coerce.number().int().positive().default(5),
   RATE_LIMIT_CONTACT_WINDOW_MIN: z.coerce.number().int().positive().default(60),
+  RATE_LIMIT_BOOKING_MAX: z.coerce.number().int().positive().default(20),
+  RATE_LIMIT_BOOKING_WINDOW_MIN: z.coerce.number().int().positive().default(15),
 
   // Phase 2: authentication
   JWT_SECRET: z.string().min(32, 'must be at least 32 characters'),
@@ -59,8 +61,12 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().optional(),
   CLOUDINARY_FOLDER: z.string().default('bhaktiyatra/dev'),
 
-  // Phase 6+
-  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub']).default('razorpay'),
+  // Phase 5: bookings (fractional HOLD_MINUTES only make sense in tests)
+  HOLD_MINUTES: z.coerce.number().positive().max(60).default(15),
+  MAX_SEATS_PER_BOOKING: z.coerce.number().int().min(1).max(10).default(10),
+
+  // Phase 5 uses the stub provider; Phase 6 adds Razorpay (ADR-031)
+  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub']).default('stub'),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
   RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
@@ -103,6 +109,10 @@ export function parseEnv(raw) {
       return `${key} ${missing ? 'is required' : issue.message}`;
     });
     throw new EnvError(problems);
+  }
+  if (result.data.NODE_ENV === 'production' && result.data.PAYMENTS_PROVIDER === 'stub') {
+    // The stub confirms bookings without money changing hands; never allow it live.
+    throw new EnvError(['PAYMENTS_PROVIDER must be razorpay in production']);
   }
   return Object.freeze(result.data);
 }
