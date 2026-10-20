@@ -8,6 +8,7 @@ import { BUSINESS } from '@/lib/config';
 import { directionsUrl } from '@/lib/format';
 import { t } from '@/lib/i18n';
 import { breadcrumbJsonLd, templeJsonLd } from '@/lib/seo';
+import TourGrid from '@/components/tours/TourGrid';
 import TempleGallery from './TempleGallery';
 import TempleGrid from './TempleGrid';
 import TempleMapLazy from './TempleMapLazy';
@@ -48,6 +49,7 @@ export default function TempleArticle({ temple }) {
     { id: 'reach', label: t('temple.reach'), show: temple.howToReach },
     { id: 'rules', label: t('temple.rules'), show: temple.rules.length },
     { id: 'map', label: t('temple.map'), show: temple.location },
+    { id: 'tours', label: t('temple.toursTitle'), show: temple.tours.length },
     { id: 'nearby', label: t('temple.nearby'), show: temple.nearby.length },
   ].filter((s) => s.show);
 
@@ -174,6 +176,12 @@ export default function TempleArticle({ temple }) {
               </Section>
             )}
 
+            {temple.tours.length > 0 && (
+              <Section id="tours" title={t('temple.toursTitle')}>
+                <TourGrid tours={temple.tours.slice(0, 3)} />
+              </Section>
+            )}
+
             {temple.nearby.length > 0 && (
               <Section id="nearby" title={t('temple.nearby')}>
                 <TempleGrid temples={temple.nearby} columns={3} />
@@ -199,7 +207,19 @@ export default function TempleArticle({ temple }) {
                   {BUSINESS.phoneDisplay}
                 </a>
               </div>
-              <p className="mt-4 text-xs text-text-muted">{t('temple.noTours')}</p>
+              {temple.tours[0] ? (
+                <p className="mt-4 text-sm text-text-muted">
+                  <Link
+                    href={`/tours/${temple.tours[0].slug}`}
+                    className="font-medium text-accent hover:underline"
+                  >
+                    {temple.tours[0].title}
+                  </Link>{' '}
+                  {t('temple.planTourVisits')}
+                </p>
+              ) : (
+                <p className="mt-4 text-xs text-text-muted">{t('temple.noTours')}</p>
+              )}
             </div>
             {(temple.officialWebsite || temple.darshanBookingUrl) && (
               <div className="rounded-lg border border-border bg-surface p-5">

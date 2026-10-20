@@ -21,7 +21,7 @@ const schema = z.object({
 });
 
 /** Contact form; `website` is a hidden honeypot that only bots fill in. */
-export default function ContactForm() {
+export default function ContactForm({ defaultSubject = '' }) {
   const [sent, setSent] = useState(false);
   const [formError, setFormError] = useState(null);
   const {
@@ -30,7 +30,11 @@ export default function ContactForm() {
     setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: zodResolver(schema), mode: 'onTouched' });
+  } = useForm({
+    resolver: zodResolver(schema),
+    mode: 'onTouched',
+    defaultValues: { subject: defaultSubject },
+  });
 
   const onSubmit = async (values) => {
     setFormError(null);

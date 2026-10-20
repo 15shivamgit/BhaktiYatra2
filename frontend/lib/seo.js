@@ -108,6 +108,57 @@ export function circuitJsonLd(circuit) {
   };
 }
 
+/** Tour page structured data: TouristTrip with one Offer per bookable departure. */
+export function tourJsonLd(tour) {
+  const url = abs(`/tours/${tour.slug}`);
+  const offers = tour.departures
+    .filter((d) => d.status === 'scheduled' || d.status === 'full')
+    .map((d) => ({
+      '@type': 'Offer',
+      price: d.price,
+      priceCurrency: tour.currency ?? 'INR',
+      availability:
+        d.isBookable && d.seatsAvailable > 0
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/SoldOut',
+      validThrough: d.bookingClosesAt,
+      url,
+      name: `${tour.title}, ${d.startDate}`,
+    }));
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'TouristTrip',
+    name: tour.title,
+    description: tour.summary,
+    url,
+    image: tour.images.map((image) => image.url),
+    touristType: 'Pilgrims',
+    itinerary: {
+      '@type': 'ItemList',
+      numberOfItems: tour.itinerary.length,
+      itemListElement: tour.itinerary.map((day) => ({
+        '@type': 'ListItem',
+        position: day.day,
+        name: day.title,
+      })),
+    },
+    ...(offers.length && { offers }),
+    provider: { '@type': 'Organization', name: BUSINESS.name, url: SITE_URL },
+  };
+}
+
+export function faqJsonLd(faqs) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  };
+}
+
 /** Open Graph image list for a primary image, or the site default. */
 export function ogImages(image) {
   if (!image?.url) return [{ url: abs('/og-default.jpg'), width: 1200, height: 630 }];

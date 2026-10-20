@@ -129,5 +129,51 @@ export async function getSitemapEntries() {
   return withBuildFallback(async () => (await request('/sitemap')).data, {
     temples: [],
     circuits: [],
+    tours: [],
   });
+}
+
+/** @param {Record<string, string | number | boolean | undefined>} params */
+export async function getTours(params = {}) {
+  'use cache';
+  cacheLife('content');
+  cacheTag('content', 'tours');
+  return withBuildFallback(
+    async () => {
+      const body = await request(`/tours${query(params)}`);
+      return { tours: body.data ?? [], meta: body.meta ?? { page: 1, total: 0, totalPages: 1 } };
+    },
+    { tours: [], meta: { page: 1, limit: 12, total: 0, totalPages: 1 } },
+  );
+}
+
+export async function getTourFilters() {
+  'use cache';
+  cacheLife('content');
+  cacheTag('content', 'tours');
+  return withBuildFallback(async () => (await request('/tours/filters')).data, {
+    destinations: [],
+    pickupCities: [],
+    priceRange: { min: 0, max: 0 },
+    maxDays: 0,
+  });
+}
+
+/**
+ * Tour detail. Seat counts in it can be up to five minutes old (cache); the booking page reads
+ * live availability from GET /departures/:id.
+ * @returns {Promise<{ tour?: any, redirectSlug?: string | null, notFound?: boolean }>}
+ */
+export async function getTour(slug) {
+  'use cache';
+  cacheLife('content');
+  cacheTag('content', `tour:${slug}`);
+  return withBuildFallback(
+    async () => {
+      const body = await request(`/tours/${encodeURIComponent(slug)}`, { redirect: 'manual' });
+      if (body.redirectSlug !== undefined || body.notFound) return body;
+      return { tour: body.data };
+    },
+    { notFound: true },
+  );
 }

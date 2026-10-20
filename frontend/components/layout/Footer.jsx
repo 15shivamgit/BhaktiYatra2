@@ -11,6 +11,7 @@ const COLUMNS = [
       { href: '/temples?state=Uttarakhand', label: 'Uttarakhand' },
       { href: '/temples?state=Tamil%20Nadu', label: 'Tamil Nadu' },
       { href: '/temples?deity=Shiva', label: 'Shiva temples' },
+      { href: '/tours', key: 'footer.allTours' },
     ],
   },
   {

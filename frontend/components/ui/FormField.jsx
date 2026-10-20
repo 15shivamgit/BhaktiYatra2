@@ -4,7 +4,8 @@ export const inputClasses = (invalid) =>
   cn(
     'block w-full min-h-11 rounded-md border bg-surface px-3 py-2 text-base text-text placeholder:text-text-muted/70 transition-colors',
     'focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-saffron',
-    'read-only:bg-surface-muted read-only:text-text-muted',
+    // Chrome treats <select> as :read-only, so exclude it or every dropdown looks disabled.
+    '[&:not(select):read-only]:bg-surface-muted [&:not(select):read-only]:text-text-muted',
     invalid ? 'border-danger' : 'border-border hover:border-text-muted/50',
   );
 

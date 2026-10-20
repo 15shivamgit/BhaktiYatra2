@@ -7,6 +7,7 @@ import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Container from '@/components/layout/Container';
 import JsonLd from '@/components/seo/JsonLd';
 import TempleMapLazy from '@/components/temples/TempleMapLazy';
+import TourGrid from '@/components/tours/TourGrid';
 import { getCircuit } from '@/lib/api/content';
 import { t } from '@/lib/i18n';
 import { breadcrumbJsonLd, circuitJsonLd, ogImages } from '@/lib/seo';
@@ -136,6 +137,20 @@ function CircuitBody({ circuit }) {
             />
           </div>
         </section>
+
+        {circuit.tours?.length > 0 && (
+          <section aria-labelledby="circuit-tours-title" className="mt-16">
+            <h2
+              id="circuit-tours-title"
+              className="font-display text-3xl font-semibold text-accent"
+            >
+              {t('circuits.toursTitle')}
+            </h2>
+            <div className="mt-6">
+              <TourGrid tours={circuit.tours.slice(0, 3)} />
+            </div>
+          </section>
+        )}
       </Container>
       <JsonLd data={circuitJsonLd(circuit)} />
       <JsonLd data={breadcrumbJsonLd(crumbs)} />

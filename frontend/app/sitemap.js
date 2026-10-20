@@ -5,6 +5,7 @@ const STATIC_PATHS = [
   '/',
   '/temples',
   '/circuits',
+  '/tours',
   '/about',
   '/contact',
   '/privacy',
@@ -14,7 +15,7 @@ const STATIC_PATHS = [
 
 /** sitemap.xml from published content (FR-TEMPLE-10); refreshed with the "content" cache. */
 export default async function sitemap() {
-  const { temples, circuits } = await getSitemapEntries();
+  const { temples, circuits, tours = [] } = await getSitemapEntries();
   const url = (path) => new URL(path, SITE_URL).toString();
   return [
     ...STATIC_PATHS.map((path) => ({
@@ -27,6 +28,12 @@ export default async function sitemap() {
       lastModified: c.updatedAt,
       changeFrequency: 'monthly',
       priority: 0.7,
+    })),
+    ...tours.map((tour) => ({
+      url: url(`/tours/${tour.slug}`),
+      lastModified: tour.updatedAt,
+      changeFrequency: 'weekly',
+      priority: 0.8,
     })),
     ...temples.map((t) => ({
       url: url(`/temples/${t.slug}`),

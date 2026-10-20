@@ -8,8 +8,9 @@ import Container from '@/components/layout/Container';
 import SectionHeading from '@/components/layout/SectionHeading';
 import JsonLd from '@/components/seo/JsonLd';
 import TempleGrid, { TempleGridSkeleton } from '@/components/temples/TempleGrid';
+import TourGrid, { TourGridSkeleton } from '@/components/tours/TourGrid';
 import { buttonClasses } from '@/components/ui/Button';
-import { getCircuits, getTempleFilters, getTemples } from '@/lib/api/content';
+import { getCircuits, getTempleFilters, getTemples, getTours } from '@/lib/api/content';
 import { BUSINESS, HERO_IMAGE } from '@/lib/config';
 import { t } from '@/lib/i18n';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
@@ -36,6 +37,16 @@ async function FeaturedTemples() {
   return (
     <div className="mt-8">
       <TempleGrid temples={temples} />
+    </div>
+  );
+}
+
+async function UpcomingTours() {
+  const { tours } = await getTours({ sort: 'nextDeparture', limit: 3 });
+  if (!tours.length) return null;
+  return (
+    <div className="mt-8">
+      <TourGrid tours={tours} />
     </div>
   );
 }
@@ -128,6 +139,12 @@ export default function HomePage() {
             >
               {t('home.viewCircuits')}
             </Link>
+            <Link
+              href="/tours"
+              className="rounded-full bg-white/15 px-4 py-2 font-medium backdrop-blur hover:bg-white/25"
+            >
+              {t('home.viewTours')}
+            </Link>
           </div>
         </Container>
       </section>
@@ -165,28 +182,45 @@ export default function HomePage() {
       </section>
 
       <Container className="py-16">
-        <SectionHeading title={t('home.whyTitle')} />
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {WHY.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="rounded-lg border border-border bg-surface p-6">
-              <Icon aria-hidden="true" className="size-7 text-saffron" />
-              <h3 className="mt-3 font-semibold text-text">{t(title)}</h3>
-              <p className="mt-1 text-sm text-text-muted">{t(text)}</p>
-            </li>
-          ))}
-        </ul>
+        <SectionHeading
+          title={t('home.upcomingTours')}
+          description={t('home.upcomingToursText')}
+          action={{ href: '/tours', label: t('home.viewTours') }}
+        />
+        <Suspense
+          fallback={
+            <div className="mt-8">
+              <TourGridSkeleton count={3} />
+            </div>
+          }
+        >
+          <UpcomingTours />
+        </Suspense>
       </Container>
 
       <section className="bg-surface-muted/60 py-16">
         <Container>
-          <SectionHeading title={t('home.browseByState')} />
-          <Suspense
-            fallback={<div className="mt-8 h-32 animate-pulse rounded-lg bg-surface-muted" />}
-          >
-            <BrowseByState />
-          </Suspense>
+          <SectionHeading title={t('home.whyTitle')} />
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {WHY.map(({ icon: Icon, title, text }) => (
+              <li key={title} className="rounded-lg border border-border bg-surface p-6">
+                <Icon aria-hidden="true" className="size-7 text-saffron" />
+                <h3 className="mt-3 font-semibold text-text">{t(title)}</h3>
+                <p className="mt-1 text-sm text-text-muted">{t(text)}</p>
+              </li>
+            ))}
+          </ul>
         </Container>
       </section>
+
+      <Container className="py-16">
+        <SectionHeading title={t('home.browseByState')} />
+        <Suspense
+          fallback={<div className="mt-8 h-32 animate-pulse rounded-lg bg-surface-muted" />}
+        >
+          <BrowseByState />
+        </Suspense>
+      </Container>
 
       <Container className="py-16">
         <div className="flex flex-col items-start justify-between gap-6 rounded-xl bg-accent p-8 text-white sm:flex-row sm:items-center sm:p-10">
