@@ -41,6 +41,10 @@ Critical cases covered:
 
 E2E covers paying, then downloading both files (checking the file names), and the ticket check page rejecting a damaged ticket.
 
+## CI
+
+GitHub Actions run 39480671036 (commit d74b8e8) passed all three jobs: secrets-scan, build-and-test, e2e.
+
 ## Manual checks
 
 | Check | Result |
