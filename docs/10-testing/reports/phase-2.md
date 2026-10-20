@@ -37,6 +37,12 @@ Critical cases covered: TC-AUTH-01 to TC-AUTH-11, TC-SEC-01 to TC-SEC-05 (TC-SEC
 1. **OAuth state tokens were minted already expired.** `jose` reads a numeric expiry as an absolute Unix timestamp, so `600` meant 1970. Integration tests caught it; expiry is now a duration string and a unit test guards it.
 2. **Account menu failed WCAG 2.5.3 (label in name).** Its `aria-label` did not contain its visible text. The button is now named by its visible text, and the avatar initials are CSS-generated decoration.
 3. **Reset-password errors used a generic code.** Now `INVALID_OR_EXPIRED_TOKEN` as specified.
+4. **CI: gitleaks flagged fake test passwords** as generic API keys. `.gitleaks.toml` now exempts test folders and one docs example while keeping every default rule. Checked locally with gitleaks 8.30.1: history and tracked files are clean, and the default rules alone still find the five fixture passwords.
+5. **CI: a streaming race in the home E2E test.** React briefly keeps a hidden copy of streamed content; the locator now only matches visible elements inside `<main>`.
+
+## CI
+
+GitHub Actions run 39395547394 passed all three jobs: secrets-scan, build-and-test, e2e.
 
 ## Manual checks
 
