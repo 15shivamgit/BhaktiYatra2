@@ -44,12 +44,12 @@ A bug found during manual checks was fixed: invalid values were reported as "is 
 
 | Criterion | Status |
 |---|---|
-| `git log --all -- backend/.env` empty; gitleaks passes | **Not met.** Needs a history rewrite and force-push, which require the owner's approval. Until then, CI's gitleaks job is expected to fail on the old commits. |
+| `git log --all -- backend/.env` empty; gitleaks passes | **Partly met.** CI's gitleaks job passed, but on push it scans only the new commits. The old commits still contain `backend/.env`; removing them needs a history rewrite and force-push, which require the owner's approval. |
 | Fresh clone + `npm ci` + env + `npm run dev` works on Windows | Met on the owner's machine with a clean `npm ci`; a separate fresh-clone run was not done |
 | Missing `MONGO_URL` gives a clear error | Met |
 | Health 200 with db up, 503 with db down | Met (Atlas manually; 503 in tests) |
 | Home renders with tokens and fonts | Met (E2E checks background colour) |
-| Lint, tests and build pass in CI | Met locally; CI result visible after push |
+| Lint, tests and build pass in CI | Met: GitHub Actions run 39389530935 passed all three jobs (secrets-scan, build-and-test, e2e) |
 
 ## Not done / owner actions
 
