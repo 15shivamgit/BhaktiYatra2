@@ -43,7 +43,10 @@ test.describe('temple list (J1)', () => {
 
   test('an empty search explains what to do', async ({ page }) => {
     await page.goto('/temples?q=zzzzzz');
-    await expect(page.getByText('No temples match these filters.')).toBeVisible();
+    // Streaming can briefly leave a hidden copy of the content; match only the visible one.
+    await expect(
+      page.getByRole('main').getByText('No temples match these filters.').filter({ visible: true }),
+    ).toBeVisible();
   });
 
   test('has no serious accessibility violations and no horizontal scroll', async ({ page }) => {
@@ -69,7 +72,12 @@ test.describe('temple detail', () => {
       '6:00 am – 3:00 pm',
     );
     await expect(page.getByRole('heading', { name: 'How to reach' })).toBeVisible();
-    await expect(page.getByText(/Jolly Grant Airport/)).toBeVisible();
+    await expect(
+      page
+        .getByRole('main')
+        .getByText(/Jolly Grant Airport/)
+        .filter({ visible: true }),
+    ).toBeVisible();
 
     const circuits = page.locator('#circuits');
     await expect(circuits.getByRole('link', { name: 'Char Dham (Uttarakhand)' })).toBeVisible();
