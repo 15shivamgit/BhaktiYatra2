@@ -24,8 +24,10 @@
 
 ## Exit criteria
 
-- [ ] Real test-mode payment confirms a booking; webhook delivery shows 200 in Razorpay dashboard; booking has exactly one captured Payment.
-- [ ] Replaying the webhook from the dashboard causes no changes.
-- [ ] Tampered signature rejected; booking remains pending until expiry.
-- [ ] UI never stays on a spinner beyond 60 s.
-- [ ] All Phase 6 tests green; coverage ≥ 90 % on payments service.
+Status on 2026-10-20 (details in `10-testing/reports/phase-6.md`):
+
+- [ ] Real test-mode payment confirms a booking; webhook delivery shows 200 in Razorpay dashboard; booking has exactly one captured Payment. (Blocked: the configured test keys are rejected by Razorpay; needs new keys, a webhook secret and a tunnel.)
+- [ ] Replaying the webhook from the dashboard causes no changes. (Covered by tests with real HMAC; dashboard replay pending the same keys.)
+- [x] Tampered signature rejected; booking remains pending until expiry.
+- [x] UI never stays on a spinner beyond 60 s.
+- [x] All Phase 6 tests green; coverage ≥ 90 % on payments service.

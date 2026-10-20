@@ -24,6 +24,8 @@ export function createProviders(env) {
       provider: env.PAYMENTS_PROVIDER,
       nodeEnv: env.NODE_ENV,
       keyId: env.RAZORPAY_KEY_ID,
+      keySecret: env.RAZORPAY_KEY_SECRET,
+      webhookSecret: env.RAZORPAY_WEBHOOK_SECRET,
     }),
   };
 }

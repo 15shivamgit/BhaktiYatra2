@@ -94,8 +94,9 @@ Server steps (`confirmPaymentFromClient`):
 
 200:
 ```json
-{ "success": true, "data": { "booking": BookingSummary, "state": "confirmed" | "already_confirmed" | "confirmed_late" | "payment_received_no_seats" } }
+{ "success": true, "data": { "booking": BookingSummary, "state": "confirmed" | "already_confirmed" | "confirmed_late" | "payment_received_no_seats" | "pending_confirmation" | "failed" } }
 ```
+As built (Phase 6): `pending_confirmation` when Razorpay reports the payment `authorized` but not yet captured (the `payment.captured` webhook confirms it); `failed` when the fetched payment failed (booking stays `pending`). If the payment cannot be fetched, the verified signature is trusted. An amount, currency or order mismatch raises a `payment_issue_admin` alert and an audit entry. Errors: 400 `SIGNATURE_INVALID`, 404 (not the owner), 409 `AMOUNT_MISMATCH`, 422.
 
 ## POST /webhooks/razorpay
 Auth: none; signature header `X-Razorpay-Signature`; raw body required (mount `express.raw` for this route before `express.json`).  
@@ -106,6 +107,11 @@ Steps:
 4. `payment.failed` → Payment `failed` with reason; Booking stays `pending` (user may retry until hold expires); timeline entry.
 5. `refund.processed` → Payment `refunded`/partial; Booking `paymentStatus` updated; timeline.
 6. Always respond 200 after processing (or 500 to trigger retry only on transient DB errors).
+
+As built (Phase 6): mounted before the global rate limiter, the origin check and `express.json()`, with its own limit (`RATE_LIMIT_WEBHOOK_MAX`, 600/min). Response `{ "success": true, "data": { "event", "result" } }` where `result` is `confirmed`, `confirmed_late`, `payment_received_no_seats`, `already_confirmed`, `payment_failed`, `refunded`, `partially_refunded`, `duplicate`, `amount_mismatch` or `ignored…`. Refund amounts accumulate across `refund.processed` events; the booking becomes `refunded` once the total reaches the payment amount. Without `x-razorpay-event-id` the dedupe key is `<event>:<entity id>`.
+
+### Payment reconciliation (job, hourly)
+Unpaid bookings (`pending`, `expired` or `cancelled`, payment `pending`/`failed`) created 20–120 minutes ago are checked with `GET /orders/:id/payments`; a captured payment that matches the amount is confirmed (`verifiedVia: reconcile`). Runs only with the Razorpay provider.
 
 ### Idempotent confirmation (`confirmBooking`)
 Inside a transaction:

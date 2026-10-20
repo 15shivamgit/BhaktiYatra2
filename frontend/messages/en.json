@@ -179,7 +179,9 @@
     "TOO_MANY_PENDING": "You already have 3 unpaid bookings. Pay for or cancel one first.",
     "DEPARTURE_CLOSED": "Booking for this date has closed.",
     "IDEMPOTENCY_KEY_REUSED": "This request changed while it was being sent. Please submit again.",
-    "INVALID_TRANSITION": "This booking can no longer be changed this way. Refresh the page."
+    "INVALID_TRANSITION": "This booking can no longer be changed this way. Refresh the page.",
+    "SIGNATURE_INVALID": "We could not verify this payment. If money was deducted, it will be confirmed or refunded automatically.",
+    "AMOUNT_MISMATCH": "The payment amount did not match this booking. Our team has been alerted and will contact you."
   },
   "temples": {
     "title": "Temples of India",
@@ -713,6 +715,15 @@
       "confirmed": "Booking confirmed",
       "confirmed_late": "Booking confirmed after a late payment",
       "payment_received_no_seats": "Payment received, but seats were no longer available"
-    }
+    },
+    "verifying": "Confirming your payment…",
+    "pendingConfirmationTitle": "Payment received, confirming",
+    "pendingConfirmationText": "This is taking longer than usual. Your booking will be confirmed shortly and we will email you. You can safely leave this page.",
+    "retryPayment": "Try paying again",
+    "payAmount": "Pay {amount}",
+    "checkoutDismissed": "Payment was cancelled. You can try again while your seats are held.",
+    "stillHeld": "Your seats are still held for {time}.",
+    "openingCheckout": "Opening secure payment…",
+    "securePayment": "Secure payment by Razorpay: UPI, cards, net banking and wallets."
   }
 }

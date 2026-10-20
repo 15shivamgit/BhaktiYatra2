@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authRouter } from './modules/auth/auth.routes.js';
 import { bookingsRouter } from './modules/bookings/bookings.routes.js';
+import { paymentsRouter } from './modules/payments/payments.routes.js';
 import { adminCircuitsRouter, circuitsRouter } from './modules/circuits/circuits.routes.js';
 import { circuitSitemapEntries } from './modules/circuits/circuits.service.js';
 import { adminContactsRouter, contactRouter } from './modules/contacts/contacts.routes.js';
@@ -26,6 +27,7 @@ export function apiRouter(ctx) {
   router.use('/tours', toursRouter(ctx));
   router.use('/departures', departuresRouter(ctx));
   router.use('/bookings', bookingsRouter(ctx));
+  router.use('/payments', paymentsRouter(ctx));
   router.use('/contact', contactRouter(ctx));
 
   router.get('/sitemap', async (_req, res) => {

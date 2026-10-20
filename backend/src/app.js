@@ -10,6 +10,7 @@ import { requestId } from './middleware/request-id.js';
 import { sanitizeBody } from './middleware/sanitize.js';
 import { requireTrustedOrigin } from './middleware/trusted-origin.js';
 import { createProviders } from './providers/index.js';
+import { razorpayWebhookRouter } from './modules/payments/payments.routes.js';
 import { apiRouter } from './routes.js';
 
 /**
@@ -46,6 +47,11 @@ export function createApp({ env, logger, providers: overrides = {} }) {
       maxAge: 600,
     }),
   );
+  // Razorpay webhooks need the untouched body for the signature, carry no browser Origin and
+  // have their own (higher) rate limit, so they are mounted before the global limiter, the
+  // origin check and express.json().
+  app.use(`${API_PREFIX}/webhooks/razorpay`, razorpayWebhookRouter({ env, logger, providers }));
+
   app.use(
     createRateLimiter({
       enabled: env.RATE_LIMIT_ENABLED,
@@ -53,9 +59,6 @@ export function createApp({ env, logger, providers: overrides = {} }) {
       limit: env.RATE_LIMIT_GLOBAL_MAX,
     }),
   );
-
-  // Phase 6: mount the Razorpay webhook router (express.raw) HERE, before express.json(),
-  // because signature verification needs the untouched request body.
 
   app.use(requireTrustedOrigin(env.FRONTEND_URLS));
   app.use(express.json({ limit: '100kb' }));

@@ -50,6 +50,13 @@ docker run -d --name by-mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit
 ```
 Without Docker, leave SMTP unset in Phases 2–6; the console transport logs emails.
 
+## Razorpay test payments locally (Phase 6)
+
+1. In the Razorpay Dashboard switch to **Test mode** → Account & Settings → API keys → generate a key. Put `RAZORPAY_KEY_ID` (starts with `rzp_test_`) and `RAZORPAY_KEY_SECRET` in `backend/.env` and set `PAYMENTS_PROVIDER=razorpay`.
+2. Restart `npm run dev`. "Pay" on a booking now opens Razorpay Checkout; use the test cards or UPI id from Razorpay's test-mode documentation (for UPI, `success@razorpay` succeeds and `failure@razorpay` fails).
+3. Without webhooks the client verify call still confirms bookings. Add the webhook (below) to test `payment.failed`, refunds and lost-verify recovery.
+4. Without keys, keep `PAYMENTS_PROVIDER=stub`: bookings work and the payment step shows "Simulate payment" buttons.
+
 ## Razorpay webhooks locally (Phase 6)
 
 ```bash
@@ -59,6 +66,8 @@ ngrok http 5000
 #   Secret: same as RAZORPAY_WEBHOOK_SECRET
 #   Events: payment.captured, payment.failed, order.paid, refund.processed
 ```
+Copy the webhook secret into `RAZORPAY_WEBHOOK_SECRET` and restart the API. The Dashboard's webhook page shows each delivery and its HTTP status; "Resend" replays an event (the API answers `duplicate` and changes nothing). Cloudflare Tunnel works the same way: `cloudflared tunnel --url http://localhost:5000`.
+
 Test cards and UPI ids: Razorpay test-mode documentation.
 
 ## Root scripts

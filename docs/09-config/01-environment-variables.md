@@ -24,7 +24,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `SITE_URL` | yes | `http://localhost:3000` | used in emails and QR links |
 | `REVALIDATE_SECRET` | yes | random | shared with frontend |
 | `TICKET_SIGNING_SECRET` | yes (Phase 7) | random | separate from JWT |
-| `PAYMENTS_PROVIDER` | no | `stub` | `stub` fakes orders (Phase 5, tests); `razorpay` from Phase 6. The API refuses to start with `stub` when `NODE_ENV=production` |
+| `PAYMENTS_PROVIDER` | no | `razorpay` | `stub` fakes orders for tests and offline development. The API refuses to start with `stub` when `NODE_ENV=production`, and with `razorpay` in staging or production unless all three `RAZORPAY_*` values are set |
+| `RATE_LIMIT_WEBHOOK_MAX` | no | `600` | webhook requests per minute per IP |
 | `RAZORPAY_KEY_ID` | yes (Phase 6) | `rzp_test_…` | public id |
 | `RAZORPAY_KEY_SECRET` | yes (Phase 6) | | server only |
 | `RAZORPAY_WEBHOOK_SECRET` | yes (Phase 6) | | set in Razorpay dashboard |

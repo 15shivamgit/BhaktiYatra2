@@ -164,7 +164,7 @@ export default function BookingForm({ slug, departureId }) {
       const body = await bookingsApi.create(payload, attempt.current.key);
       setCreated({
         booking: body.data.booking,
-        payment: body.data.payment,
+        payment: { ...body.data.payment, checkout: body.data.checkout },
         offsetMs: clockOffset(body.meta?.serverTime),
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });

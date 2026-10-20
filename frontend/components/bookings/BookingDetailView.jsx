@@ -112,6 +112,13 @@ export default function BookingDetailView({ reference }) {
   const [state, setState] = useState({ booking: null, meta: null, error: null });
   const [cancelOpen, setCancelOpen] = useState(false);
 
+  /** Re-read the booking after a payment or cancellation (event handlers only). */
+  const reload = () =>
+    bookingsApi
+      .get(reference)
+      .then((body) => setState({ booking: body.data, meta: body.meta, error: null }))
+      .catch(() => {});
+
   useEffect(() => {
     let cancelled = false;
     bookingsApi
@@ -185,7 +192,11 @@ export default function BookingDetailView({ reference }) {
             payment={meta?.payment}
             offsetMs={offsetMs}
             retryHref={retryHref}
-            onChange={(updated) => setState((s) => ({ ...s, booking: updated }))}
+            onChange={(updated) => {
+              // Verify answers with a summary; reload for travellers, history and payments.
+              setState((s) => ({ ...s, booking: { ...s.booking, ...updated } }));
+              reload();
+            }}
           />
 
           {booking.bookingStatus === 'cancellation_requested' && booking.cancellationQuote && (

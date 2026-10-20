@@ -16,6 +16,7 @@ export default defineConfig({
       SITE_URL: 'http://localhost:3000',
       JWT_SECRET: 'test-only-secret-that-is-at-least-32-characters',
       BCRYPT_ROUNDS: '4',
+      PAYMENTS_PROVIDER: 'stub',
     },
     coverage: {
       provider: 'v8',

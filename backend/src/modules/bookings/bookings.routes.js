@@ -40,12 +40,21 @@ function paymentResponse(ctx, booking, order) {
   };
 }
 
-/** What the booking page needs to show the right payment controls. */
-const providerInfo = (ctx) => ({
-  provider: ctx.providers.payments.name,
-  keyId: ctx.providers.payments.keyId,
-  simulate: ctx.providers.payments.simulate,
-});
+/**
+ * What the booking page needs to show the right payment controls. For an unpaid booking this
+ * includes the order and Checkout options, so payment can be (re)opened from the detail page.
+ */
+const providerInfo = (ctx, booking) => {
+  if (booking?.bookingStatus === 'pending' && booking.razorpayOrderId) {
+    const { payment, checkout } = paymentResponse(ctx, booking, { id: booking.razorpayOrderId });
+    return { ...payment, checkout };
+  }
+  return {
+    provider: ctx.providers.payments.name,
+    keyId: ctx.providers.payments.keyId,
+    simulate: ctx.providers.payments.simulate,
+  };
+};
 
 /** Booking endpoints for signed-in users (docs/04-api/05-bookings-payments.md). */
 export function bookingsRouter(ctx) {
@@ -112,7 +121,7 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx, booking) },
     });
   });
 
@@ -127,7 +136,7 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx, booking) },
     });
   });
 

@@ -177,11 +177,15 @@ test.describe('admin content (J8)', () => {
   });
 
   test('temple editor has no serious accessibility violations', async ({ page }) => {
+    test.slow(); // two full axe scans of a large form while other workers run
     await page.goto('/admin/temples');
     await page.getByRole('searchbox').fill('Kedarnath');
     await page.getByRole('button', { name: 'Search' }).click();
     await page.getByRole('main').getByRole('link', { name: 'Kedarnath Temple' }).click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kedarnath Temple');
+    await expect(page).toHaveURL(/\/admin\/temples\/[a-f0-9]{24}$/, { timeout: 15_000 });
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kedarnath Temple', {
+      timeout: 15_000,
+    });
     await expectNoSeriousA11yViolations(page);
     await page.getByRole('tab', { name: 'Timings & festivals' }).click();
     await expectNoSeriousA11yViolations(page);
@@ -307,13 +311,16 @@ test.describe('admin tours (Phase 4)', () => {
   });
 
   test('tour editor has no serious accessibility violations', async ({ page }) => {
+    test.slow(); // two full axe scans of a large form while other workers run
     await page.goto('/admin/tours');
     await page
       .getByRole('main')
       .getByRole('link', { name: 'Char Dham Yatra from Haridwar' })
       .click();
+    await expect(page).toHaveURL(/\/admin\/tours\/[a-f0-9]{24}$/, { timeout: 15_000 });
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Char Dham Yatra from Haridwar',
+      { timeout: 15_000 },
     );
     await expectNoSeriousA11yViolations(page);
     await page.getByRole('tab', { name: 'Departures' }).click();

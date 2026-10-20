@@ -3,6 +3,7 @@ import { connectDb, disconnectDb } from './config/db.js';
 import { EnvError, parseEnv } from './config/env.js';
 import { createLogger } from './config/logger.js';
 import { startJobs } from './jobs/index.js';
+import { createProviders } from './providers/index.js';
 
 function loadEnvOrExit() {
   try {
@@ -29,8 +30,9 @@ async function main() {
     process.exit(1);
   }
 
-  const app = createApp({ env, logger });
-  const stopJobs = env.JOBS_ENABLED ? startJobs({ logger }) : () => {};
+  const providers = createProviders(env);
+  const app = createApp({ env, logger, providers });
+  const stopJobs = env.JOBS_ENABLED ? startJobs({ env, logger, providers }) : () => {};
   const server = app.listen(env.PORT, () => {
     logger.info(
       { port: env.PORT, env: env.NODE_ENV, version: env.APP_VERSION },

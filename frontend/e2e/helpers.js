@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { expect } from '@playwright/test';
 
@@ -72,4 +73,36 @@ export async function openFilters(page) {
     if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
     await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 1000 });
   }).toPass({ timeout: 15_000 });
+}
+
+/** Same test-only secret as backend/scripts/e2e-server.js (E2E_RAZORPAY_KEY_SECRET). */
+export const E2E_RAZORPAY_SECRET = 'e2e_razorpay_key_secret';
+
+/**
+ * Serve the Razorpay Checkout stub instead of the real script, signing with the E2E secret.
+ * @param {import('@playwright/test').Page} page
+ * @param {'success' | 'fail' | 'dismiss'} [scenario]
+ */
+export async function useRazorpayStub(page, scenario = 'success') {
+  const stub = fs.readFileSync(
+    new URL('./fixtures/razorpay-checkout-stub.js', import.meta.url),
+    'utf8',
+  );
+  await page.route('https://checkout.razorpay.com/v1/checkout.js', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/javascript', body: stub }),
+  );
+  await page.addInitScript(
+    ([secret, initial]) => {
+      window.__rzpSecret = secret;
+      window.__rzpScenario = initial;
+    },
+    [E2E_RAZORPAY_SECRET, scenario],
+  );
+}
+
+/** Change what the next Checkout opening does. */
+export function setRazorpayScenario(page, scenario) {
+  return page.evaluate((value) => {
+    window.__rzpScenario = value;
+  }, scenario);
 }

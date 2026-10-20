@@ -70,6 +70,9 @@ describe('TC-AUTH-11 cookie flags', () => {
       ...base,
       NODE_ENV: 'production',
       PAYMENTS_PROVIDER: 'razorpay',
+      RAZORPAY_KEY_ID: 'rzp_test_x',
+      RAZORPAY_KEY_SECRET: 'secret',
+      RAZORPAY_WEBHOOK_SECRET: 'whsec',
       COOKIE_DOMAIN: '.bhaktiyatra.in',
     });
     expect(sessionCookieOptions(env)).toMatchObject({

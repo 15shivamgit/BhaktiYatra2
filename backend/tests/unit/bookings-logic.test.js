@@ -108,18 +108,35 @@ describe('booking reference', () => {
 describe('payment provider safety', () => {
   const base = { MONGO_URL: 'mongodb://localhost/x', JWT_SECRET: 'x'.repeat(32) };
 
+  const keys = {
+    RAZORPAY_KEY_ID: 'rzp_test_x',
+    RAZORPAY_KEY_SECRET: 'secret',
+    RAZORPAY_WEBHOOK_SECRET: 'whsec',
+  };
+
   it('refuses the stub payment provider in production', () => {
-    expect(() => parseEnv({ ...base, NODE_ENV: 'production' })).toThrow(/PAYMENTS_PROVIDER/);
-    expect(
-      parseEnv({ ...base, NODE_ENV: 'production', PAYMENTS_PROVIDER: 'razorpay' })
-        .PAYMENTS_PROVIDER,
-    ).toBe('razorpay');
+    expect(() =>
+      parseEnv({ ...base, ...keys, NODE_ENV: 'production', PAYMENTS_PROVIDER: 'stub' }),
+    ).toThrow(/PAYMENTS_PROVIDER must be razorpay/);
+    expect(parseEnv({ ...base, ...keys, NODE_ENV: 'production' }).PAYMENTS_PROVIDER).toBe(
+      'razorpay',
+    );
   });
 
-  it('defaults to a 15 minute hold and 10 seats per booking', () => {
+  it('requires all Razorpay keys in deployed environments only', () => {
+    expect(() => parseEnv({ ...base, NODE_ENV: 'staging' })).toThrow(
+      /RAZORPAY_KEY_ID is required in staging/,
+    );
+    expect(() =>
+      parseEnv({ ...base, ...keys, RAZORPAY_WEBHOOK_SECRET: undefined, NODE_ENV: 'production' }),
+    ).toThrow(/RAZORPAY_WEBHOOK_SECRET/);
+    expect(parseEnv({ ...base, NODE_ENV: 'development' }).PAYMENTS_PROVIDER).toBe('razorpay');
+  });
+
+  it('defaults to Razorpay, a 15 minute hold and 10 seats per booking', () => {
     const env = parseEnv(base);
     expect(env.HOLD_MINUTES).toBe(15);
     expect(env.MAX_SEATS_PER_BOOKING).toBe(10);
-    expect(env.PAYMENTS_PROVIDER).toBe('stub');
+    expect(env.PAYMENTS_PROVIDER).toBe('razorpay');
   });
 });

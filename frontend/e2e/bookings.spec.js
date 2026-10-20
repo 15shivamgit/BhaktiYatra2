@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { expectNoSeriousA11yViolations, registerUser } from './helpers';
+import {
+  expectNoSeriousA11yViolations,
+  registerUser,
+  setRazorpayScenario,
+  useRazorpayStub,
+} from './helpers';
 
 /*
  * Booking journeys (Phase 5). The E2E API uses the stub payment provider (payments can be
@@ -37,10 +42,11 @@ const seatsLeft = async (page) =>
   Number((await page.getByText(/seats left on this date/).textContent()).match(/\d+/)[0]);
 
 test.describe('booking a tour', () => {
-  test('guest logs in, books two seats, pays (simulated) and sees the booking confirmed', async ({
+  test('guest logs in, books two seats, pays with Razorpay Checkout and sees it confirmed', async ({
     page,
   }) => {
     const user = await registerUser(page);
+    await useRazorpayStub(page);
     await page.context().clearCookies(); // start as a guest
     await page.goto(UJJAIN);
     await page
@@ -67,7 +73,12 @@ test.describe('booking a tour', () => {
     const reference = await page.locator('strong.font-mono').first().textContent();
     expect(reference).toMatch(/^BY-\d{8}-[A-Z2-9]{5}$/);
 
-    await page.getByRole('button', { name: 'Simulate successful payment' }).click();
+    await page.getByRole('button', { name: 'Pay ₹15,998' }).click();
+    // Checkout got the server's order and amount; the API verified the real signature.
+    expect(await page.evaluate(() => window.__rzpLastOptions)).toMatchObject({
+      key: 'rzp_test_e2e',
+      amount: 1_599_800,
+    });
     await expect(page.getByRole('heading', { name: 'Booking confirmed' })).toBeVisible();
 
     await page.goto('/account/bookings');
@@ -108,7 +119,7 @@ test.describe('booking a tour', () => {
     await expect(page.getByRole('heading', { name: 'Your seat hold expired' })).toBeVisible({
       timeout: 75_000,
     });
-    await expect(page.getByRole('button', { name: 'Simulate successful payment' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^Pay / })).toHaveCount(0);
     await page.getByRole('button', { name: 'Try again' }).click();
     await expect(page.getByRole('button', { name: /Continue to payment/ })).toBeVisible();
   });
@@ -148,5 +159,57 @@ test.describe('booking a tour', () => {
     await page.getByRole('link', { name: 'View this booking' }).click();
     await expect(page.getByRole('heading', { name: 'Complete your payment' })).toBeVisible();
     await expectNoSeriousA11yViolations(page);
+  });
+
+  test('a cancelled checkout and a declined card can both be retried', async ({ page }) => {
+    await registerUser(page);
+    await useRazorpayStub(page, 'dismiss');
+    await startBooking(page, UJJAIN, 0);
+    await fillTravellers(page, 1);
+    await page.getByRole('button', { name: /Continue to payment/ }).click();
+
+    await page.getByRole('button', { name: 'Pay ₹7,999' }).click();
+    await expect(page.getByText('Payment was cancelled. You can try again')).toBeVisible();
+
+    await setRazorpayScenario(page, 'fail');
+    await page.getByRole('button', { name: 'Try paying again' }).click();
+    await expect(
+      page.getByText(/Card declined by bank\. Your seats are still held for \d+:\d{2}\./),
+    ).toBeVisible();
+
+    await setRazorpayScenario(page, 'success');
+    await page.getByRole('button', { name: 'Try paying again' }).click();
+    await expect(page.getByRole('heading', { name: 'Booking confirmed' })).toBeVisible();
+    expect(await page.evaluate(() => window.__rzpOpened)).toBe(3);
+  });
+
+  test('pays from the booking page in My bookings', async ({ page }) => {
+    await registerUser(page);
+    await useRazorpayStub(page);
+    await startBooking(page, UJJAIN, 1);
+    await fillTravellers(page, 1);
+    await page.getByRole('button', { name: /Continue to payment/ }).click();
+    await page.getByRole('link', { name: 'View this booking' }).click();
+    await page.getByRole('button', { name: 'Pay ₹7,999' }).click();
+    await expect(page.getByRole('heading', { name: 'Booking confirmed' })).toBeVisible();
+    await expect(page.locator('header').getByText('Confirmed', { exact: true })).toBeVisible();
+    await expect(page.getByText('Payment received', { exact: true })).toBeVisible(); // history
+  });
+
+  test('TC-PAY-12 never spins forever when verify cannot be reached', async ({ page }) => {
+    test.slow();
+    await registerUser(page);
+    await useRazorpayStub(page);
+    await page.route('**/api/v1/payments/verify', (route) => route.abort());
+    await startBooking(page, UJJAIN, 2);
+    await fillTravellers(page, 1);
+    await page.getByRole('button', { name: /Continue to payment/ }).click();
+    const started = Date.now();
+    await page.getByRole('button', { name: 'Pay ₹7,999' }).click();
+    await expect(page.getByText('Confirming your payment…')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Payment received, confirming' })).toBeVisible({
+      timeout: 70_000,
+    });
+    expect(Date.now() - started).toBeLessThanOrEqual(65_000);
   });
 });

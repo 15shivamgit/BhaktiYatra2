@@ -65,8 +65,9 @@ const envSchema = z.object({
   HOLD_MINUTES: z.coerce.number().positive().max(60).default(15),
   MAX_SEATS_PER_BOOKING: z.coerce.number().int().min(1).max(10).default(10),
 
-  // Phase 5 uses the stub provider; Phase 6 adds Razorpay (ADR-031)
-  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub']).default('stub'),
+  // Razorpay from Phase 6; `stub` fakes orders for tests and offline development (ADR-031/032)
+  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub']).default('razorpay'),
+  RATE_LIMIT_WEBHOOK_MAX: z.coerce.number().int().positive().default(600),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
   RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
@@ -110,10 +111,20 @@ export function parseEnv(raw) {
     });
     throw new EnvError(problems);
   }
-  if (result.data.NODE_ENV === 'production' && result.data.PAYMENTS_PROVIDER === 'stub') {
+  const data = result.data;
+  const problems = [];
+  if (data.NODE_ENV === 'production' && data.PAYMENTS_PROVIDER === 'stub') {
     // The stub confirms bookings without money changing hands; never allow it live.
-    throw new EnvError(['PAYMENTS_PROVIDER must be razorpay in production']);
+    problems.push('PAYMENTS_PROVIDER must be razorpay in production');
   }
+  // Deployed environments must be able to take payments; locally a missing key only makes
+  // booking creation answer "payment is not configured".
+  if (data.PAYMENTS_PROVIDER === 'razorpay' && ['production', 'staging'].includes(data.NODE_ENV)) {
+    for (const key of ['RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET']) {
+      if (!data[key]) problems.push(`${key} is required in ${data.NODE_ENV}`);
+    }
+  }
+  if (problems.length) throw new EnvError(problems);
   return Object.freeze(result.data);
 }
 
