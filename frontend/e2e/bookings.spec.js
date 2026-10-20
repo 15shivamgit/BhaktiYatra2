@@ -228,7 +228,10 @@ test.describe('booking a tour', () => {
   test('the ticket check page rejects a damaged ticket', async ({ page }) => {
     await page.goto('/verify/not-a-real-ticket-token');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Not valid');
-    await expect(page.getByText('This ticket could not be found.')).toBeVisible();
+    // Streaming can leave a hidden copy of the page in the DOM; check the visible one.
+    await expect(
+      page.getByText('This ticket could not be found.').filter({ visible: true }),
+    ).toBeVisible();
   });
 
   test('TC-PAY-12 never spins forever when verify cannot be reached', async ({ page }) => {
