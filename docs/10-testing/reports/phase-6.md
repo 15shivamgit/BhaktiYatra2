@@ -35,6 +35,10 @@ Critical cases TC-PAY-01 to TC-PAY-12 are covered.
   - pay from My bookings;
   - dismiss Checkout, then a declined card, then success, all on the same order.
 
+## CI
+
+GitHub Actions run 39473361910 (commit 8361aa0) passed all three jobs: secrets-scan, build-and-test, e2e. The first Phase 6 run failed on one E2E race (fixed, see below).
+
 ## Manual check
 
 A real test-mode order was attempted with the keys in `backend/.env`. Razorpay answered **"Authentication failed"**. These are the keys that leaked in the old repository, so they have most likely been revoked or rotated. The webhook secret is also empty. Local development therefore keeps `PAYMENTS_PROVIDER=stub` (simulate buttons) until new test keys are added.
