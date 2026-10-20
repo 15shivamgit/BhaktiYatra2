@@ -14,10 +14,12 @@ import { apiRouter } from './routes.js';
 
 /**
  * Build the Express application without starting a server, so tests can use it directly.
+ * `providers` overrides individual external-service clients (tests pass fakes).
  * @param {{ env: import('./config/env.js').Env, logger: import('pino').Logger,
- *   providers?: import('./providers/index.js').Providers }} deps
+ *   providers?: Partial<import('./providers/index.js').Providers> }} deps
  */
-export function createApp({ env, logger, providers = createProviders(env) }) {
+export function createApp({ env, logger, providers: overrides = {} }) {
+  const providers = { ...createProviders(env), ...overrides };
   const app = express();
 
   app.disable('x-powered-by');

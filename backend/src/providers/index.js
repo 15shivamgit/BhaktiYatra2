@@ -1,7 +1,9 @@
+import { createCloudinaryProvider } from './cloudinary.provider.js';
+import { createFrontendProvider } from './frontend.provider.js';
 import { createGoogleProvider } from './google.provider.js';
 
 /**
- * Build the external-service clients from configuration. Tests pass fakes instead.
+ * Build the external-service clients from configuration. Tests replace any of them with fakes.
  * @param {import('../config/env.js').Env} env
  */
 export function createProviders(env) {
@@ -11,6 +13,12 @@ export function createProviders(env) {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
       redirectUri: env.GOOGLE_REDIRECT_URI ?? `${env.SITE_URL}/api/auth/callback/google`,
     }),
+    images: createCloudinaryProvider({
+      cloudName: env.CLOUDINARY_CLOUD_NAME,
+      apiKey: env.CLOUDINARY_API_KEY,
+      apiSecret: env.CLOUDINARY_API_SECRET,
+    }),
+    frontend: createFrontendProvider({ siteUrl: env.SITE_URL, secret: env.REVALIDATE_SECRET }),
   };
 }
 
