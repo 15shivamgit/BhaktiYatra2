@@ -13,7 +13,7 @@ const KASHI = '/tours/kashi-ayodhya-darshan';
 /** Open a tour, pick the nth date and go to its booking page. */
 async function startBooking(page, tourPath, dateIndex = 0) {
   await page.goto(tourPath);
-  const panel = page.locator('#book');
+  const panel = page.locator('#book').filter({ visible: true });
   await panel.getByRole('radio').nth(dateIndex).check();
   await panel.getByRole('link', { name: 'Book now' }).click();
   await expect(page).toHaveURL(/\/book\?departure=[a-f0-9]{24}$/);
@@ -43,7 +43,11 @@ test.describe('booking a tour', () => {
     const user = await registerUser(page);
     await page.context().clearCookies(); // start as a guest
     await page.goto(UJJAIN);
-    await page.locator('#book').getByRole('link', { name: 'Book now' }).click();
+    await page
+      .locator('#book')
+      .filter({ visible: true })
+      .getByRole('link', { name: 'Book now' })
+      .click();
     await expect(page).toHaveURL(/\/login\?next=/);
     await page.getByLabel('Email').fill(user.email);
     await page.getByLabel('Password').fill(user.password);
