@@ -37,7 +37,7 @@ export default function NewTempleForm() {
         method: 'POST',
         body: toPayload(values, { mode: 'create' }),
       });
-      toast.success(t('adminContent.saved'));
+      toast.success(t('adminContent.created'));
       router.push(`/admin/temples/${body.data.id}`);
     } catch (error) {
       if (error.code === 'SLUG_TAKEN') {

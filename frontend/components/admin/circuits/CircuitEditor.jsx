@@ -138,7 +138,7 @@ function CircuitForm({ initial, initialProblems }) {
             method: 'POST',
             body: toPayload(values, { mode: 'create' }),
           });
-          toast.success(t('adminContent.saved'));
+          toast.success(t('adminContent.created'));
           router.push(`/admin/circuits/${body.data.id}`);
           return;
         }

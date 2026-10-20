@@ -423,6 +423,7 @@
     "statusUpdated": "Status updated.",
     "movedTo": "{name} is now stop {n}.",
     "removedFromRoute": "{name} removed from the route.",
-    "notSpam": "Not spam"
+    "notSpam": "Not spam",
+    "created": "Draft created."
   }
 }

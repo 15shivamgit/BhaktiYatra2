@@ -39,6 +39,7 @@ test.describe('admin content (J8)', () => {
     await page.getByLabel('City / town').fill('Gaya');
     await page.getByLabel('Short description').fill('A quiet riverside Shiva shrine near Gaya.');
     await page.getByRole('button', { name: 'Create draft' }).click();
+    await expect(page.getByText('Draft created.')).toBeVisible();
 
     await expect(page).toHaveURL(/\/admin\/temples\/[a-f0-9]{24}$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(name);
