@@ -1,15 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { contentAlert, expectNoSeriousA11yViolations } from './helpers';
+import { contentAlert, expectNoSeriousA11yViolations, openFilters } from './helpers';
 
 const KEDARNATH = '/temples/kedarnath-temple-rudraprayag';
-
-/** On phones the filter panel is collapsed behind a button. */
-async function openFilters(page) {
-  const toggle = page.getByRole('button', { name: /^Filters/ });
-  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
-    await toggle.click();
-  }
-}
 
 test.describe('temple list (J1)', () => {
   test('filters combine, live in the URL and survive a reload', async ({ page }) => {

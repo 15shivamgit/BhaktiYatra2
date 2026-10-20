@@ -1,16 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { expectNoSeriousA11yViolations } from './helpers';
+import { expectNoSeriousA11yViolations, openFilters } from './helpers';
 
 const CHAR_DHAM = '/tours/char-dham-yatra-haridwar';
 const count = (page) => page.getByRole('status').filter({ hasText: /tours?$/ });
-
-/** On phones the filter panel is collapsed behind a button. */
-async function openFilters(page) {
-  const toggle = page.getByRole('button', { name: /^Filters/ });
-  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
-    await toggle.click();
-  }
-}
 
 test.describe('tour list', () => {
   test('lists sample tours with prices and next dates', async ({ page }) => {

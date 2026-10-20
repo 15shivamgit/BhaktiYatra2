@@ -47,7 +47,8 @@ Screenshots of the booking form, payment step and booking detail (desktop and mo
 
 1. **"Try again" did nothing** on the booking page: a link to the same URL does not remount an App Router page. The button now resets the page in place.
 2. **A production-like env test** started failing once the stub became the default. That is the new safety rule (stub refused in production), so the test now sets Razorpay.
-3. **The dev API** would have answered every booking with "payment not available" because `backend/.env` selected Razorpay. Switched to the stub for local work.
+3. **CI: a mobile filter test timed out** once (part 1 run). The trace showed the Filters button was clicked before React hydrated, so the panel stayed closed. The shared openFilters helper now retries until the panel is open.
+4. **The dev API** would have answered every booking with "payment not available" because `backend/.env` selected Razorpay. Switched to the stub for local work.
 
 ## Exit criteria
 

@@ -60,3 +60,16 @@ export async function registerUser(page, { name = 'Pilgrim Test' } = {}) {
   if (!res.ok()) throw new Error(`register failed: ${res.status()} ${await res.text()}`);
   return { name, email, password: 'E2e-Booker-Pass-1' };
 }
+
+/**
+ * On phones the filter panel is collapsed behind a "Filters" button. A click that lands before
+ * React has hydrated does nothing, so retry until the panel reports it is open.
+ */
+export async function openFilters(page) {
+  if ((page.viewportSize()?.width ?? 1280) >= 1024) return; // always open from lg up
+  const toggle = page.getByRole('button', { name: /^Filters/ });
+  await expect(async () => {
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 1000 });
+  }).toPass({ timeout: 15_000 });
+}
