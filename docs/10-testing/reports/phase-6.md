@@ -44,7 +44,8 @@ A real test-mode order was attempted with the keys in `backend/.env`. Razorpay a
 1. **Provider messages ran into the next sentence** ("Card declined by bank Your seats are…"). The UI now adds the missing full stop.
 2. **The global rate limiter would have throttled Razorpay** (300 requests per 15 minutes per IP). Webhooks are now mounted before it, with their own limit of 600 per minute.
 3. **The verify response is a summary**, which would have emptied the travellers and history on the booking detail page after paying. The page now reloads the full booking.
-4. **Two admin accessibility tests timed out** under the heavier parallel E2E load; they now wait for the editor URL and have more time.
+4. **CI: "pay from My bookings" clicked the old page's Pay button** while the app was still navigating to the booking page, so nothing happened. The tests now wait for the booking page before paying.
+5. **Two admin accessibility tests timed out** under the heavier parallel E2E load; they now wait for the editor URL and have more time.
 
 ## Exit criteria
 

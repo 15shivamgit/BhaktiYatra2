@@ -38,6 +38,16 @@ async function fillTravellers(page, seats) {
   await page.getByLabel(/I have read and accept the/).check();
 }
 
+/**
+ * Go from the payment step to the booking detail page. Wait for the new page: until the
+ * navigation finishes, the old page's "Pay" button is still on screen.
+ */
+async function openBookingDetail(page) {
+  await page.getByRole('link', { name: 'View this booking' }).click();
+  await page.waitForURL('**/account/bookings/BY-*');
+  await expect(page.getByRole('heading', { name: 'History' })).toBeVisible();
+}
+
 const seatsLeft = async (page) =>
   Number((await page.getByText(/seats left on this date/).textContent()).match(/\d+/)[0]);
 
@@ -93,7 +103,7 @@ test.describe('booking a tour', () => {
     const before = await seatsLeft(page);
     await fillTravellers(page, 3);
     await page.getByRole('button', { name: /Continue to payment/ }).click();
-    await page.getByRole('link', { name: 'View this booking' }).click();
+    await openBookingDetail(page);
 
     await expect(page.getByText('Awaiting payment')).toBeVisible();
     await page.getByRole('button', { name: 'Cancel booking' }).click();
@@ -156,7 +166,7 @@ test.describe('booking a tour', () => {
 
     await fillTravellers(page, 1);
     await page.getByRole('button', { name: /Continue to payment/ }).click();
-    await page.getByRole('link', { name: 'View this booking' }).click();
+    await openBookingDetail(page);
     await expect(page.getByRole('heading', { name: 'Complete your payment' })).toBeVisible();
     await expectNoSeriousA11yViolations(page);
   });
@@ -189,7 +199,7 @@ test.describe('booking a tour', () => {
     await startBooking(page, UJJAIN, 1);
     await fillTravellers(page, 1);
     await page.getByRole('button', { name: /Continue to payment/ }).click();
-    await page.getByRole('link', { name: 'View this booking' }).click();
+    await openBookingDetail(page);
     await page.getByRole('button', { name: 'Pay ₹7,999' }).click();
     await expect(page.getByRole('heading', { name: 'Booking confirmed' })).toBeVisible();
     await expect(page.locator('header').getByText('Confirmed', { exact: true })).toBeVisible();
