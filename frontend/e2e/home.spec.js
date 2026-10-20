@@ -89,7 +89,9 @@ test.describe('home page', () => {
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     await page.goto('/temples/kedarnath-temple-rudraprayag');
-    await page.locator('#map').scrollIntoViewIfNeeded();
+    const map = page.locator('#map').filter({ visible: true });
+    await expect(map).toBeVisible(); // the streamed copy replaces a hidden one first
+    await map.scrollIntoViewIfNeeded();
     // Map tiles are requested (a blocked request would log a policy error above).
     await expect
       .poll(() => page.locator('.leaflet-tile').count(), { timeout: 15_000 })

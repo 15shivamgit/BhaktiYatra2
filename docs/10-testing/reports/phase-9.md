@@ -135,7 +135,7 @@ What the measurements show:
 | 4 | Medium | Admin booking search slowed to p95 1.2 s with 10,000 bookings | References, emails and phone numbers now use indexed prefix or exact matches; p95 118 ms |
 | 5 | Low | Admin list by status read 16 times more documents than shown | New index |
 | 6 | Low | Next 16 deprecated `priority` on images, so the main photo was no longer marked high priority | `fetchPriority="high"` / `preload` |
-| 7 | Low (tests) | E2E checks that depended on timing or on Chromium behaviour: hydration before "Book now", verify page duplicate DOM (failed one CI run in Phase 7), Firefox page-load reporting, Safari Tab order, shared data between browsers | Fixed in the tests |
+| 7 | Low (tests) | E2E checks that depended on timing or on Chromium behaviour: hydration before "Book now", duplicate DOM while a page streams in (verify page failed one CI run in Phase 7; the map section failed the first Phase 9 CI run, 39505911921), Firefox page-load reporting, Safari Tab order, shared data between browsers | Fixed in the tests |
 
 No critical or high defects are open. Open medium item: Lighthouse Performance (see above), with an owner decision needed on whether to measure on the deployed site first (recommended).
 
