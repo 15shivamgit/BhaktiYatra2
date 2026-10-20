@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import Footer from '@/components/layout/Footer';
 import PendingBookingBanner from '@/components/bookings/PendingBookingBanner';
 import Navbar from '@/components/layout/Navbar';
+import RouteProgress from '@/components/layout/RouteProgress';
 import { UserProvider } from '@/lib/auth/user-context';
 import { SITE_URL } from '@/lib/config';
 import { t } from '@/lib/i18n';
@@ -47,6 +48,9 @@ export default function RootLayout({ children }) {
         >
           {t('nav.skipToContent')}
         </a>
+        <Suspense fallback={null}>
+          <RouteProgress />
+        </Suspense>
         <UserProvider>
           <Navbar />
           <Suspense fallback={null}>

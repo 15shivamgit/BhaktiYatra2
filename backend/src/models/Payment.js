@@ -19,11 +19,13 @@ const paymentSchema = new mongoose.Schema(
     method: { type: String },
     signatureVerified: { type: Boolean, default: false },
     verifiedVia: { type: String, enum: PAYMENT_VERIFIED_VIA },
+    /** When the money was captured (revenue is counted by this date). */
+    capturedAt: { type: Date },
     webhookEventIds: { type: [String], default: [] },
     failureReason: { type: String },
     refund: {
       type: new mongoose.Schema(
-        { providerRefundId: String, amount: Number, status: String, at: Date },
+        { providerRefundId: String, amount: Number, method: String, status: String, at: Date },
         { _id: false },
       ),
       default: undefined,
@@ -35,6 +37,7 @@ const paymentSchema = new mongoose.Schema(
 
 paymentSchema.index({ booking: 1, createdAt: -1 });
 paymentSchema.index({ providerOrderId: 1 });
+paymentSchema.index({ status: 1, capturedAt: -1 });
 paymentSchema.index(
   { providerPaymentId: 1 },
   { unique: true, partialFilterExpression: { providerPaymentId: { $type: 'string' } } },

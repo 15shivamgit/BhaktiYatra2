@@ -26,6 +26,14 @@ export function toIstYmd(date) {
   return new Date(new Date(date).getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
 }
 
+/** Date → "YYYY-MM-DD HH:mm" in IST (exports and reports). */
+export function toIstDateTime(date) {
+  return new Date(new Date(date).getTime() + IST_OFFSET_MS)
+    .toISOString()
+    .slice(0, 16)
+    .replace('T', ' ');
+}
+
 /** Midnight IST of the current day in India. */
 export function todayIst(now = new Date()) {
   return istMidnight(toIstYmd(now));

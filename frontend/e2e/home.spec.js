@@ -73,3 +73,24 @@ test.describe('home page', () => {
     await expectNoSeriousA11yViolations(page);
   });
 });
+
+test.describe('page load progress bar', () => {
+  test('shows while a page loads and hides when it is ready', async ({ page }) => {
+    await page.goto('/');
+    const bar = page.getByTestId('route-progress');
+    await expect(bar).toHaveAttribute('data-state', 'idle');
+    // Record every state the bar goes through during the navigation.
+    await page.evaluate(() => {
+      window.__progressStates = [];
+      const el = document.querySelector('[data-testid="route-progress"]');
+      new MutationObserver(() => window.__progressStates.push(el.dataset.state)).observe(el, {
+        attributes: true,
+        attributeFilter: ['data-state'],
+      });
+    });
+    await page.getByRole('main').getByRole('link', { name: 'View tours' }).first().click();
+    await expect(page).toHaveURL('/tours');
+    await expect(bar).toHaveAttribute('data-state', 'idle');
+    expect(await page.evaluate(() => window.__progressStates)).toContain('loading');
+  });
+});

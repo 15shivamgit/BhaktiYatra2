@@ -1,6 +1,7 @@
 import { CANCELLATION_SLABS } from '../../config/bookings.js';
 import { primaryImage } from '../../models/shared.js';
 import { daysBetween, toIstYmd, todayIst } from '../../utils/dates.js';
+import { toAuditEntry } from '../audit/audit.mapper.js';
 
 /**
  * Suggested refund under the cancellation policy (07-content/05-cancellation-refund-policy.md).
@@ -112,5 +113,111 @@ export function toBookingDetail(booking, payments = [], now = new Date()) {
     invoice: booking.invoice?.generatedAt
       ? { number: booking.invoice.number, generatedAt: booking.invoice.generatedAt }
       : null,
+  };
+}
+
+/* ---------- admin ---------- */
+
+const userRef = (user) =>
+  user && typeof user === 'object' && user._id
+    ? { id: user._id.toString(), name: user.name, email: user.email }
+    : null;
+
+/** Admin list row: the summary plus who booked it. */
+export function toAdminBookingSummary(booking) {
+  return {
+    ...toBookingSummary(booking),
+    contact: booking.contact,
+    travellerCount: booking.travellers.length,
+    user: userRef(booking.user),
+  };
+}
+
+/**
+ * Admin detail: the owner's view plus internal notes, the full timeline with actor names,
+ * refund details, provider ids, audit entries, emails and the actions allowed now.
+ * Raw provider payloads (rawSnapshot) are never included.
+ * @param {Awaited<ReturnType<typeof import('./bookings.admin.service.js').getBookingAdmin>>} data
+ * @param {string[]} actions
+ */
+export function toAdminBookingDetail(
+  { booking, payments, auditLogs, notifications, departure, names },
+  actions,
+  now = new Date(),
+) {
+  const nameOf = (id) => (id ? (names.get(String(id)) ?? null) : null);
+  const detail = toBookingDetail(booking, payments, now);
+  const quote =
+    booking.bookingStatus === 'payment_received_no_seats'
+      ? {
+          daysBefore: null,
+          chargePct: 0,
+          suggestedRefund: booking.amount,
+          departureCancelled: false,
+        }
+      : detail.cancellationQuote;
+  return {
+    ...detail,
+    user: booking.user?._id
+      ? { ...userRef(booking.user), phone: booking.user.phone ?? null }
+      : null,
+    travellerCount: booking.travellers.length,
+    cancellationQuote: quote,
+    cancellation: booking.cancellation
+      ? {
+          ...detail.cancellation,
+          processedBy: nameOf(booking.cancellation.processedBy),
+          refundReference: booking.cancellation.refundReference ?? null,
+          refundMethod: booking.cancellation.refundMethod ?? null,
+        }
+      : null,
+    timeline: booking.timeline.map((entry) => ({
+      at: entry.at,
+      event: entry.event,
+      by: entry.by === 'system' || !entry.by ? 'system' : (nameOf(entry.by) ?? 'user'),
+      meta: entry.meta ?? undefined,
+    })),
+    notes: booking.notes.map((note) => ({ at: note.at, text: note.text, by: nameOf(note.by) })),
+    payments: payments.map((p) => ({
+      id: p._id.toString(),
+      provider: p.provider,
+      providerOrderId: p.providerOrderId,
+      providerPaymentId: p.providerPaymentId ?? null,
+      status: p.status,
+      method: p.method ?? null,
+      amount: p.amount,
+      verifiedVia: p.verifiedVia ?? null,
+      signatureVerified: Boolean(p.signatureVerified),
+      failureReason: p.failureReason ?? null,
+      refund: p.refund?.amount
+        ? {
+            amount: p.refund.amount,
+            reference: p.refund.providerRefundId ?? null,
+            method: p.refund.method ?? null,
+            at: p.refund.at ?? null,
+          }
+        : null,
+      capturedAt: p.capturedAt ?? null,
+      createdAt: p.createdAt,
+    })),
+    departureLive: departure
+      ? {
+          status: departure.status,
+          totalSeats: departure.totalSeats,
+          seatsAvailable: departure.seatsAvailable,
+        }
+      : null,
+    auditLogs: auditLogs.map(toAuditEntry),
+    notifications: notifications.map((n) => ({
+      id: n._id.toString(),
+      type: n.type,
+      to: n.to,
+      status: n.status,
+      attempts: n.attempts,
+      lastError: n.lastError ?? null,
+      sentAt: n.sentAt ?? null,
+      createdAt: n.createdAt,
+    })),
+    allowedActions: actions,
   };
 }

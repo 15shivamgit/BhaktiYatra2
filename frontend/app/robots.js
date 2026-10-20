@@ -17,6 +17,7 @@ export default function robots() {
         '/register',
         '/forgot-password',
         '/reset-password',
+        '/verify',
       ],
     },
     sitemap: new URL('/sitemap.xml', SITE_URL).toString(),

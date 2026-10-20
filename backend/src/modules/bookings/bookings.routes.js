@@ -4,6 +4,7 @@ import { createRateLimiter } from '../../middleware/rate-limit.js';
 import { validate } from '../../middleware/validate.js';
 import { AppError } from '../../utils/app-error.js';
 import { recordAudit } from '../audit/audit.service.js';
+import { renderDocument } from '../documents/documents.service.js';
 import { simulatePayment } from '../payments/payments.service.js';
 import { toBookingDetail, toBookingSummary } from './bookings.mapper.js';
 import * as schemas from './bookings.schemas.js';
@@ -40,12 +41,21 @@ function paymentResponse(ctx, booking, order) {
   };
 }
 
-/** What the booking page needs to show the right payment controls. */
-const providerInfo = (ctx) => ({
-  provider: ctx.providers.payments.name,
-  keyId: ctx.providers.payments.keyId,
-  simulate: ctx.providers.payments.simulate,
-});
+/**
+ * What the booking page needs to show the right payment controls. For an unpaid booking this
+ * includes the order and Checkout options, so payment can be (re)opened from the detail page.
+ */
+const providerInfo = (ctx, booking) => {
+  if (booking?.bookingStatus === 'pending' && booking.razorpayOrderId) {
+    const { payment, checkout } = paymentResponse(ctx, booking, { id: booking.razorpayOrderId });
+    return { ...payment, checkout };
+  }
+  return {
+    provider: ctx.providers.payments.name,
+    keyId: ctx.providers.payments.keyId,
+    simulate: ctx.providers.payments.simulate,
+  };
+};
 
 /** Booking endpoints for signed-in users (docs/04-api/05-bookings-payments.md). */
 export function bookingsRouter(ctx) {
@@ -112,7 +122,7 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx, booking) },
     });
   });
 
@@ -127,9 +137,24 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx, booking) },
     });
   });
+
+  // Downloads: owner or admin; 404 for anyone else and while the document is being prepared.
+  for (const kind of ['ticket', 'invoice']) {
+    router.get(`/:reference/${kind}`, validate(schemas.referenceSchema), async (req, res) => {
+      const booking = await service.getBookingForViewer(req.user, req.valid.params.reference);
+      const { filename, buffer } = await renderDocument(ctx, booking, kind);
+      res
+        .set({
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'Content-Length': String(buffer.length),
+        })
+        .send(buffer);
+    });
+  }
 
   // Development and test only: the stub provider has no real checkout (ADR-031).
   if (ctx.providers.payments.simulate) {

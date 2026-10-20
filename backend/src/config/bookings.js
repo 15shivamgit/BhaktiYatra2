@@ -16,7 +16,7 @@ export const PAYMENT_RECORD_STATUSES = Object.freeze([
   'failed',
   'refunded',
 ]);
-export const PAYMENT_VERIFIED_VIA = Object.freeze(['client', 'webhook', 'manual']);
+export const PAYMENT_VERIFIED_VIA = Object.freeze(['client', 'webhook', 'manual', 'reconcile']);
 
 /**
  * Traveller cancellation charges. daysBefore = whole days between the request (IST day) and the

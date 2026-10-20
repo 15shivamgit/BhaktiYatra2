@@ -55,3 +55,55 @@ export function createFakePayments({ simulate = true } = {}) {
   };
   return fake;
 }
+
+/**
+ * Fake Razorpay REST API for the real provider (createPaymentsProvider with fetchImpl).
+ * Tests register payments with `addPayment` and can make order creation fail.
+ */
+export function createFakeRazorpayApi() {
+  const orders = new Map();
+  const payments = new Map();
+  let counter = 0;
+  const api = {
+    orders,
+    payments,
+    failOrders: 0,
+    failFetch: false,
+    addPayment(payment) {
+      payments.set(payment.id, { currency: 'INR', status: 'captured', method: 'upi', ...payment });
+      return payments.get(payment.id);
+    },
+    fetch: vi.fn(async (url, init = {}) => {
+      const path = new URL(url).pathname.replace('/v1', '');
+      const json = (status, body) => ({ ok: status < 400, status, json: async () => body });
+      if (init.method === 'POST' && path === '/orders') {
+        if (api.failOrders > 0) {
+          api.failOrders -= 1;
+          return json(500, { error: { description: 'Server error' } });
+        }
+        counter += 1;
+        const body = JSON.parse(init.body);
+        const order = {
+          id: `order_fake${String(counter).padStart(8, '0')}`,
+          ...body,
+          status: 'created',
+        };
+        orders.set(order.id, order);
+        return json(200, order);
+      }
+      if (api.failFetch) throw new Error('network down');
+      const paymentMatch = path.match(/^\/payments\/(.+)$/);
+      if (paymentMatch) {
+        const payment = payments.get(decodeURIComponent(paymentMatch[1]));
+        return payment ? json(200, payment) : json(404, { error: { description: 'not found' } });
+      }
+      const orderPayments = path.match(/^\/orders\/(.+)\/payments$/);
+      if (orderPayments) {
+        const id = decodeURIComponent(orderPayments[1]);
+        return json(200, { items: [...payments.values()].filter((p) => p.order_id === id) });
+      }
+      return json(404, { error: { description: 'unknown route' } });
+    }),
+  };
+  return api;
+}

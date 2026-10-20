@@ -5,7 +5,7 @@
 ## Pre-requisites (owner)
 
 - [x] Business legal name, address, support email and phone (OQ-2): see `PROJECT_CONTEXT.md`.
-- [ ] Brevo account with verified sender domain (or sandbox for now).
+- [x] Email account: Resend (ADR-018); key works, no domain verified yet, so only the account owner's address receives mail.
 - [ ] Logo files (SVG/PNG) for PDFs and emails.
 
 ## Tasks
@@ -30,8 +30,10 @@
 
 ## Exit criteria
 
-- [ ] Test-mode booking → email with two PDFs arrives in Mailpit/Brevo within 1 minute.
-- [ ] QR scanned with a phone opens the verify page showing "Valid".
-- [ ] Owner/other/admin/guest download matrix verified by tests and manually.
-- [ ] SMTP disabled → 3 attempts logged, booking confirmed, dashboard alert counter (Phase 8) data present.
-- [ ] All Phase 7 tests green.
+Status on 2026-10-21 (details in `10-testing/reports/phase-7.md`):
+
+- [ ] Test-mode booking → email with two PDFs arrives in Mailpit/Brevo within 1 minute. (Tested with a fake mail provider; a real Resend delivery needs a booking made with the Resend account's email.)
+- [ ] QR scanned with a phone opens the verify page showing "Valid". (Token round-trip tested; phone scan is a manual step.)
+- [x] Owner/other/admin/guest download matrix verified by tests (and E2E downloads).
+- [x] SMTP disabled → 3 attempts logged, booking confirmed, dashboard alert counter (Phase 8) data present.
+- [x] All Phase 7 tests green.

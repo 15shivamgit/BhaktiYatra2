@@ -3,6 +3,7 @@ import { User } from '../../models/User.js';
 import { AppError } from '../../utils/app-error.js';
 import { randomToken, sha256Hex } from '../../utils/crypto.js';
 import { recordAudit } from '../audit/audit.service.js';
+import { sendPasswordResetEmail } from '../notifications/mailer.service.js';
 import { enqueueNotification } from '../notifications/notifications.service.js';
 import { burnPasswordCheck, hashPassword, verifyPassword } from './password.js';
 
@@ -100,19 +101,10 @@ export async function requestPasswordReset(ctx, { email }) {
   await user.save();
 
   const resetUrl = `${ctx.env.SITE_URL}/reset-password?token=${token}`;
-  // The queued record holds no token; Phase 7 sends reset emails at request time (ADR-025).
-  await enqueueNotification(ctx, {
-    type: 'password_reset',
-    to: user.email,
-    user: user._id,
-    dedupeKey: `password_reset:${user._id}:${Date.now()}`,
-    payload: { name: user.name, expiresInMinutes: PASSWORD_RESET_TTL_MIN },
-  });
-  if (ctx.env.NODE_ENV === 'development') {
-    ctx.logger.info(
-      { resetUrl },
-      'DEV ONLY: password reset link (email sending arrives in Phase 7)',
-    );
+  // Sent now, never queued: the token must not be stored anywhere (ADR-025).
+  await sendPasswordResetEmail(ctx, user, { resetUrl, expiresInMinutes: PASSWORD_RESET_TTL_MIN });
+  if (ctx.env.NODE_ENV === 'development' && ctx.providers.mail.name === 'console') {
+    ctx.logger.info({ resetUrl }, 'DEV ONLY: password reset link (console mail provider)');
   }
 }
 

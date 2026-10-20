@@ -73,10 +73,12 @@ Development and tests only: exists only while the stub provider allows simulatio
 
 ## GET /bookings/:reference/ticket
 Auth: owner or admin  
-200: `application/pdf` stream, `Content-Disposition: attachment; filename="BhaktiYatra-Ticket-<ref>.pdf"`. 404 if not generated yet (`bookingStatus !== confirmed`).
+200: `application/pdf`, `Content-Disposition: attachment; filename="BhaktiYatra-Ticket-<ref>.pdf"` (exposed through CORS). 404 for other users, and with "being prepared" while the booking is not confirmed or the documents are not issued yet. 401 for guests.
 
 ## GET /bookings/:reference/invoice
-Same as ticket.
+Same as ticket; file name `BhaktiYatra-Invoice-<INV-YYYY-NNNNNN>.pdf`.
+
+As built (Phase 7): PDFs are rendered on request from the booking (invoice number, ticket token and issue time are stored on it), so downloads and email attachments are always identical and nothing is stored in Cloudinary (ADR-033).
 
 ---
 
@@ -94,8 +96,9 @@ Server steps (`confirmPaymentFromClient`):
 
 200:
 ```json
-{ "success": true, "data": { "booking": BookingSummary, "state": "confirmed" | "already_confirmed" | "confirmed_late" | "payment_received_no_seats" } }
+{ "success": true, "data": { "booking": BookingSummary, "state": "confirmed" | "already_confirmed" | "confirmed_late" | "payment_received_no_seats" | "pending_confirmation" | "failed" } }
 ```
+As built (Phase 6): `pending_confirmation` when Razorpay reports the payment `authorized` but not yet captured (the `payment.captured` webhook confirms it); `failed` when the fetched payment failed (booking stays `pending`). If the payment cannot be fetched, the verified signature is trusted. An amount, currency or order mismatch raises a `payment_issue_admin` alert and an audit entry. Errors: 400 `SIGNATURE_INVALID`, 404 (not the owner), 409 `AMOUNT_MISMATCH`, 422.
 
 ## POST /webhooks/razorpay
 Auth: none; signature header `X-Razorpay-Signature`; raw body required (mount `express.raw` for this route before `express.json`).  
@@ -106,6 +109,11 @@ Steps:
 4. `payment.failed` → Payment `failed` with reason; Booking stays `pending` (user may retry until hold expires); timeline entry.
 5. `refund.processed` → Payment `refunded`/partial; Booking `paymentStatus` updated; timeline.
 6. Always respond 200 after processing (or 500 to trigger retry only on transient DB errors).
+
+As built (Phase 6): mounted before the global rate limiter, the origin check and `express.json()`, with its own limit (`RATE_LIMIT_WEBHOOK_MAX`, 600/min). Response `{ "success": true, "data": { "event", "result" } }` where `result` is `confirmed`, `confirmed_late`, `payment_received_no_seats`, `already_confirmed`, `payment_failed`, `refunded`, `partially_refunded`, `duplicate`, `amount_mismatch` or `ignored…`. Refund amounts accumulate across `refund.processed` events; the booking becomes `refunded` once the total reaches the payment amount. Without `x-razorpay-event-id` the dedupe key is `<event>:<entity id>`.
+
+### Payment reconciliation (job, hourly)
+Unpaid bookings (`pending`, `expired` or `cancelled`, payment `pending`/`failed`) created 20–120 minutes ago are checked with `GET /orders/:id/payments`; a captured payment that matches the amount is confirmed (`verifiedVia: reconcile`). Runs only with the Razorpay provider.
 
 ### Idempotent confirmation (`confirmBooking`)
 Inside a transaction:
@@ -125,11 +133,22 @@ Auth: none (used by QR scanners)
 ```json
 { "success": true, "data": { "valid": true, "bookingReference": "BY-20260510-7K3QZ", "tour": "Char Dham Yatra", "startDate": "…", "seats": 2, "travellerCount": 2, "bookingStatus": "confirmed" } }
 ```
-`valid: false` with `reason` (`expired_token`, `not_found`, `cancelled`) and 200 status (scanner-friendly). Rate limited 60/min per IP.
+`valid: false` with `reason` (`expired_token`, `not_found`, `cancelled`) and 200 status (scanner-friendly). Rate limited 60/min per IP (`RATE_LIMIT_TICKET_VERIFY_MAX`). Also includes `endDate`. Never returns traveller names or contact details. A token replaced by a regenerated ticket answers `not_found`.
 
 ---
 
 ## Admin: bookings and payments
+
+As built (Phase 8, ADR-034):
+- Every admin booking endpoint answers `Cache-Control: no-store`; ids are Booking ObjectIds (the UI links reference → id through the list or the global search).
+- **List** also filters by `user` (account id); `q` also matches the account email and phone digits ("98123 45678" finds `+919812345678`). `limit` up to 100. `sort`: `-createdAt` (default), `createdAt`, `startDate`, `-amount`. Rows add `contact`, `travellerCount` and `user`.
+- **CSV** columns: Reference, Created (IST), Tour, Start date, End date, Pickup city, Contact name, Contact email, Contact phone, Account email, Seats, Travellers, Amount (INR), Booking status, Payment status, Refund (INR), Invoice number. UTF-8 with BOM, CRLF, streamed, at most 50,000 rows. Text cells starting with `= + - @` get a leading apostrophe so spreadsheets never run them as formulas.
+- **Detail** adds `user`, `notes` (with author names), the full `timeline` with actor names, `payments` with provider ids, `verifiedVia`, refund and `capturedAt` (never `rawSnapshot`), `departureLive` (current seats), `auditLogs`, `notifications` and `allowedActions` (`addNote`, `markPaid`, `cancel`, `rejectCancellation`, `confirmSeats`, `regenerateDocuments`, `resendConfirmation`). `cancellationQuote` is also given for `payment_received_no_seats` (100 %).
+- **Status**: `reason` (3+ characters) is required for every change (422 `REASON_REQUIRED`). `manualPayment.method` is one of `upi`, `bank_transfer`, `cash`, `card`, `other`; `amount` must equal the booking amount (422 `AMOUNT_MISMATCH`); the reference is stored as `providerPaymentId: "manual:<reference>"`, so one bank reference can pay only one booking (409). Rejecting a request whose departure was cancelled is refused (409). `payment_received_no_seats → confirmed` without free seats answers 409 `SEATS_UNAVAILABLE` with `seatsAvailable` and `seatsNeeded`. `to: "cancelled"` on a paid booking records "no refund"; use the cancel endpoint to record one.
+- **Cancel** also accepts `pending` (no refund possible) and `payment_received_no_seats` (no seats to release). `refund.reference` is optional; `amount` 0 means no refund (`method` becomes `none`); a refund on an unpaid booking or above the amount is 422. A full refund marks the captured Payment `refunded`; a partial one keeps it `captured` with `refund` filled. The traveller's own request reason stays in `cancellation.reason`; the admin's reason goes to the timeline and audit. The email uses dedupe key `booking_cancelled:<id>:admin`.
+- **Regenerate** issues a new ticket token (old QR codes answer `not_found`) and keeps the invoice number; only for confirmed bookings (409 otherwise). Returns 202 with the detail.
+- **Resend** is only for confirmed bookings (409 otherwise). Returns 202 with the detail.
+- **Payments list** rows: `booking { id, bookingReference, contactName }`, `userEmail`, provider ids, `amount`, `status`, `method`, `verifiedVia`, `failureReason`, `refund`, `capturedAt`, `createdAt`. `status` is the Payment record status (`created`, `authorized`, `captured`, `failed`, `refunded`).
 
 ### GET /admin/bookings
 Query: `q` (reference, contact email/phone/name), `bookingStatus`, `paymentStatus`, `tour`, `departure`, `from`, `to` (createdAt), `page`, `limit`, `sort`, `format=csv`  

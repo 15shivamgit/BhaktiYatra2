@@ -24,7 +24,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `SITE_URL` | yes | `http://localhost:3000` | used in emails and QR links |
 | `REVALIDATE_SECRET` | yes | random | shared with frontend |
 | `TICKET_SIGNING_SECRET` | yes (Phase 7) | random | separate from JWT |
-| `PAYMENTS_PROVIDER` | no | `stub` | `stub` fakes orders (Phase 5, tests); `razorpay` from Phase 6. The API refuses to start with `stub` when `NODE_ENV=production` |
+| `PAYMENTS_PROVIDER` | no | `razorpay` | `stub` fakes orders for tests and offline development. The API refuses to start with `stub` when `NODE_ENV=production`, and with `razorpay` in staging or production unless all three `RAZORPAY_*` values are set |
+| `RATE_LIMIT_WEBHOOK_MAX` | no | `600` | webhook requests per minute per IP |
 | `RAZORPAY_KEY_ID` | yes (Phase 6) | `rzp_test_…` | public id |
 | `RAZORPAY_KEY_SECRET` | yes (Phase 6) | | server only |
 | `RAZORPAY_WEBHOOK_SECRET` | yes (Phase 6) | | set in Razorpay dashboard |
@@ -35,6 +36,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `RESEND_API_KEY` | yes (Phase 7) | `re_…` | Resend (ADR-018) |
 | `MAIL_FROM` | yes (Phase 7) | `BhaktiYatra <onboarding@resend.dev>` until a domain is verified | |
 | `MAIL_REPLY_TO` | no | `support@bhaktiyatra.in` | |
+| `MAIL_PROVIDER` | no | `resend` when `RESEND_API_KEY` is set, else `console` | `console` logs emails instead of sending (offline development, E2E) |
+| `RATE_LIMIT_TICKET_VERIFY_MAX` | no | `60` | ticket checks per minute per IP |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
 | `HOLD_MINUTES` | no | `15` | seat hold length; fractions are allowed for tests (the E2E server uses 1) |
 | `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `15` | booking creations per user per window |
@@ -60,7 +63,7 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | no | `rzp_test_…` | the API also returns it; used for preloading only |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | yes (Phase 3) | | image loader |
 | `REVALIDATE_SECRET` | yes (Phase 3) | | must match backend |
-| `NEXT_PUBLIC_ENV` | no | `development` | shows env badge in admin; staging noindex |
+| `NEXT_PUBLIC_ENV` | no | `local` on localhost, else `production` | admin top bar shows it as a badge unless `production`; staging noindex |
 | `NEXT_PUBLIC_GOOGLE_SIGNIN` | no | (unset = shown) | set to `false` to hide "Continue with Google" when the API has no Google credentials |
 | `NEXT_PUBLIC_SENTRY_DSN` | no | | |
 | `NEXT_PUBLIC_FEATURE_TOURS` | — | — | Removed in Phase 4: tours are always shown |

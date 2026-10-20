@@ -4,6 +4,7 @@ import { CalendarPlus, Repeat } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AdminListState } from '@/components/admin/AdminList';
+import { describe, ErrorAlert, Field, useDialogSubmit } from '@/components/admin/dialog-form';
 import Modal from '@/components/admin/Modal';
 import StatusBadge from '@/components/admin/StatusBadge';
 import Alert from '@/components/ui/Alert';
@@ -20,62 +21,6 @@ const ACTIVE = new Set(['scheduled', 'full']);
 /** Today in India as "YYYY-MM-DD" (the earliest start date the API accepts). */
 function todayIst() {
   return new Date(Date.now() + 330 * 60_000).toISOString().slice(0, 10);
-}
-
-/** Field errors keyed by field name from an API validation error. */
-function fieldErrors(error) {
-  if (error?.code !== 'VALIDATION_ERROR') return {};
-  return Object.fromEntries(
-    (error.details ?? []).map((d) => [d.path.replace(/^body\./, '').split('.')[0], d.message]),
-  );
-}
-
-function Field({ id, label, hint, error, children }) {
-  return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-medium text-text">
-        {label}
-      </label>
-      {children}
-      {error ? (
-        <p id={`${id}-error`} className="text-sm text-danger">
-          {error}
-        </p>
-      ) : (
-        hint && (
-          <p id={`${id}-hint`} className="text-sm text-text-muted">
-            {hint}
-          </p>
-        )
-      )}
-    </div>
-  );
-}
-
-const describe = (id, error, hint) => (error ? `${id}-error` : hint ? `${id}-hint` : undefined);
-
-/** Shared submit handling for the dialog forms. */
-function useDialogSubmit(onDone) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(null);
-  const submit = async (request) => {
-    setBusy(true);
-    setError(null);
-    try {
-      const result = await request();
-      onDone(result);
-    } catch (err) {
-      setError(err);
-    } finally {
-      setBusy(false);
-    }
-  };
-  return { busy, error, submit, fields: fieldErrors(error) };
-}
-
-function ErrorAlert({ error }) {
-  if (!error || error.code === 'VALIDATION_ERROR') return null;
-  return <Alert tone="danger">{adminErrorMessage(error)}</Alert>;
 }
 
 /* ---------- add / edit ---------- */

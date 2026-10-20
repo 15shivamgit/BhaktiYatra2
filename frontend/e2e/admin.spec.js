@@ -118,6 +118,7 @@ test.describe('admin content (J8)', () => {
   });
 
   test('builds a circuit with temples in route order and publishes it', async ({ page }) => {
+    test.slow(); // the full suite runs several workers in parallel
     const name = `E2E Circuit ${suffix()}`;
     await page.goto('/admin/circuits/new');
     await page.getByLabel('Name', { exact: true }).fill(name);
@@ -137,7 +138,7 @@ test.describe('admin content (J8)', () => {
     await expect(route.getByRole('listitem')).toHaveText([/Badrinath Temple/, /Kedarnath Temple/]);
 
     await page.getByRole('button', { name: 'Create draft' }).click();
-    await expect(page).toHaveURL(/\/admin\/circuits\/[a-f0-9]{24}$/);
+    await expect(page).toHaveURL(/\/admin\/circuits\/[a-f0-9]{24}$/, { timeout: 15_000 });
     await page.getByRole('button', { name: 'Publish' }).click();
     await expect(page.getByText(/^Published\./)).toBeVisible();
 
@@ -177,11 +178,15 @@ test.describe('admin content (J8)', () => {
   });
 
   test('temple editor has no serious accessibility violations', async ({ page }) => {
+    test.slow(); // two full axe scans of a large form while other workers run
     await page.goto('/admin/temples');
-    await page.getByRole('searchbox').fill('Kedarnath');
+    await page.getByRole('searchbox', { name: 'Search by name, city or slug' }).fill('Kedarnath');
     await page.getByRole('button', { name: 'Search' }).click();
     await page.getByRole('main').getByRole('link', { name: 'Kedarnath Temple' }).click();
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kedarnath Temple');
+    await expect(page).toHaveURL(/\/admin\/temples\/[a-f0-9]{24}$/, { timeout: 15_000 });
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kedarnath Temple', {
+      timeout: 15_000,
+    });
     await expectNoSeriousA11yViolations(page);
     await page.getByRole('tab', { name: 'Timings & festivals' }).click();
     await expectNoSeriousA11yViolations(page);
@@ -205,6 +210,8 @@ test.describe('admin tours (Phase 4)', () => {
     request,
   }) => {
     test.slow(); // long journey; the full suite runs four workers in parallel
+    // Work out the dates once: the test can run across midnight in India.
+    const [d20, d30, d44] = [20, 30, 44].map(dayFromToday);
     const title = `E2E Yatra ${suffix()}`;
     await page
       .getByRole('navigation', { name: 'Admin panel' })
@@ -260,14 +267,14 @@ test.describe('admin tours (Phase 4)', () => {
     await page.getByRole('tab', { name: 'Departures' }).click();
     await page.getByRole('button', { name: 'Add departure' }).click();
     const dialog = page.getByRole('dialog');
-    await dialog.getByLabel('Start date').fill(dayFromToday(20));
+    await dialog.getByLabel('Start date').fill(d20);
     await dialog.getByLabel('Total seats').fill('30');
     await dialog.getByRole('button', { name: 'Add departure' }).click();
     await expect(page.getByText('Departure added.')).toBeVisible();
 
     await page.getByRole('button', { name: 'Repeat dates' }).click();
-    await dialog.getByLabel('First date').fill(dayFromToday(30));
-    await dialog.getByLabel('Last date').fill(dayFromToday(44));
+    await dialog.getByLabel('First date').fill(d30);
+    await dialog.getByLabel('Last date').fill(d44);
     await dialog.getByLabel('Total seats').fill('20');
     await dialog.getByRole('button', { name: 'Create departures' }).click();
     await expect(page.getByText('3 departures created.')).toBeVisible();
@@ -275,14 +282,14 @@ test.describe('admin tours (Phase 4)', () => {
     const rows = page.getByRole('table', { name: 'Departures' }).locator('tbody tr');
     await expect(rows).toHaveCount(4);
 
-    await page.getByRole('button', { name: `Seats: ${dayFromToday(20)}` }).click();
+    await page.getByRole('button', { name: `Seats: ${d20}` }).click();
     await dialog.getByLabel('Total seats').fill('35');
     await dialog.getByLabel('Reason').fill('Added a second bus');
     await dialog.getByRole('button', { name: 'Update seats' }).click();
     await expect(page.getByText('Seats updated.')).toBeVisible();
     await expect(rows.first()).toContainText('35');
 
-    await page.getByRole('button', { name: `Cancel: ${dayFromToday(44)}` }).click();
+    await page.getByRole('button', { name: `Cancel: ${d44}` }).click();
     await dialog.getByLabel('Reason').fill('Road closed for repairs');
     await dialog.getByRole('button', { name: 'Cancel departure' }).click();
     await expect(page.getByText(/^Departure cancelled\./)).toBeVisible();
@@ -307,13 +314,16 @@ test.describe('admin tours (Phase 4)', () => {
   });
 
   test('tour editor has no serious accessibility violations', async ({ page }) => {
+    test.slow(); // two full axe scans of a large form while other workers run
     await page.goto('/admin/tours');
     await page
       .getByRole('main')
       .getByRole('link', { name: 'Char Dham Yatra from Haridwar' })
       .click();
+    await expect(page).toHaveURL(/\/admin\/tours\/[a-f0-9]{24}$/, { timeout: 15_000 });
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Char Dham Yatra from Haridwar',
+      { timeout: 15_000 },
     );
     await expectNoSeriousA11yViolations(page);
     await page.getByRole('tab', { name: 'Departures' }).click();

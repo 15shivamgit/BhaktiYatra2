@@ -180,3 +180,35 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **Live booking switch.** The tour page shows "Book now" when `NEXT_PUBLIC_FEATURE_BOOKING=true`. It is on in local development and E2E, and stays off in production until Phase 6.
 - **"Try again"** after an expired hold resets the booking page in place, because a link to the same URL does not remount the page in the App Router.
 
+## ADR-032 — Phase 6: Razorpay without the SDK, and how it is tested
+**Date:** 2026-10-20 · **Status:** accepted
+**Decision:**
+- **REST, not the SDK.** Three calls (create order, fetch payment, list order payments) over `fetch` with basic auth, plus HMAC helpers using `timingSafeEqual`. One dependency fewer, and tests inject a fake `fetch` so the real provider code runs.
+- **Provider default** is `razorpay`. Staging and production refuse to start without all three `RAZORPAY_*` values; locally a missing key only makes booking answer "payment is not configured", and `stub` remains for offline work and tests.
+- **Verify path.** Signature first; then the payment is fetched to check order, amount, currency and capture. `authorized` waits for the capture webhook (`pending_confirmation`); a fetch failure trusts the signature. Mismatches alert the admin and are never confirmed.
+- **Webhooks** sit before the global rate limiter, origin check and JSON parser, with their own limit. Event ids are stored on the Payment; replays answer `duplicate`. Unknown events and orders answer 200 so Razorpay stops retrying.
+- **Reconciliation** of captured-but-unconfirmed payments runs hourly now (the spec allowed Phase 8), because the job is small and closes the "both verify and webhook lost" gap.
+- **E2E** runs the real Checkout → verify path: the E2E API uses the Razorpay provider with a fake REST API, and Playwright serves a stub `checkout.js` that signs with a test-only secret. The real Razorpay Checkout is tried manually in test mode.
+- **UI** follows the spec's states; a spinner never lasts more than 60 seconds (verify times out at 20 s, then the page polls until 60 s and shows "Payment received, confirming").
+
+## ADR-033 — Phase 7: documents rendered on demand, Resend over REST, template functions
+**Date:** 2026-10-21 · **Status:** accepted (changes the storage and template choices in `05-features/06-tickets-invoices-email.md`)
+**Decision:**
+- **No PDF storage.** A confirmed booking gets its invoice number (`INV-YYYY-NNNNNN`, atomic per-year counter, unique index) and a signed ticket token once. The ticket and invoice PDFs are rendered from the booking on every download and email (pdfkit, bundled Noto Sans for ₹, QR via `qrcode`). Regeneration is automatic and identical; there is no Cloudinary upload to fail, no private-file signing, and nothing to clean up. Rendering takes milliseconds.
+- **Resend over its REST API** (no SDK), same pattern as Razorpay; `MAIL_PROVIDER=console` logs instead of sending.
+- **Templates are plain functions** with a shared HTML layout (inline styles for Gmail and Outlook), escaping and a text part, instead of handlebars files. Fewer moving parts; the same output.
+- **Queue rules:** the job claims one message at a time with a conditional update (no double sends), backs off 1/5/30 minutes, stops after 3 attempts (`failed`, counted for the Phase 8 dashboard), and ignores messages queued more than 24 hours ago (for example from before email sending existed). Password reset is sent during the request and only its outcome is logged.
+- **Emails added:** user cancels an unpaid booking (`booking_cancelled`), admin cancels a departure (`departure_cancelled` to each affected traveller), `payment.failed` webhook (`payment_failed`). The confirmation goes to the booking contact and, if different, the account email.
+- **Deployed environments** must set `TICKET_SIGNING_SECRET`, `RESEND_API_KEY` and `ADMIN_NOTIFY_EMAIL`.
+
+## ADR-034 — Phase 8: admin operations rules
+**Date:** 2026-10-21 · **Status:** accepted (details the admin endpoints in `04-api/05-bookings-payments.md` and `04-api/06-admin.md`)
+**Decision:**
+- **A reason for every admin status change**, checked by the service (422 `REASON_REQUIRED`), recorded in the audit log with the actor. Notes, document regeneration and resends are audited too.
+- **Manual payment** only from `pending`, through the same `confirmBooking` as Razorpay (`verifiedVia: manual`), amount equal to the booking amount, reference stored as `manual:<reference>` so the unique payment id index stops one bank transfer paying two bookings.
+- **Refunds are recorded, not sent.** The admin refunds in the Razorpay dashboard (or by bank) and records amount, method and reference when cancelling. Calling Razorpay's refund API from the admin panel is a later improvement. A full refund marks the Payment `refunded`; a partial one keeps it `captured` with refund details. The booking's payment status follows the amount.
+- **Revenue comes from Payment documents only**, dated by a new `capturedAt`; refunds by their own date. The dashboard is cached for 60 s per range in the API process. A read-only script and an integration test compare every figure with hand-written MongoDB queries.
+- **Regenerated tickets get a new token** (every token now carries a random id); the old QR code stops verifying. The invoice number never changes.
+- **Settings page not built in v1** (it was a Should). Business details, booking parameters and cancellation slabs stay in code and env, changed through review and deployment.
+- **Admin UI:** filters live in the URL; the sidebar shows icons only at tablet width; the top bar search looks up bookings (reference, contact, phone digits, account email) and users. CSV exports neutralise spreadsheet formulas.
+

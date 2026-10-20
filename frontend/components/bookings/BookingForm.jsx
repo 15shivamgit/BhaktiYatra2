@@ -164,7 +164,8 @@ export default function BookingForm({ slug, departureId }) {
       const body = await bookingsApi.create(payload, attempt.current.key);
       setCreated({
         booking: body.data.booking,
-        payment: body.data.payment,
+        payment: { ...body.data.payment, checkout: body.data.checkout },
+        email: payload.contact.email,
         offsetMs: clockOffset(body.meta?.serverTime),
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -234,6 +235,7 @@ export default function BookingForm({ slug, departureId }) {
             <strong className="font-mono text-text">{created.booking.bookingReference}</strong>
           </p>
           <PaymentPanel
+            email={created.email}
             booking={created.booking}
             payment={created.payment}
             offsetMs={created.offsetMs}

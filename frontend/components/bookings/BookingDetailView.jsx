@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Modal from '@/components/admin/Modal';
 import BookingStatus from '@/components/bookings/BookingStatus';
+import DocumentDownloads from '@/components/bookings/DocumentDownloads';
 import PaymentPanel from '@/components/bookings/PaymentPanel';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
@@ -112,6 +113,13 @@ export default function BookingDetailView({ reference }) {
   const [state, setState] = useState({ booking: null, meta: null, error: null });
   const [cancelOpen, setCancelOpen] = useState(false);
 
+  /** Re-read the booking after a payment or cancellation (event handlers only). */
+  const reload = () =>
+    bookingsApi
+      .get(reference)
+      .then((body) => setState({ booking: body.data, meta: body.meta, error: null }))
+      .catch(() => {});
+
   useEffect(() => {
     let cancelled = false;
     bookingsApi
@@ -181,12 +189,19 @@ export default function BookingDetailView({ reference }) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-6">
           <PaymentPanel
+            email={booking.contact?.email}
             booking={booking}
             payment={meta?.payment}
             offsetMs={offsetMs}
             retryHref={retryHref}
-            onChange={(updated) => setState((s) => ({ ...s, booking: updated }))}
+            onChange={(updated) => {
+              // Verify answers with a summary; reload for travellers, history and payments.
+              setState((s) => ({ ...s, booking: { ...s.booking, ...updated } }));
+              reload();
+            }}
           />
+
+          <DocumentDownloads booking={booking} onRefresh={reload} />
 
           {booking.bookingStatus === 'cancellation_requested' && booking.cancellationQuote && (
             <Alert tone="info">

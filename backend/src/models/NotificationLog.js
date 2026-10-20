@@ -10,6 +10,7 @@ export const NOTIFICATION_TYPES = Object.freeze([
   'payment_received_no_seats',
   'contact_received_admin',
   'departure_cancelled',
+  'payment_issue_admin',
 ]);
 
 /**
