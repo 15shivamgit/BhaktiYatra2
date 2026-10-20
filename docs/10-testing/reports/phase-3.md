@@ -27,6 +27,10 @@
 
 New E2E journeys: J1 (filters combine, live in the URL, survive reload; map view; empty state), temple detail (practical sections, JSON-LD, canonical, `og:image`, lightbox, 404), J2 (circuit route order and polyline), contact form, static pages, sitemap, and J8 (admin creates a temple, sees what is missing, completes it, uploads a photo, publishes; the page appears publicly and in the sitemap; slug rename keeps the old address working; circuit builder; contacts inbox).
 
+## CI
+
+GitHub Actions run 39422934123 passed all three jobs: secrets-scan, build-and-test, e2e. Two earlier runs failed on E2E timing issues that only showed on CI. A text locator matched React's hidden streaming copy, and two toasts with the same text were on screen at once. Both are fixed.
+
 ## Lighthouse (mobile, local production build, `lighthouse@12.8.2`)
 
 Temple page `/temples/kedarnath-temple-rudraprayag`:
