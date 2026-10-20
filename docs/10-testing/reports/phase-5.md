@@ -37,6 +37,10 @@ Critical cases covered: TC-BOOK-01 to TC-BOOK-13, TC-DEP-05. Highlights:
 
 E2E journeys: a guest logs in from the tour page and lands on the booking page for that date, books two seats, pays (simulated) and sees the booking confirmed. Cancelling an unpaid booking restores the seat count. The one-minute hold runs out and "Try again" starts over. Another user gets "not found". The unpaid-booking banner appears. axe passes on the booking form and the booking detail.
 
+## CI
+
+GitHub Actions run 39464388240 passed all three jobs: secrets-scan, build-and-test, e2e. Two earlier runs in this phase failed on E2E timing (filters clicked before hydration, a hidden streamed copy) and one real contrast bug; all are fixed.
+
 ## Manual check
 
 With `HOLD_MINUTES=1` and the real job scheduler, a two-seat booking on a two-seat date expired after about 60 seconds. The seats returned and the date went from `full` back to `scheduled`. The exit criterion is two minutes.
