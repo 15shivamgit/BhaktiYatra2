@@ -28,6 +28,10 @@
 | `npm audit --omit=dev` | 0 vulnerabilities |
 | `npm run lint`, `format:check` | clean (one existing React Compiler warning) |
 
+## CI
+
+GitHub Actions run 39507523752 (commit 361a141) passed all three jobs: secrets-scan, build-and-test, e2e. The first Phase 9 run (39505911921) failed on the streaming test issue in defect 7.
+
 ## Release gate (`00-overview/02-vision-goals-success.md`)
 
 | Line | Status | Evidence |
@@ -46,7 +50,7 @@
 | Confirmation email; forced failure retried and logged; booking stays confirmed | Met with a fake mail provider (real inbox check pending from Phase 7) | TC-DOC-05/06 |
 | Dashboard numbers match hand-run queries | Met | Phase 8 report, `dashboard.check.js` |
 | No credentials in Git history; `.env` not tracked | Met | gitleaks in CI; history search below |
-| All Must cases green in CI | Met | matrix; CI run listed below |
+| All Must cases green in CI | Met | matrix; CI run 39507523752 |
 | Deployment guide reproduces staging on a clean account | **Not done** (Phase 10) | |
 
 ## Browsers
