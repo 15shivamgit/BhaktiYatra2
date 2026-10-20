@@ -76,7 +76,7 @@ Test cards and UPI ids: Razorpay test-mode documentation.
 | `npm run test:e2e` | Playwright (starts both apps) |
 | `npm run build` | Frontend production build; backend lint |
 
-Backend workspace scripts: `seed:admin`, `seed:images`, `seed:content`, `seed:sample-tours`, `db:sync-indexes`, `db:reconcile`.
+Backend workspace scripts: `seed:admin`, `seed:images`, `seed:content`, `seed:sample-tours`, `db:sync-indexes`, `db:reconcile`, `db:check-dashboard` (read-only: compares the admin dashboard figures with plain MongoDB queries; add `-- 30d` for another range).
 
 ## Troubleshooting
 

@@ -59,11 +59,13 @@ test.describe('booking a tour', () => {
     await useRazorpayStub(page);
     await page.context().clearCookies(); // start as a guest
     await page.goto(UJJAIN);
-    await page
+    const bookNow = page
       .locator('#book')
       .filter({ visible: true })
-      .getByRole('link', { name: 'Book now' })
-      .click();
+      .getByRole('link', { name: 'Book now' });
+    // Before hydration the link has no date yet; wait for the selected departure in its href.
+    await expect(bookNow).toHaveAttribute('href', /departure(=|%3D)/);
+    await bookNow.click();
     await expect(page).toHaveURL(/\/login\?next=/);
     await page.getByLabel('Email').fill(user.email);
     await page.getByLabel('Password').fill(user.password);

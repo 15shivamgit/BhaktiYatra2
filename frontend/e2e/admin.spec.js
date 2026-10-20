@@ -118,6 +118,7 @@ test.describe('admin content (J8)', () => {
   });
 
   test('builds a circuit with temples in route order and publishes it', async ({ page }) => {
+    test.slow(); // the full suite runs several workers in parallel
     const name = `E2E Circuit ${suffix()}`;
     await page.goto('/admin/circuits/new');
     await page.getByLabel('Name', { exact: true }).fill(name);
@@ -137,7 +138,7 @@ test.describe('admin content (J8)', () => {
     await expect(route.getByRole('listitem')).toHaveText([/Badrinath Temple/, /Kedarnath Temple/]);
 
     await page.getByRole('button', { name: 'Create draft' }).click();
-    await expect(page).toHaveURL(/\/admin\/circuits\/[a-f0-9]{24}$/);
+    await expect(page).toHaveURL(/\/admin\/circuits\/[a-f0-9]{24}$/, { timeout: 15_000 });
     await page.getByRole('button', { name: 'Publish' }).click();
     await expect(page.getByText(/^Published\./)).toBeVisible();
 
@@ -179,7 +180,7 @@ test.describe('admin content (J8)', () => {
   test('temple editor has no serious accessibility violations', async ({ page }) => {
     test.slow(); // two full axe scans of a large form while other workers run
     await page.goto('/admin/temples');
-    await page.getByRole('searchbox').fill('Kedarnath');
+    await page.getByRole('searchbox', { name: 'Search by name, city or slug' }).fill('Kedarnath');
     await page.getByRole('button', { name: 'Search' }).click();
     await page.getByRole('main').getByRole('link', { name: 'Kedarnath Temple' }).click();
     await expect(page).toHaveURL(/\/admin\/temples\/[a-f0-9]{24}$/, { timeout: 15_000 });

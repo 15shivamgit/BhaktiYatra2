@@ -63,7 +63,7 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | no | `rzp_test_…` | the API also returns it; used for preloading only |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | yes (Phase 3) | | image loader |
 | `REVALIDATE_SECRET` | yes (Phase 3) | | must match backend |
-| `NEXT_PUBLIC_ENV` | no | `development` | shows env badge in admin; staging noindex |
+| `NEXT_PUBLIC_ENV` | no | `local` on localhost, else `production` | admin top bar shows it as a badge unless `production`; staging noindex |
 | `NEXT_PUBLIC_GOOGLE_SIGNIN` | no | (unset = shown) | set to `false` to hide "Continue with Google" when the API has no Google credentials |
 | `NEXT_PUBLIC_SENTRY_DSN` | no | | |
 | `NEXT_PUBLIC_FEATURE_TOURS` | — | — | Removed in Phase 4: tours are always shown |

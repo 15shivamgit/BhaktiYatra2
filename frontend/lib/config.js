@@ -27,3 +27,7 @@ export const BUSINESS = Object.freeze({
   phoneHref: 'tel:+917488881563',
   email: '15shivambgs@gmail.com',
 });
+
+/** Deployment name for the admin badge: "local", "staging" or "production". */
+export const APP_ENV =
+  process.env.NEXT_PUBLIC_ENV ?? (SITE_URL.includes('localhost') ? 'local' : 'production');

@@ -11,6 +11,11 @@ const EXPLAINED = new Set([
   'PUBLISH_PREREQUISITES',
   'SLUG_TAKEN',
   'NOT_FOUND',
+  'SEATS_UNAVAILABLE',
+  'CONFLICT',
+  'CANNOT_MODIFY_SELF',
+  'AMOUNT_MISMATCH',
+  'REASON_REQUIRED',
 ]);
 
 /** @param {any} error */

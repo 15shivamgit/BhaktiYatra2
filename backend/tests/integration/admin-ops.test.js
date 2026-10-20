@@ -6,6 +6,7 @@ import { NotificationLog } from '../../src/models/NotificationLog.js';
 import { Payment } from '../../src/models/Payment.js';
 import { TourDeparture } from '../../src/models/TourDeparture.js';
 import { User } from '../../src/models/User.js';
+import { compareDashboard } from '../../src/modules/dashboard/dashboard.check.js';
 import { verifyTicket } from '../../src/modules/documents/tickets.routes.js';
 import { addDays } from '../../src/utils/dates.js';
 import { makeCircuit, makeTemple } from '../helpers/content-factories.js';
@@ -95,6 +96,71 @@ describe('admin operations: access', () => {
 });
 
 describe('admin dashboard', () => {
+  it('every figure matches hand-written MongoDB queries on a mixed dataset, for every range', async () => {
+    await makeTemple();
+    await makeTemple({ status: 'draft', publishedAt: undefined });
+    await makeCircuit();
+    const tour = await makeTour();
+    const departures = [
+      await makeDeparture(tour, { inDays: 2 }),
+      await makeDeparture(tour, { inDays: 20, seats: 4 }),
+      await makeDeparture(tour, { inDays: 70 }),
+    ];
+    const statuses = [
+      'pending',
+      'confirmed',
+      'confirmed',
+      'cancellation_requested',
+      'payment_received_no_seats',
+      'cancelled',
+      'expired',
+    ];
+    for (const [i, status] of statuses.entries()) {
+      const { booking } = await bookingIn(status, {
+        departure: departures[i % 3],
+        seats: 1 + (i % 2),
+        ...(['confirmed', 'cancellation_requested'].includes(status) && {
+          confirmedAt: addDays(new Date(), -i * 12),
+        }),
+        ...(status === 'expired' && { holdExpiresAt: addDays(new Date(), -1) }),
+      });
+      await Booking.collection.updateOne(
+        { _id: booking._id },
+        { $set: { createdAt: addDays(new Date(), -i * 10) } },
+      );
+    }
+    // Payments captured at different times, one refunded in part, one in full.
+    const payments = await Payment.find({ status: 'captured' }).sort({ createdAt: 1 });
+    await Payment.updateOne(
+      { _id: payments[0]._id },
+      { $set: { capturedAt: addDays(new Date(), -40), refund: { amount: 2500, at: new Date() } } },
+    );
+    await Payment.updateOne(
+      { _id: payments[1]._id },
+      {
+        $set: {
+          status: 'refunded',
+          capturedAt: addDays(new Date(), -5),
+          refund: { amount: payments[1].amount, at: addDays(new Date(), -2) },
+        },
+      },
+    );
+    await Payment.collection.updateOne(
+      { _id: payments[2]._id },
+      { $unset: { capturedAt: '' }, $set: { createdAt: addDays(new Date(), -100) } },
+    );
+
+    for (const range of ['7d', '30d', '90d', 'mtd']) {
+      const rows = await compareDashboard(range);
+      const differences = rows.filter(([, query, dashboard]) => query !== dashboard);
+      expect(differences, `range ${range}`).toEqual([]);
+      expect(rows.length).toBeGreaterThan(20);
+    }
+    const all = Object.fromEntries((await compareDashboard('90d')).map(([k, , v]) => [k, v]));
+    expect(all['refunds all time']).toBeGreaterThan(2500);
+    expect(all['bookings payment_received_no_seats']).toBe(1);
+  });
+
   it('TC-ADMIN-01 numbers match the seeded data; revenue = captured payments − refunds', async () => {
     await makeTemple();
     await makeTemple({ status: 'draft', publishedAt: undefined });

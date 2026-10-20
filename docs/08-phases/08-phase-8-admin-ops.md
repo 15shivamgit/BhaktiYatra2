@@ -10,7 +10,7 @@
 3. Admin payments list.
 4. Audit log list/detail.
 5. Contacts admin complete.
-6. Settings document (Should) or constants documented.
+6. Settings document (Should) or constants documented. (Constants documented; no settings page in v1, ADR-034.)
 7. Tests: dashboard numbers vs fixture expectations, CSV columns, every admin transition allowed/denied, manual payment requires reason and is audited, cancellation releases seats and records refund.
 
 ### Frontend
@@ -22,9 +22,11 @@
 
 ## Exit criteria
 
-- [ ] Dashboard numbers match hand-run Mongo queries on a seeded dataset (record queries in the phase report).
-- [ ] Every sensitive action appears in the audit log with actor and reason.
-- [ ] CSV opens correctly in Excel with Hindi/₹ characters intact.
-- [ ] Admin cannot demote/deactivate self; cannot mark paid without reason.
-- [ ] axe clean on admin dashboard and bookings pages.
-- [ ] All Phase 8 tests green.
+Status on 2026-10-21 (details in `10-testing/reports/phase-8.md`):
+
+- [x] Dashboard numbers match hand-run Mongo queries on a seeded dataset (record queries in the phase report). (`dashboard.check.js`: integration test on a mixed dataset for all four ranges, and `npm run db:check-dashboard` on the dev database.)
+- [x] Every sensitive action appears in the audit log with actor and reason.
+- [ ] CSV opens correctly in Excel with Hindi/₹ characters intact. (BOM, UTF-8 and Hindi text verified by tests; opening the file in Excel is a manual check for the owner.)
+- [x] Admin cannot demote/deactivate self; cannot mark paid without reason.
+- [x] axe clean on admin dashboard and bookings pages.
+- [x] All Phase 8 tests green.

@@ -201,3 +201,14 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **Emails added:** user cancels an unpaid booking (`booking_cancelled`), admin cancels a departure (`departure_cancelled` to each affected traveller), `payment.failed` webhook (`payment_failed`). The confirmation goes to the booking contact and, if different, the account email.
 - **Deployed environments** must set `TICKET_SIGNING_SECRET`, `RESEND_API_KEY` and `ADMIN_NOTIFY_EMAIL`.
 
+## ADR-034 — Phase 8: admin operations rules
+**Date:** 2026-10-21 · **Status:** accepted (details the admin endpoints in `04-api/05-bookings-payments.md` and `04-api/06-admin.md`)
+**Decision:**
+- **A reason for every admin status change**, checked by the service (422 `REASON_REQUIRED`), recorded in the audit log with the actor. Notes, document regeneration and resends are audited too.
+- **Manual payment** only from `pending`, through the same `confirmBooking` as Razorpay (`verifiedVia: manual`), amount equal to the booking amount, reference stored as `manual:<reference>` so the unique payment id index stops one bank transfer paying two bookings.
+- **Refunds are recorded, not sent.** The admin refunds in the Razorpay dashboard (or by bank) and records amount, method and reference when cancelling. Calling Razorpay's refund API from the admin panel is a later improvement. A full refund marks the Payment `refunded`; a partial one keeps it `captured` with refund details. The booking's payment status follows the amount.
+- **Revenue comes from Payment documents only**, dated by a new `capturedAt`; refunds by their own date. The dashboard is cached for 60 s per range in the API process. A read-only script and an integration test compare every figure with hand-written MongoDB queries.
+- **Regenerated tickets get a new token** (every token now carries a random id); the old QR code stops verifying. The invoice number never changes.
+- **Settings page not built in v1** (it was a Should). Business details, booking parameters and cancellation slabs stay in code and env, changed through review and deployment.
+- **Admin UI:** filters live in the URL; the sidebar shows icons only at tablet width; the top bar search looks up bookings (reference, contact, phone digits, account email) and users. CSV exports neutralise spreadsheet formulas.
+

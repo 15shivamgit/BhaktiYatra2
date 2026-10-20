@@ -34,9 +34,13 @@ export function contentAlert(page) {
   return page.getByRole('main').getByRole('alert');
 }
 
-/** Fail on serious or critical accessibility violations (NFR-A11Y-01). */
+/**
+ * Fail on serious or critical accessibility violations (NFR-A11Y-01). Toasts are left out: axe
+ * measures them during their fade-in, at partial opacity, and reports false contrast failures
+ * (sonner's richColors toasts pass once fully shown).
+ */
 export async function expectNoSeriousA11yViolations(page) {
-  const results = await new AxeBuilder({ page }).analyze();
+  const results = await new AxeBuilder({ page }).exclude('[data-sonner-toaster]').analyze();
   const serious = results.violations.filter((v) => ['serious', 'critical'].includes(v.impact));
   expect(
     serious.map(

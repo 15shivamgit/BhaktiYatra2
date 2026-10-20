@@ -139,6 +139,17 @@ Auth: none (used by QR scanners)
 
 ## Admin: bookings and payments
 
+As built (Phase 8, ADR-034):
+- Every admin booking endpoint answers `Cache-Control: no-store`; ids are Booking ObjectIds (the UI links reference → id through the list or the global search).
+- **List** also filters by `user` (account id); `q` also matches the account email and phone digits ("98123 45678" finds `+919812345678`). `limit` up to 100. `sort`: `-createdAt` (default), `createdAt`, `startDate`, `-amount`. Rows add `contact`, `travellerCount` and `user`.
+- **CSV** columns: Reference, Created (IST), Tour, Start date, End date, Pickup city, Contact name, Contact email, Contact phone, Account email, Seats, Travellers, Amount (INR), Booking status, Payment status, Refund (INR), Invoice number. UTF-8 with BOM, CRLF, streamed, at most 50,000 rows. Text cells starting with `= + - @` get a leading apostrophe so spreadsheets never run them as formulas.
+- **Detail** adds `user`, `notes` (with author names), the full `timeline` with actor names, `payments` with provider ids, `verifiedVia`, refund and `capturedAt` (never `rawSnapshot`), `departureLive` (current seats), `auditLogs`, `notifications` and `allowedActions` (`addNote`, `markPaid`, `cancel`, `rejectCancellation`, `confirmSeats`, `regenerateDocuments`, `resendConfirmation`). `cancellationQuote` is also given for `payment_received_no_seats` (100 %).
+- **Status**: `reason` (3+ characters) is required for every change (422 `REASON_REQUIRED`). `manualPayment.method` is one of `upi`, `bank_transfer`, `cash`, `card`, `other`; `amount` must equal the booking amount (422 `AMOUNT_MISMATCH`); the reference is stored as `providerPaymentId: "manual:<reference>"`, so one bank reference can pay only one booking (409). Rejecting a request whose departure was cancelled is refused (409). `payment_received_no_seats → confirmed` without free seats answers 409 `SEATS_UNAVAILABLE` with `seatsAvailable` and `seatsNeeded`. `to: "cancelled"` on a paid booking records "no refund"; use the cancel endpoint to record one.
+- **Cancel** also accepts `pending` (no refund possible) and `payment_received_no_seats` (no seats to release). `refund.reference` is optional; `amount` 0 means no refund (`method` becomes `none`); a refund on an unpaid booking or above the amount is 422. A full refund marks the captured Payment `refunded`; a partial one keeps it `captured` with `refund` filled. The traveller's own request reason stays in `cancellation.reason`; the admin's reason goes to the timeline and audit. The email uses dedupe key `booking_cancelled:<id>:admin`.
+- **Regenerate** issues a new ticket token (old QR codes answer `not_found`) and keeps the invoice number; only for confirmed bookings (409 otherwise). Returns 202 with the detail.
+- **Resend** is only for confirmed bookings (409 otherwise). Returns 202 with the detail.
+- **Payments list** rows: `booking { id, bookingReference, contactName }`, `userEmail`, provider ids, `amount`, `status`, `method`, `verifiedVia`, `failureReason`, `refund`, `capturedAt`, `createdAt`. `status` is the Payment record status (`created`, `authorized`, `captured`, `failed`, `refunded`).
+
 ### GET /admin/bookings
 Query: `q` (reference, contact email/phone/name), `bookingStatus`, `paymentStatus`, `tour`, `departure`, `from`, `to` (createdAt), `page`, `limit`, `sort`, `format=csv`  
 200: `BookingSummary[]` + `user: { id, name, email }`; CSV streams with the same columns plus travellers count.
