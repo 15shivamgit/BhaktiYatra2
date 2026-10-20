@@ -10,7 +10,12 @@ test.describe('Phase 1 home page', () => {
     await expect(page).toHaveTitle(/BhaktiYatra/);
 
     // Status resolves to one of the three states whether or not the API is running.
-    const status = page.locator('[role="status"][data-state]');
+    // While streaming, React briefly keeps a hidden copy of the resolved content at the end of
+    // <body> before moving it into place, so look only at visible elements inside <main>.
+    const status = page
+      .getByRole('main')
+      .locator('[role="status"][data-state]')
+      .filter({ visible: true });
     await expect(status).toBeVisible({ timeout: 15_000 });
     await expect(status).toHaveAttribute('data-state', /^(ok|degraded|down)$/);
 
