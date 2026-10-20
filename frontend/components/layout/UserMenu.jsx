@@ -1,7 +1,7 @@
 'use client';
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ChevronDown, LayoutDashboard, LogOut, UserRound } from 'lucide-react';
+import { ChevronDown, LayoutDashboard, LogOut, Ticket, UserRound } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -100,6 +100,12 @@ export default function UserMenu() {
             <Link href="/account">
               <UserRound aria-hidden="true" className="size-4" />
               {t('nav.account')}
+            </Link>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item asChild className={itemClasses}>
+            <Link href="/account/bookings">
+              <Ticket aria-hidden="true" className="size-4" />
+              {t('nav.bookings')}
             </Link>
           </DropdownMenu.Item>
           {user.role === 'admin' && (

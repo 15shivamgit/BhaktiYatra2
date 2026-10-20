@@ -41,6 +41,7 @@ export default defineConfig({
       env: {
         NEXT_PUBLIC_API_BASE_URL: `http://localhost:${API_PORT}/api/v1`,
         NEXT_PUBLIC_SITE_URL: `http://localhost:${WEB_PORT}`,
+        NEXT_PUBLIC_FEATURE_BOOKING: 'true',
         REVALIDATE_SECRET,
         NEXT_TELEMETRY_DISABLED: '1',
       },

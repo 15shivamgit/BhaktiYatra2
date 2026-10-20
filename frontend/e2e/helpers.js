@@ -45,3 +45,18 @@ export async function expectNoSeriousA11yViolations(page) {
     'serious/critical axe violations',
   ).toEqual([]);
 }
+
+const API = 'http://localhost:5100/api/v1';
+
+/**
+ * Register a fresh user through the API; the session cookie lands in the page's browser context,
+ * so the page is signed in afterwards. Each test gets its own user (pending-booking limits).
+ */
+export async function registerUser(page, { name = 'Pilgrim Test' } = {}) {
+  const email = uniqueEmail('booker');
+  const res = await page.request.post(`${API}/auth/register`, {
+    data: { name, email, password: 'E2e-Booker-Pass-1', phone: '9876543210' },
+  });
+  if (!res.ok()) throw new Error(`register failed: ${res.status()} ${await res.text()}`);
+  return { name, email, password: 'E2e-Booker-Pass-1' };
+}

@@ -40,6 +40,13 @@ function paymentResponse(ctx, booking, order) {
   };
 }
 
+/** What the booking page needs to show the right payment controls. */
+const providerInfo = (ctx) => ({
+  provider: ctx.providers.payments.name,
+  keyId: ctx.providers.payments.keyId,
+  simulate: ctx.providers.payments.simulate,
+});
+
 /** Booking endpoints for signed-in users (docs/04-api/05-bookings-payments.md). */
 export function bookingsRouter(ctx) {
   const router = Router();
@@ -105,7 +112,7 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString() },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
     });
   });
 
@@ -120,7 +127,7 @@ export function bookingsRouter(ctx) {
     res.json({
       success: true,
       data: toBookingDetail(booking, await service.paymentsFor(booking._id)),
-      meta: { serverTime: new Date().toISOString() },
+      meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx) },
     });
   });
 

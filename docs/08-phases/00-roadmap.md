@@ -9,7 +9,7 @@ Phases run strictly in order. A phase starts only when the previous phase's exit
 | 2 | Authentication | Register/login/logout/me/profile/reset, roles, guards, audit base, Google sign-in | 1 | done (`10-testing/reports/phase-2.md`) |
 | 3 | Temple Explore | Temples, circuits, admin content tools, public pages, SEO, sitemap, static pages | 2 | built; Lighthouse Performance and Rich Results Test open (`10-testing/reports/phase-3.md`) |
 | 4 | Tours & Departures | Tour catalogue, departures, inventory admin | 3 | built; Lighthouse Performance open (`10-testing/reports/phase-4.md`) |
-| 5 | Booking & Inventory | Holds, expiry job, booking pages, state machine | 4 | planned |
+| 5 | Booking & Inventory | Holds, expiry job, booking pages, state machine | 4 | done; payments simulated until Phase 6 (`10-testing/reports/phase-5.md`) |
 | 6 | Payments | Razorpay order, verify, webhook, idempotent confirmation, payment UI | 5 | planned |
 | 7 | Documents & Email | Ticket, QR verify, invoice, email queue with retry, secure downloads | 6 | planned |
 | 8 | Admin Operations | Dashboard, bookings/payments/users/contacts admin, cancellations, audit viewer | 7 | planned |

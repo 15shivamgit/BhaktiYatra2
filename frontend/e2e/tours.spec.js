@@ -87,13 +87,16 @@ test.describe('tour detail', () => {
     await expect(panel).toContainText('₹32,999');
     await panel.getByRole('radio').nth(1).check();
     await expect(panel).toContainText('₹34,999');
-    await expect(panel).toContainText('Online booking opens soon');
-
-    await panel.getByRole('link', { name: 'Send an enquiry' }).click();
-    await expect(page).toHaveURL(/\/contact\?subject=/);
-    await expect(page.getByLabel('Subject (optional)')).toHaveValue(
-      'Enquiry: Char Dham Yatra from Haridwar',
+    // Guests are sent to log in first, then straight to the booking page for that date.
+    await expect(panel.getByRole('link', { name: 'Book now' })).toHaveAttribute(
+      'href',
+      /^\/login\?next=%2Ftours%2Fchar-dham-yatra-haridwar%2Fbook%3Fdeparture%3D[a-f0-9]{24}$/,
     );
+  });
+
+  test('an enquiry link opens the contact form with the subject filled in', async ({ page }) => {
+    await page.goto('/contact?subject=Enquiry%3A%20Char%20Dham%20Yatra');
+    await expect(page.getByLabel('Subject (optional)')).toHaveValue('Enquiry: Char Dham Yatra');
   });
 
   test('ships TouristTrip, FAQ and breadcrumb structured data', async ({ request }) => {
@@ -120,7 +123,7 @@ test.describe('tour detail', () => {
   test('phones get a sticky bar that jumps to the date picker', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'The bar is for small screens');
     await page.goto(CHAR_DHAM);
-    const bar = page.getByRole('link', { name: 'Choose a date' });
+    const bar = page.locator('a[href="#book"]');
     await expect(bar).toBeVisible();
     await bar.click();
     await expect(page).toHaveURL(/#book$/);

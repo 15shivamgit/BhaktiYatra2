@@ -16,7 +16,7 @@
 | `seed-sample-tours.js` | `npm run seed:sample-tours -w backend` | Upserts 5 published sample tours from `scripts/data/sample-tours.data.js` (real routes, placeholder prices and stays) and adds their departures over the next ~10 weeks when a tour has none. Needs the launch temples. Logic in `scripts/lib/tour-seed.js`, also used by the E2E server. Refuses to run when `NODE_ENV=production`. | dev, staging |
 | `seed-e2e.js` | `npm run seed:e2e` | Wipes and seeds the fixed E2E dataset described in `10-testing/01-test-strategy.md`. Refuses unless `NODE_ENV=test` or `development`. | dev, test |
 | `reconcile-payments.js` | `npm run payments:reconcile -- --order <id>` | Fetches payments for one order (or all pending 20–120 min old) from Razorpay and runs `confirmBooking` for missed captures. (Should, Phase 6) | all |
-| `reconcile-inventory.js` | `npm run db:reconcile` | Prints invariant violations per departure; `--fix` recomputes `seatsAvailable` from bookings (requires confirmation prompt). | all |
+| `reconcile-inventory.js` | `npm run db:reconcile -w backend [-- --fix --yes]` | Prints invariant violations for active departures (exit code 2 when any); `--fix --yes` sets `seatsAvailable` to `totalSeats − held seats`. The hourly job only reports. | all |
 | `db-sync-indexes.js` | `npm run db:sync-indexes` | `syncIndexes()` for all models. | prod release step |
 
 ## Content data files
