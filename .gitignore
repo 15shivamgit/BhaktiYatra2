@@ -27,7 +27,6 @@ playwright/.cache/
 # Runtime files
 uploads/
 tickets/
-!legacy/backend/uploads/
 
 # Logs
 logs

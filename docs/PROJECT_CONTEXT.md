@@ -46,16 +46,16 @@ Full reasoning: `00-overview/03-decision-log.md`.
 
 ## Current status (2026-10-20)
 
-Phases 1 (Foundation), 2 (Authentication, including Google sign-in) and 3 (Temple Explore: public temple and circuit pages, admin content tools, 22 drafted temples) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/` until the owner confirms deleting it. Reports: `10-testing/reports/phase-1.md`, `phase-2.md`, `phase-3.md`. Open from Phase 3: Lighthouse mobile Performance (63–67, target 85) and the Rich Results Test. Next: Phase 4 (Tours & Departures).
+Phases 1 (Foundation), 2 (Authentication, including Google sign-in) and 3 (Temple Explore: public temple and circuit pages, admin content tools, 22 drafted temples) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype (`legacy/`) was deleted after Phase 3 with the owner's approval; it remains in Git history (ADR-029). Reports: `10-testing/reports/phase-1.md`, `phase-2.md`, `phase-3.md`. Open from Phase 3: Lighthouse mobile Performance (63–67, target 85) and the Rich Results Test. Next: Phase 4 (Tours & Departures).
 
 ## State of the old code (as of 2026-10-20)
 
-- `Frontend/` held a Vite React SPA (moved there from the repo root in commit `03cc7f7`), `backend/` held an Express CommonJS API. Both now live in `legacy/`.
+- `Frontend/` held a Vite React SPA (moved there from the repo root in commit `03cc7f7`), `backend/` held an Express CommonJS API. Both moved to `legacy/` in Phase 1, which was deleted after Phase 3 (ADR-029).
 - **Secrets were committed** in `backend/.env` (MongoDB, Razorpay, Gmail). The file was removed from `main` and `shivam-kumar-dev` history on 2026-10-20 (ADR-024), but GitHub's PR #1 ref still points at the old commits, so the credentials must be treated as public and rotated.
 - Frontend `package.json` references a missing `src/dataconnect-generated` folder, so a fresh `npm install` fails.
 - Two booking flows exist; one skips Razorpay signature verification, the other never decrements seats and double-applies GST.
 - Reusable: Home page sections (Hero, Features, Gallery, Banner, Footer, Navbar), ~160 temple images in `src/assets/`, Tailwind setup.
-- Plan: in Phase 1 the old code moves to `legacy/` for reference and is deleted once reuse is complete (end of Phase 3).
+- Done: the old code moved to `legacy/` in Phase 1 and was deleted after Phase 3 (ADR-029). To look at it, check out commit `22465dc` or earlier.
 
 ## What "done" means for the first release
 

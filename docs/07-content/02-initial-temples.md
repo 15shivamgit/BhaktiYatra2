@@ -136,7 +136,7 @@ Legend: ★ = launch-critical (write first). Circuit codes: CD = Char Dham, JL =
 
 ## Image sourcing plan
 
-- Reuse the ~160 photos from the old `Frontend/src/assets` (moved to `legacy/` in Phase 1). The owner confirmed rights to these on 2026-10-20 (ADR-017).
+- Reuse the ~160 photos from the old `Frontend/src/assets`; the owner uploaded them to Cloudinary and confirmed rights on 2026-10-20 (ADR-017). The old files remain in Git history after `legacy/` was deleted (ADR-029).
 - Wikimedia Commons CC BY-SA with attribution recorded; prefer ≥ 1600 px.
 - Owner's own photography where available.
 

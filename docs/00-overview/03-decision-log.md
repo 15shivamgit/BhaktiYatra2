@@ -151,3 +151,9 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 **Date:** 2026-10-20 · **Status:** accepted  
 **Decision:** Rich text uses Tiptap 3 (StarterKit limited to what the API sanitiser keeps: H3/H4, bold, italic, lists, quotes, links). The temple editor is a tabbed react-hook-form form; photos save immediately through their own endpoints, other fields with "Save changes"; publishing is disabled while there are unsaved edits and shows the API's `publishProblems`. Circuit temple order uses move up/down buttons instead of drag and drop: keyboard and screen-reader friendly with no extra library. The map picker loads Leaflet only when its tab is open. `upload-images.js` is not built: seed photos are the owner's existing Cloudinary assets and new ones go through the admin uploader. Admin pages render inside `<Suspense>` because the auth guard reads the pathname.
 
+## ADR-029 — Delete `legacy/`
+**Date:** 2026-10-20 · **Status:** done (owner approved; Phase 3 task 21, completes ADR-001's plan)  
+**Context:** `legacy/` held the old Vite frontend and Express backend (254 tracked files, 170 of them images or PDFs). No workspace, import, script or CI job used it.  
+**Decision:** Removed from the working tree. The untracked `legacy/backend/.env` was deleted too; its only settings missing from the new `backend/.env` were Gmail SMTP values (replaced by Resend, ADR-018, and due for rotation) and two old Google and Cloudinary key names.  
+**Consequences:** The old code and images stay in Git history; commit `22465dc` is the last one that contains them (`git show 22465dc:legacy/<path>`). Tours, bookings and payments in Phases 4 to 6 follow `docs/`, not the old code.
+

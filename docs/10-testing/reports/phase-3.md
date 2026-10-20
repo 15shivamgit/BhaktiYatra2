@@ -71,7 +71,6 @@ Temple page `/temples/kedarnath-temple-rudraprayag`:
 
 ## Not done in this phase
 
-- **Task 21, deleting `legacy/`:** waits for the owner's confirmation.
 - **`upload-images.js`:** replaced by existing Cloudinary assets plus the admin uploader (ADR-028).
 - **Drag and drop in the circuit editor:** move up and down buttons instead (ADR-028).
 
@@ -80,9 +79,8 @@ Temple page `/temples/kedarnath-temple-rudraprayag`:
 1. **Review the drafted content** in `backend/scripts/data/temples.data.js` (or in the admin editor) before anything goes to production. Timings, fees and rules change; each temple's notes list the sources used.
 2. **Upload larger photos.** Most library photos are about 300 px wide; heroes need 1600 px or more. Upload them in the admin editor's Photos tab.
 3. **Run the Rich Results Test** once the site has a public URL.
-4. **Confirm deleting `legacy/`.**
-5. Still open from earlier phases: rotate the leaked credentials, and delete the personal files from Cloudinary.
+4. Still open from earlier phases: rotate the leaked credentials, and delete the personal files from Cloudinary.
 
 ## Decisions recorded
 
-ADR-026 (render on first visit, in-page redirects, streamed metadata), ADR-027 (view beacon, `/auth/session`), ADR-028 (admin tools), ADR-023 addendum (primary colour on tinted backgrounds).
+ADR-026 (render on first visit, in-page redirects, streamed metadata), ADR-027 (view beacon, `/auth/session`), ADR-028 (admin tools), ADR-029 (`legacy/` deleted, task 21), ADR-023 addendum (primary colour on tinted backgrounds).

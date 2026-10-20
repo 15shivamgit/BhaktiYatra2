@@ -59,7 +59,7 @@ Never say a feature works without having run it. If something could not be verif
 
 ## 7. What to do when the old code conflicts
 
-The old prototype lives in `legacy/` after Phase 1. It is reference material only. Copy ideas or UI pieces from it deliberately; never import from it. Delete it at the end of Phase 3 once reuse is complete.
+The old prototype was deleted after Phase 3 (ADR-029). If you need to look at it, read it from Git history (commit `22465dc` or earlier); never restore it into the working tree or import from it. The `docs/` tree, not the old code, defines behaviour.
 
 ## 8. Definition of Done
 

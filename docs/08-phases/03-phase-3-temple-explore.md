@@ -32,7 +32,7 @@
 20. Admin contacts inbox (basic).
 
 ### Cleanup
-21. Delete `legacy/` once nothing more is needed from it (owner confirms), record in decision log.
+21. Delete `legacy/` once nothing more is needed from it (owner confirms), record in decision log. **Done 2026-10-20 (ADR-029).**
 
 ## Exit criteria
 
