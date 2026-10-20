@@ -6,13 +6,15 @@ Requirements: FR-TOUR-01…08.
 
 **TourCard**:
 ```json
-{ "id", "slug", "title", "summary", "destinations": ["Haridwar","Kedarnath"], "durationDays", "durationNights", "primaryImage", "fromPrice", "nextDeparture": { "id", "startDate", "seatsAvailable", "price" } | null, "featured" }
+{ "id", "slug", "title", "summary", "destinations": ["Haridwar","Kedarnath"], "durationDays", "durationNights", "primaryImage", "fromPrice", "priceIsIndicative", "nextDeparture": { "id", "startDate", "seatsAvailable", "price" } | null, "featured" }
 ```
-`fromPrice` = min price among upcoming bookable departures, else `basePrice`.
+`fromPrice` = min price among upcoming bookable departures, else `basePrice` (then `priceIsIndicative: true`). `nextDeparture` = earliest bookable departure.
+
+Dates (`startDate`, `endDate`) are calendar days in India, sent as `"YYYY-MM-DD"` and stored as midnight IST.
 
 **DeparturePublic**:
 ```json
-{ "id", "startDate", "endDate", "pickupCity", "price", "seatsAvailable", "totalSeats", "status", "isBookable", "bookingClosesAt" }
+{ "id", "startDate", "endDate", "pickupCity", "pickupInstructions", "price", "seatsAvailable", "totalSeats", "status", "isBookable", "bookingClosesAt" }
 ```
 `isBookable` = status scheduled, seatsAvailable > 0, now < startDate − cutoffHours.
 
@@ -24,7 +26,10 @@ Requirements: FR-TOUR-01…08.
 
 ### GET /tours
 Query: `q`, `destination`, `temple` (slug), `circuit` (slug), `minPrice`, `maxPrice`, `minDays`, `maxDays`, `month` (`YYYY-MM`, has a departure that month), `pickupCity`, `featured`, `page`, `limit`, `sort` (`-featured,-publishedAt` default; `price`, `-price`, `durationDays`, `nextDeparture`)  
-200: `TourCard[]` with `meta`. Only published tours. Tours with no upcoming departures are still listed with `nextDeparture: null` and a "No upcoming dates" badge, unless `bookableOnly=true`.
+200: `TourCard[]` with `meta`. Only published tours. Tours with no upcoming departures are still listed with `nextDeparture: null` and a "No upcoming dates" badge, unless `bookableOnly=true`. `minPrice`/`maxPrice` filter on `fromPrice`.
+
+### GET /tours/filters
+200: `{ "destinations": [...], "pickupCities": [...], "priceRange": { "min", "max" }, "maxDays" }` from published tours.
 
 ### GET /tours/:slug
 200: `TourPublic`. 301 on redirect. 404 if not published.
@@ -52,8 +57,11 @@ Body: writable fields; required `title`, `summary`, `description`, `destinations
 ### GET /admin/tours/:id · PATCH /admin/tours/:id
 As temples. Changing `durationDays` does not alter existing departures; a warning is returned in `meta.warnings` if departures exist.
 
+### GET /admin/tours/options
+200: `{ meals, maxDays, maxImages }` for the admin form.
+
 ### POST /admin/tours/:id/publish
-Prerequisites: ≥ 1 image, `itinerary.length === durationDays`, inclusions ≥ 1, pickupCities ≥ 1.  
+Prerequisites: ≥ 1 image (each with alt text), `itinerary.length === durationDays` and every day has a title, inclusions ≥ 1, pickupCities ≥ 1. GET and PATCH return the same list as `meta.publishProblems`.  
 200. Audit. Revalidate.
 
 ### POST /admin/tours/:id/unpublish · /archive
@@ -78,18 +86,21 @@ Body:
 ```json
 { "startDate": "2026-05-10", "endDate": "2026-05-16", "pickupCity": "Delhi", "price": 24999, "totalSeats": 40, "bookingCutoffHours": 24, "notes": "" }
 ```
-Rules: tour must not be archived; `startDate ≥ today`; `endDate ≥ startDate`; `price ≥ 1`; `totalSeats 1–200`. `seatsAvailable = totalSeats`.  
+Rules: tour must not be archived; `startDate ≥ today` (IST); `endDate ≥ startDate` (default `startDate + durationDays − 1`); `price ≥ 1` (default `basePrice`); `totalSeats 1–200`; `pickupCity` null or one of the tour's pickup cities. `seatsAvailable = totalSeats`.  
 201: `DepartureAdmin`. Audit `departure.create`.
 
+### POST /admin/tours/:id/departures/bulk
+Body: `{ "firstDate", "lastDate", "every": "week" | "month", "totalSeats", "price"?, "pickupCity"?, "bookingCutoffHours"?, "pickupInstructions"? }`. Creates one departure per date (at most 52). 201: `DepartureAdmin[]`.
+
 ### PATCH /admin/departures/:id
-Body: any of `startDate`, `endDate`, `pickupCity`, `price`, `bookingCutoffHours`, `notes`. Date changes allowed only if no confirmed bookings (409 `HAS_BOOKINGS`); price change affects future bookings only.  
+Body: any of `startDate`, `endDate`, `pickupCity`, `price`, `bookingCutoffHours`, `pickupInstructions`, `notes`. Date changes are allowed only while no seats are booked **or held** (409 `HAS_BOOKINGS` with seat counts); moving the start keeps the trip length. Price change affects future bookings only. Cancelled or completed departures cannot be edited (409 `INVALID_TRANSITION`).  
 200. Audit.
 
 ### PATCH /admin/departures/:id/inventory
 Body: `{ "totalSeats": 45, "reason": "Added second bus" }`  
-Rule: new `totalSeats ≥ bookedSeats + heldSeats`; `seatsAvailable += (new − old)` atomically.  
+Rule: new `totalSeats ≥ bookedSeats + heldSeats`; `seatsAvailable += (new − old)` in one conditional update (`seatsAvailable ≥ −delta`, `totalSeats` unchanged since read), retried on concurrent changes. `full` and `scheduled` follow `seatsAvailable`.  
 200: departure with recalculated counts. Audit `departure.inventory.update` with before/after and reason.  
-Errors: 409 `BELOW_COMMITTED_SEATS` with `details: { bookedSeats, heldSeats }`.
+Errors: 409 `BELOW_COMMITTED_SEATS` with `details: { bookedSeats, heldSeats, committed }`.
 
 ### POST /admin/departures/:id/cancel
 Body: `{ "reason" }`  

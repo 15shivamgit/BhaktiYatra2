@@ -20,13 +20,13 @@ Delivery URLs in API responses are the stored `url`; the frontend's Cloudinary l
 
 `POST {FRONTEND_URL}/api/revalidate`  
 Headers: `x-revalidate-secret: <REVALIDATE_SECRET>`  
-Body: `{ "paths": ["/temples/kedarnath-rudraprayag", "/temples", "/sitemap.xml"] }`  
-200 `{ "revalidated": true, "paths": [...] }`; 401 on bad secret. Implemented as a Next.js route handler. Body may carry `tags` (preferred, calls `revalidateTag`) and/or `paths` (calls `revalidatePath`).
+Body: `{ "tags": ["content", "temple:kedarnath-temple-rudraprayag"] }` and/or `{ "paths": [...] }`  
+200 `{ "revalidated": true, "tags": [...], "paths": [...] }`; 401 on a bad secret (compared in constant time). Implemented in `frontend/app/api/revalidate/route.js`: tags call `revalidateTag(tag, { expire: 0 })`, paths call `revalidatePath`.
 
 ## Sitemap and robots
 
-- `GET /sitemap.xml` (frontend) builds from `GET /temples?limit=50&page=n`, `/circuits`, `/tours` (published only) plus static pages. `lastmod` = `updatedAt`. Split into index + child sitemaps when > 5,000 URLs.
-- `robots.txt`: allow all; disallow `/admin`, `/account`, `/api`; sitemap link. Staging sets `X-Robots-Tag: noindex` globally via env flag.
+- `GET /sitemap.xml` (frontend) builds from the API's `GET /sitemap` (published temples and circuits; tours from Phase 4) plus static pages. `lastmod` = `updatedAt`. Split into index + child sitemaps when > 5,000 URLs.
+- `robots.txt`: allow all; disallow `/admin`, `/account`, `/api`, `/login`, `/register`, `/forgot-password`, `/reset-password`; sitemap link. When `NEXT_PUBLIC_ENV=staging` it disallows everything. Staging sets `X-Robots-Tag: noindex` globally via env flag.
 
 ## Error contract for the frontend
 

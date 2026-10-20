@@ -7,11 +7,11 @@ describe('t()', () => {
   });
 
   it('fills placeholders', () => {
-    expect(t('status.version', { version: '1.2.3' })).toBe('Version 1.2.3');
+    expect(t('temples.page', { page: 2, total: 5 })).toBe('Page 2 of 5');
   });
 
   it('leaves unknown placeholders untouched', () => {
-    expect(t('status.version', {})).toBe('Version {version}');
+    expect(t('temples.page', { page: 2 })).toBe('Page 2 of {total}');
   });
 
   it('returns the key when the string is missing so gaps are visible', () => {

@@ -2,6 +2,7 @@ import { createApp } from './app.js';
 import { connectDb, disconnectDb } from './config/db.js';
 import { EnvError, parseEnv } from './config/env.js';
 import { createLogger } from './config/logger.js';
+import { startJobs } from './jobs/index.js';
 
 function loadEnvOrExit() {
   try {
@@ -22,13 +23,14 @@ async function main() {
   const logger = createLogger({ level: env.LOG_LEVEL, pretty: env.NODE_ENV === 'development' });
 
   try {
-    await connectDb(env.MONGO_URL, logger);
+    await connectDb(env.MONGO_URL, logger, { autoIndex: env.NODE_ENV !== 'production' });
   } catch (error) {
     logger.fatal({ err: error.message }, 'Could not connect to MongoDB; exiting');
     process.exit(1);
   }
 
   const app = createApp({ env, logger });
+  const stopJobs = env.JOBS_ENABLED ? startJobs({ logger }) : () => {};
   const server = app.listen(env.PORT, () => {
     logger.info(
       { port: env.PORT, env: env.NODE_ENV, version: env.APP_VERSION },
@@ -41,6 +43,7 @@ async function main() {
     if (shuttingDown) return;
     shuttingDown = true;
     logger.info({ signal }, 'Shutting down');
+    stopJobs();
     server.close(async () => {
       await disconnectDb();
       process.exit(0);

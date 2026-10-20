@@ -1,0 +1,21 @@
+# gitleaks configuration (used by the CI secrets-scan job).
+# Keep all default rules. Only test fixtures, which use deliberately fake credentials such as
+# "Correct-Horse-9" or "e2e-only-secret-…", are exempt. Real secrets belong in .env files,
+# which are git-ignored; never add production code paths here.
+title = "BhaktiYatra gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Test fixtures with fake credentials"
+# "(^|/)" matches both repo-relative paths (git scans) and absolute paths (directory scans).
+paths = [
+  '''(^|/)backend/tests/''',
+  '''(^|/)frontend/tests/''',
+  '''(^|/)frontend/e2e/''',
+  '''(^|/)backend/scripts/e2e-server\.js$''',
+  '''(^|/)backend/vitest\.config\.js$''',
+]
+# Example values printed in the API docs (docs/04-api/02-auth.md).
+regexes = ['''^StrongPass123$''']

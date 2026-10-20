@@ -51,6 +51,11 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Cache MongoDB binary for the E2E API
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - run: npm ci
       - run: npx playwright install --with-deps chromium
         working-directory: frontend

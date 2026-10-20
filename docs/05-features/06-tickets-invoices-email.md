@@ -57,7 +57,7 @@ Provider: Nodemailer SMTP (Brevo). Templates in `backend/src/modules/notificatio
 | `departure_cancelled` | admin cancels departure | each affected contact | — (Should) |
 
 Rules:
-- Enqueue only (never send inline in a request). NotificationLog with `dedupeKey` prevents duplicates (`booking_confirmed:<bookingId>`).
+- Enqueue only (never send inline in a request), **except `password_reset`**: it is sent during the forgot-password request because the reset token must never be stored in a queue record (ADR-025). Its NotificationLog entry records the attempt without the token. NotificationLog with `dedupeKey` prevents duplicates (`booking_confirmed:<bookingId>`).
 - Job every minute: pick `pending|failed` with `attempts < 3` and `nextAttemptAt <= now`, mark `sending` via conditional update to avoid double pickup, send, set `sent|failed` with backoff 1/5/30 min.
 - Attachments fetched from Cloudinary server-side at send time.
 - Subject prefix `[STAGING]` when `NODE_ENV=staging`.

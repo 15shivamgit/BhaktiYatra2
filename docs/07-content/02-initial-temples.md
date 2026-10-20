@@ -1,6 +1,6 @@
 # Initial Temple List (launch content)
 
-Target: ≥ 60 published temples at launch, covering major circuits and all regions. This list is the plan; `backend/scripts/data/temples.json` is the machine-readable version produced after research and review. Names use common English forms; cities are modern names.
+Target: ≥ 60 published temples at launch, covering major circuits and all regions. This list is the plan; `backend/scripts/data/temples.data.js` is the machine-readable version produced after research and review. Names use common English forms; cities are modern names.
 
 Legend: ★ = launch-critical (write first). Circuit codes: CD = Char Dham, JL = 12 Jyotirlingas, SP = Shakti Peeth (selected), PK = Panch Kedar, DD = Divya Desam (selected), SV = Seven Moksha-puris (Sapta Puri), SK = South Karnataka/Kerala coast.
 
@@ -136,7 +136,7 @@ Legend: ★ = launch-critical (write first). Circuit codes: CD = Char Dham, JL =
 
 ## Image sourcing plan
 
-- Reuse the ~160 photos from the old `Frontend/src/assets` (moved to `legacy/` in Phase 1). The owner confirmed rights to these on 2026-10-20 (ADR-017).
+- Reuse the ~160 photos from the old `Frontend/src/assets`; the owner uploaded them to Cloudinary and confirmed rights on 2026-10-20 (ADR-017). The old files remain in Git history after `legacy/` was deleted (ADR-029).
 - Wikimedia Commons CC BY-SA with attribution recorded; prefer ≥ 1600 px.
 - Owner's own photography where available.
 

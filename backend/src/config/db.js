@@ -8,10 +8,15 @@ mongoose.set('strictQuery', true);
  * @param {import('pino').Logger} logger
  * @param {{ attempts?: number, baseDelayMs?: number }} [options]
  */
-export async function connectDb(url, logger, { attempts = 5, baseDelayMs = 1000 } = {}) {
+export async function connectDb(
+  url,
+  logger,
+  { attempts = 5, baseDelayMs = 1000, autoIndex = true } = {},
+) {
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      await mongoose.connect(url, { serverSelectionTimeoutMS: 10_000 });
+      // Production builds indexes in a release step (npm run db:sync-indexes), not on boot.
+      await mongoose.connect(url, { serverSelectionTimeoutMS: 10_000, autoIndex });
       logger.info({ db: mongoose.connection.name }, 'MongoDB connected');
       return mongoose.connection;
     } catch (error) {

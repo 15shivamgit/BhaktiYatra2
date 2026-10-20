@@ -5,6 +5,8 @@
 | Collection | Index | Type | Purpose |
 |---|---|---|---|
 | users | `{ email: 1 }` | unique | login, uniqueness |
+| users | `{ googleId: 1 }` | unique, sparse | Google sign-in |
+| users | `{ 'passwordReset.tokenHash': 1 }` | sparse | reset-token lookup |
 | users | `{ role: 1, isActive: 1 }` | | admin user list |
 | temples | `{ slug: 1 }` | unique | detail lookup |
 | temples | `{ status: 1, featured: -1, publishedAt: -1 }` | | public listing |

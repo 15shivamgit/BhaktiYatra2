@@ -1,41 +1,43 @@
+import { Menu } from 'lucide-react';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { t } from '@/lib/i18n';
 import Container from './Container';
+import DesktopNavLinks, { DesktopNavLinksStatic } from './DesktopNavLinks';
+import MobileNav from './MobileNav';
+import UserMenu from './UserMenu';
 
-const LINKS = [
-  { href: '/temples', key: 'nav.temples' },
-  { href: '/circuits', key: 'nav.circuits' },
-  { href: '/tours', key: 'nav.tours' },
-  { href: '/about', key: 'nav.about' },
-  { href: '/contact', key: 'nav.contact' },
-];
+/** Same size as the real menu button, shown while the current path streams in. */
+function MobileNavPlaceholder() {
+  return (
+    <div className="md:hidden">
+      <span aria-hidden="true" className="flex size-11 items-center justify-center text-text">
+        <Menu className="size-6" />
+      </span>
+    </div>
+  );
+}
 
 /**
- * Phase 1 placeholder navbar. The full version (auth menu, mobile sheet, search) arrives in
- * Phases 2–3 per docs/06-design/02-page-specs.md. Links point at routes built in Phase 3.
+ * Site header: brand, section links (desktop) or a menu button (mobile), account menu.
+ * The link lists read the current path, which is request data under Cache Components, so they
+ * sit in <Suspense> with path-independent fallbacks (the static shell stays complete).
  */
 export default function Navbar() {
   return (
-    <header className="border-b border-border bg-surface">
-      <Container className="flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="font-display text-2xl font-semibold text-accent">
+    <header className="sticky top-0 z-30 border-b border-border bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85">
+      <Container className="relative flex h-16 items-center gap-4">
+        <Suspense fallback={<MobileNavPlaceholder />}>
+          <MobileNav />
+        </Suspense>
+        <Link href="/" className="mr-auto font-display text-2xl font-semibold text-accent">
           Bhakti<span className="text-primary">Yatra</span>
+          <span className="sr-only"> — {t('site.tagline')}</span>
         </Link>
-        <nav aria-label={t('nav.primary')} className="hidden md:block">
-          <ul className="flex items-center gap-6 text-sm font-medium text-text-muted">
-            {LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  prefetch={false}
-                  className="rounded-sm py-2 transition-colors hover:text-primary"
-                >
-                  {t(link.key)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <Suspense fallback={<DesktopNavLinksStatic />}>
+          <DesktopNavLinks />
+        </Suspense>
+        <UserMenu />
       </Container>
     </header>
   );

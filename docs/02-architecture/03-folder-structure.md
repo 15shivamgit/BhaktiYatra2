@@ -126,7 +126,6 @@ BhaktiYatra2/
 │   └── .env.example
 │
 ├── docs/                             # this documentation
-├── legacy/                           # old prototype (Phase 1 → deleted end of Phase 3)
 ├── .github/workflows/ci.yml
 ├── .gitignore
 ├── .editorconfig

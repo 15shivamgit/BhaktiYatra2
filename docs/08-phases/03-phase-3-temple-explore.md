@@ -32,15 +32,17 @@
 20. Admin contacts inbox (basic).
 
 ### Cleanup
-21. Delete `legacy/` once nothing more is needed from it (owner confirms), record in decision log.
+21. Delete `legacy/` once nothing more is needed from it (owner confirms), record in decision log. **Done 2026-10-20 (ADR-029).**
 
 ## Exit criteria
 
-- [ ] ≥ 10 temples and 3 circuits seeded and visible on staging-like local build.
-- [ ] Temple page: Lighthouse mobile Performance ≥ 85, Accessibility ≥ 90, SEO ≥ 95.
+Status on 2026-10-20 (details in `10-testing/reports/phase-3.md`):
+
+- [x] ≥ 10 temples and 3 circuits seeded and visible on staging-like local build.
+- [ ] Temple page: Lighthouse mobile Performance ≥ 85, Accessibility ≥ 90, SEO ≥ 95. (Accessibility 100, SEO 100 for crawlers; Performance 63–67 locally.)
 - [ ] Rich Results Test validates temple and breadcrumb JSON-LD (manual, record screenshot).
-- [ ] Admin can create → upload images → publish a temple; page appears in list, search, sitemap; revalidation observed.
-- [ ] Slug rename produces 301.
-- [ ] No horizontal scroll at the test matrix widths (Playwright check).
-- [ ] axe clean on home, list, detail, circuit pages.
-- [ ] All Phase 3 backend tests green.
+- [x] Admin can create → upload images → publish a temple; page appears in list, search, sitemap; revalidation observed.
+- [x] Slug rename produces 301. (API status 301; page redirect is a meta refresh, ADR-026.)
+- [x] No horizontal scroll at the test matrix widths (Playwright check).
+- [x] axe clean on home, list, detail, circuit pages.
+- [x] All Phase 3 backend tests green.

@@ -4,7 +4,7 @@ Explore India's temples and book organised pilgrimage tours.
 
 BhaktiYatra has two connected halves. **Explore** is an SEO-friendly directory of temples with darshan timings, history, festivals, how to reach and maps. **Travel** offers pilgrimage tours with dated departures, seat inventory, Razorpay payments, PDF tickets with QR codes and an admin back-office.
 
-> **Status:** rebuild in progress. Phase 1 (Foundation) of 10. The previous prototype lives in `legacy/` for reference only.
+> **Status:** rebuild in progress. Phases 1 to 3 of 10 are built (foundation, authentication, temple explore). The old prototype was removed after Phase 3 and stays available in Git history (ADR-029).
 
 ## Documentation
 
@@ -28,7 +28,6 @@ Everything is specified in [`docs/`](docs/README.md) before it is built. Start w
 backend/    Express API (/api/v1)
 frontend/   Next.js app
 docs/       Specification (source of truth)
-legacy/     Old Vite + Express prototype, reference only; removed after Phase 3
 ```
 
 ## Run locally

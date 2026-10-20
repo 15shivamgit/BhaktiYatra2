@@ -25,8 +25,10 @@
 
 ## Exit criteria
 
-- [ ] Admin creates a tour with itinerary and two departures and publishes it; it appears in list, detail, temple pages and sitemap.
-- [ ] Inventory reduction below committed seats is refused (test with seeded bookings fixture).
-- [ ] Departure within cutoff shows "Booking closed".
-- [ ] Lighthouse and axe targets met on tour detail.
-- [ ] All Phase 4 tests green.
+Status on 2026-10-20 (details in `10-testing/reports/phase-4.md`):
+
+- [x] Admin creates a tour with itinerary and two departures and publishes it; it appears in list, detail, temple pages and sitemap.
+- [x] Inventory reduction below committed seats is refused (test with seeded bookings fixture).
+- [x] Departure within cutoff shows "Booking closed".
+- [ ] Lighthouse and axe targets met on tour detail. (axe clean, Accessibility 100; Performance 57–59 and SEO 92 locally, same causes as Phase 3.)
+- [x] All Phase 4 tests green.

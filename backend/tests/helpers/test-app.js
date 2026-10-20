@@ -13,16 +13,25 @@ export function testMongoUrl() {
   return url.toString();
 }
 
-/** @param {Record<string, string>} [overrides] */
-export function buildTestApp(overrides = {}) {
+/**
+ * @param {Record<string, string>} [overrides] env overrides
+ * @param {{ providers?: any }} [deps]
+ */
+export function buildTestApp(overrides = {}, { providers } = {}) {
   const env = parseEnv({ ...process.env, MONGO_URL: testMongoUrl(), ...overrides });
   const logger = createLogger({ level: 'silent' });
-  return { app: createApp({ env, logger }), env, logger };
+  return { app: createApp({ env, logger, providers }), env, logger };
 }
 
 export async function connectTestDb(url = testMongoUrl()) {
   await mongoose.connect(url);
+  await Promise.all(Object.values(mongoose.models).map((model) => model.init()));
   return mongoose.connection;
+}
+
+export async function clearTestDb() {
+  const collections = await mongoose.connection.db.collections();
+  await Promise.all(collections.map((c) => c.deleteMany({})));
 }
 
 export async function disconnectTestDb() {
@@ -30,4 +39,10 @@ export async function disconnectTestDb() {
     await mongoose.connection.dropDatabase();
   }
   await mongoose.disconnect();
+}
+
+/** Cookie value set by a response, or undefined. */
+export function cookieFrom(res, name) {
+  const header = [res.headers['set-cookie'] ?? []].flat().find((c) => c.startsWith(`${name}=`));
+  return header;
 }

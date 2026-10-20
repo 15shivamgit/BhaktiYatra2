@@ -12,6 +12,14 @@ export function serverApiBaseUrl() {
   return process.env.API_BASE_URL_INTERNAL ?? PUBLIC_API_BASE_URL;
 }
 
+/** Home hero photo (owner's Cloudinary upload, viewed and described). */
+export const HERO_IMAGE = Object.freeze({
+  url: 'https://res.cloudinary.com/hboje2fj/image/upload/v1792477172/kedar1.jpg',
+  alt: 'Kedarnath Temple beneath rocky Himalayan slopes, with pilgrims in front',
+  width: 4608,
+  height: 3456,
+});
+
 export const BUSINESS = Object.freeze({
   name: 'BhaktiYatra',
   address: 'Ramdiri-3, Begusarai, Bihar, India 851129',
