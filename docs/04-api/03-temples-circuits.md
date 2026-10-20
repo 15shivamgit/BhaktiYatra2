@@ -29,9 +29,13 @@ Query: `q`, `state`, `deity`, `circuit` (slug), `featured` (bool), `religion`, `
 200: `{ "states": [ { "value": "Uttarakhand", "count": 12 } ], "deities": [...], "circuits": [ { "slug", "name", "count" } ] }` computed from published temples; cached 10 min.
 
 ### GET /temples/:slug
-200: `TemplePublic`. If slug matches a `SlugRedirect`, respond 301 with `Location: /temples/<toSlug>` (the frontend follows and emits a real 301).  
-Side effect: increments `viewCount` asynchronously.  
+200: `TemplePublic` plus `circuits` (published circuits containing it), `nearby` (up to 6 `TempleCard` with `distanceKm`) and `tours: []` (filled in Phase 4).  
+If the slug matches a `SlugRedirect`: 301 with `Location: /api/v1/temples/<toSlug>` and body `{ "success": true, "data": { "redirect": { "slug": "<toSlug>" } } }`. The frontend reads the body and redirects the page (see ADR-026 for how).  
 404 if not published (admin preview uses the admin endpoint).
+
+### POST /temples/:slug/views
+Counts one page view (sent once per browser session by the detail page; skipped for admins and bots). Rate limited per IP.  
+204. Unknown or unpublished slugs are ignored silently.
 
 ### GET /temples/:slug/nearby
 Query: `limit` (default 6, max 12), `radiusKm` (default 100)  
@@ -55,12 +59,15 @@ Query: `q`, `status`, `state`, `deity`, `page`, `limit`, `sort` (`-updatedAt` de
 200: list with `meta`.
 
 ### POST /admin/temples
-Body: any subset of writable model fields; `name`, `deity`, `state`, `city`, `shortDescription`, `description` required. `slug` optional (auto). `status` is ignored on create (always `draft`).  
+Body: any subset of writable model fields; `name`, `deity`, `state`, `city`, `shortDescription`, `description` required (`description` may be an empty string: drafts can start without it; publishing needs 200 characters). `slug` optional (auto). `status` is ignored on create (always `draft`).  
 201: `TempleAdmin`. Audit `temple.create`.  
 Errors: 409 `SLUG_TAKEN`, 422.
 
+### GET /admin/temples/options
+200: `{ states, deities, religions, maxImages }` for admin form dropdowns.
+
 ### GET /admin/temples/:id
-200: `TempleAdmin`.
+200: `TempleAdmin`, with `meta.publishProblems` (`[{ path, message }]`, empty when ready). PATCH returns the same `meta`.
 
 ### PATCH /admin/temples/:id
 Body: any writable fields. Changing `slug` on a published temple creates a `SlugRedirect`. Rich text sanitised.  
@@ -89,8 +96,9 @@ Errors: 413, 415, 422 `IMAGE_LIMIT`.
 Body: `{ "images": [ { "publicId", "alt", "order", "isPrimary" } ] }` — full replacement of metadata for existing images (reorder, alt, primary).  
 200: `images[]`. Exactly one `isPrimary` enforced.
 
-### DELETE /admin/temples/:id/images/:publicId
-204. Deletes from Cloudinary. If primary was deleted, first remaining becomes primary.
+### DELETE /admin/temples/:id/images?publicId=<publicId>
+The public ID goes in the query string because Cloudinary IDs contain slashes.  
+204. Deletes from Cloudinary only when the asset is under `CLOUDINARY_FOLDER` (images seeded from the owner's library are only unlinked). 409 `INVALID_TRANSITION` when it would leave a published temple without images. If primary was deleted, first remaining becomes primary.
 
 ### Circuits (same pattern)
 - `GET /admin/circuits`, `POST /admin/circuits`, `GET /admin/circuits/:id`, `PATCH /admin/circuits/:id` (body may include ordered `temples: [id]`), `POST /admin/circuits/:id/publish` (≥ 2 published temples), `/unpublish`, `/archive`, `DELETE` (draft only), `POST /admin/circuits/:id/image` (single).
@@ -99,4 +107,7 @@ Body: `{ "images": [ { "publicId", "alt", "order", "isPrimary" } ] }` — full r
 
 ## Revalidation hook (API → frontend)
 
-After publish/unpublish/archive/update of published content, the API calls `POST {FRONTEND_URL}/api/revalidate` with header `x-revalidate-secret` and body `{ "paths": ["/temples/<slug>", "/temples", "/circuits/<slug>", "/sitemap.xml"] }`. Failure is logged, not surfaced (time-based revalidation is the fallback).
+After publish/unpublish/archive/update of published content, the API calls `POST {SITE_URL}/api/revalidate` with header `x-revalidate-secret` and body `{ "tags": ["content", "temple:<slug>"] }`. Every public content fetcher carries the `content` tag, so one call refreshes lists, detail pages, circuits and the sitemap. It is fire-and-forget: failure is logged, and the five-minute cache lifetime is the fallback.
+
+### GET /sitemap
+Public. 200: `{ "temples": [{ "slug", "updatedAt" }], "circuits": [...] }` for published content; `Cache-Control: public, max-age=300`. Used by the frontend's `sitemap.xml`.

@@ -1,33 +1,43 @@
 import { expect, test } from '@playwright/test';
+import { expectNoSeriousA11yViolations } from './helpers';
 
-test.describe('Phase 1 home page', () => {
-  test('renders the shell, design tokens and an API status', async ({ page }) => {
+test.describe('home page', () => {
+  test('shows the hero, featured circuits and temples, and states', async ({ page }) => {
     await page.goto('/');
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'Explore the sacred heart of India',
     );
     await expect(page).toHaveTitle(/BhaktiYatra/);
 
-    // Status resolves to one of the three states whether or not the API is running.
-    // While streaming, React briefly keeps a hidden copy of the resolved content at the end of
-    // <body> before moving it into place, so look only at visible elements inside <main>.
-    const status = page
-      .getByRole('main')
-      .locator('[role="status"][data-state]')
-      .filter({ visible: true });
-    await expect(status).toBeVisible({ timeout: 15_000 });
-    await expect(status).toHaveAttribute('data-state', /^(ok|degraded|down)$/);
+    const main = page.getByRole('main');
+    await expect(main.getByRole('link', { name: 'Char Dham (Uttarakhand)' })).toBeVisible();
+    // Up to eight featured temples, most recently published first.
+    const featured = main
+      .locator('section')
+      .filter({ has: page.getByRole('heading', { name: 'Featured temples' }) });
+    await expect(featured.getByRole('article')).toHaveCount(8);
+    await expect(
+      featured.getByRole('link', { name: 'Golden Temple (Harmandir Sahib)' }),
+    ).toBeVisible();
+    await expect(main.getByRole('link', { name: /Uttarakhand\s*4/ })).toBeVisible();
 
-    // Design tokens are applied: page background is the warm off-white.
+    // Design tokens are applied: warm off-white background.
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(bg).toBe('rgb(255, 252, 247)');
-
-    // No horizontal scroll at this viewport (NFR-RESP-01).
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,
     );
     expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  test('hero search leads to matching temples', async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('Search temples, cities or deities').fill('kedar');
+    await page.getByRole('button', { name: 'Search' }).click();
+    await expect(page).toHaveURL(/\/temples\?q=kedar/);
+    await expect(
+      page.getByRole('main').getByRole('link', { name: 'Kedarnath Temple' }),
+    ).toBeVisible();
   });
 
   test('skip link moves focus to main content', async ({ page }) => {
@@ -45,9 +55,21 @@ test.describe('Phase 1 home page', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
   });
 
-  test('robots.txt blocks crawling until Phase 3', async ({ request }) => {
-    const res = await request.get('/robots.txt');
-    expect(res.ok()).toBe(true);
-    expect(await res.text()).toMatch(/Disallow: \//);
+  test('robots.txt allows public pages, hides private ones and links the sitemap', async ({
+    request,
+  }) => {
+    const body = await (await request.get('/robots.txt')).text();
+    expect(body).toMatch(/Allow: \//);
+    expect(body).toMatch(/Disallow: \/admin/);
+    expect(body).toMatch(/Disallow: \/account/);
+    expect(body).toMatch(/Sitemap: http:\/\/localhost:3100\/sitemap\.xml/);
+  });
+
+  test('has no serious accessibility violations', async ({ page }) => {
+    await page.goto('/');
+    await expect(
+      page.getByRole('main').getByRole('link', { name: 'Char Dham (Uttarakhand)' }),
+    ).toBeVisible();
+    await expectNoSeriousA11yViolations(page);
   });
 });

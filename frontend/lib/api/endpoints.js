@@ -4,6 +4,8 @@ import { apiFetch } from './client';
 /** Auth endpoints (docs/04-api/02-auth.md). Each resolves to the envelope's `data`. */
 export const authApi = {
   me: async () => (await apiFetch('/auth/me')).data.user,
+  /** Signed-in user or null; never 401 for guests. */
+  session: async () => (await apiFetch('/auth/session')).data.user,
   login: async (body) => (await apiFetch('/auth/login', { method: 'POST', body })).data.user,
   register: async (body) => (await apiFetch('/auth/register', { method: 'POST', body })).data.user,
   logout: () => apiFetch('/auth/logout', { method: 'POST' }),

@@ -30,7 +30,7 @@ export function UserProvider({ children }) {
 
   const refresh = useCallback(async () => {
     try {
-      setUser(await authApi.me());
+      setUser(await authApi.session());
     } catch (error) {
       // 401 means signed out; on network errors keep what we had rather than flashing "guest".
       if (error?.status === 401) setUser(null);

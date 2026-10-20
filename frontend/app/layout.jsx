@@ -1,4 +1,5 @@
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { preconnect } from 'react-dom';
 import { Toaster } from 'sonner';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
@@ -33,6 +34,8 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  // Temple photos come from Cloudinary; opening the connection early speeds up the hero image.
+  preconnect('https://res.cloudinary.com');
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <body className="flex min-h-dvh flex-col antialiased">

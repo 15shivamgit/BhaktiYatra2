@@ -55,7 +55,8 @@ const templeSchema = new mongoose.Schema(
     pincode: { type: String, match: /^\d{6}$/ },
     location: { type: pointSchema, default: undefined },
     shortDescription: { type: String, required: true, trim: true, maxlength: 300 },
-    description: { type: String, required: true },
+    // Drafts may start empty; publishing needs MIN_DESCRIPTION_CHARS of text (publishProblems).
+    description: { type: String, default: '' },
     history: { type: String },
     significance: { type: String },
     timings: { type: [timingSchema], default: [] },

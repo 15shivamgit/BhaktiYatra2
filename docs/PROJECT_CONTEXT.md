@@ -46,7 +46,7 @@ Full reasoning: `00-overview/03-decision-log.md`.
 
 ## Current status (2026-10-20)
 
-Phases 1 (Foundation) and 2 (Authentication, including Google sign-in) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/`. Reports: `10-testing/reports/phase-1.md`, `phase-2.md`. Next: Phase 3 (Temple Explore).
+Phases 1 (Foundation), 2 (Authentication, including Google sign-in) and 3 (Temple Explore: public temple and circuit pages, admin content tools, 22 drafted temples) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/` until the owner confirms deleting it. Reports: `10-testing/reports/phase-1.md`, `phase-2.md`, `phase-3.md`. Open from Phase 3: Lighthouse mobile Performance (63–67, target 85) and the Rich Results Test. Next: Phase 4 (Tours & Departures).
 
 ## State of the old code (as of 2026-10-20)
 

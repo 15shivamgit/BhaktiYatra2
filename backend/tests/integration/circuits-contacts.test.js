@@ -55,13 +55,11 @@ describe('admin circuits', () => {
   it('creates with an ordered temple list and refuses unknown or duplicate temples', async () => {
     const a = await makeTemple();
     const b = await makeTemple();
-    const res = await agent
-      .post('/api/v1/admin/circuits')
-      .send({
-        name: 'Char Dham',
-        shortDescription: 'The four abodes in Uttarakhand.',
-        temples: [b.id, a.id],
-      });
+    const res = await agent.post('/api/v1/admin/circuits').send({
+      name: 'Char Dham',
+      shortDescription: 'The four abodes in Uttarakhand.',
+      temples: [b.id, a.id],
+    });
     expect(res.status).toBe(201);
     expect(res.body.data).toMatchObject({ slug: 'char-dham', status: 'draft' });
     expect(res.body.data.temples.map((t) => t.id)).toEqual([b.id, a.id]);
@@ -70,26 +68,22 @@ describe('admin circuits', () => {
       .post('/api/v1/admin/circuits')
       .send({ name: 'Dup', shortDescription: 'Duplicate temples here.', temples: [a.id, a.id] });
     expect(dup.status).toBe(422);
-    const missing = await agent
-      .post('/api/v1/admin/circuits')
-      .send({
-        name: 'Missing',
-        shortDescription: 'Unknown temple id here.',
-        temples: ['64b7f0c2a1b2c3d4e5f60718'],
-      });
+    const missing = await agent.post('/api/v1/admin/circuits').send({
+      name: 'Missing',
+      shortDescription: 'Unknown temple id here.',
+      temples: ['64b7f0c2a1b2c3d4e5f60718'],
+    });
     expect(missing.status).toBe(422);
   });
 
   it('publishes only with at least two published temples', async () => {
     const pub = await makeTemple();
     const draft = await makeTemple({ status: 'draft' });
-    const created = await agent
-      .post('/api/v1/admin/circuits')
-      .send({
-        name: 'Loop',
-        shortDescription: 'A short loop of shrines.',
-        temples: [pub.id, draft.id],
-      });
+    const created = await agent.post('/api/v1/admin/circuits').send({
+      name: 'Loop',
+      shortDescription: 'A short loop of shrines.',
+      temples: [pub.id, draft.id],
+    });
     const blocked = await agent.post(`/api/v1/admin/circuits/${created.body.data.id}/publish`);
     expect(blocked.status).toBe(422);
     expect(blocked.body.code).toBe('PUBLISH_PREREQUISITES');

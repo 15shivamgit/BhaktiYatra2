@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { requireAuth } from '../../middleware/auth.js';
+import { optionalAuth, requireAuth } from '../../middleware/auth.js';
+import { toPublicUser } from '../../models/User.js';
 import { createRateLimiter } from '../../middleware/rate-limit.js';
 import { validate } from '../../middleware/validate.js';
 import { authController } from './auth.controller.js';
@@ -21,6 +22,13 @@ export function authRouter(ctx) {
   router.post('/login', authLimit, validate(schemas.loginSchema), c.login);
   router.post('/logout', c.logout);
   router.get('/me', signedIn, c.me);
+  // Session probe for page loads: 200 with user or null, so guests cause no 401 noise.
+  router.get('/session', optionalAuth(env), (req, res) => {
+    res.set('Cache-Control', 'no-store').json({
+      success: true,
+      data: { user: req.user ? toPublicUser(req.user) : null },
+    });
+  });
   router.patch('/me', signedIn, validate(schemas.updateMeSchema), c.updateMe);
   router.post(
     '/change-password',

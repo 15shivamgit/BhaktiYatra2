@@ -11,8 +11,8 @@
 | Script | Command | What it does | Environments |
 |---|---|---|---|
 | `seed-admin.js` | `npm run seed:admin -- --email x --name y` | Creates or promotes an admin. Password is generated and printed once, or read from `SEED_ADMIN_PASSWORD`. | all |
-| `seed-content.js` | `npm run seed:content` | Upserts circuits and temples from `docs/07-content/02-initial-temples.md` data file (`backend/scripts/data/temples.json`, `circuits.json`). Images are referenced by Cloudinary public ids uploaded beforehand with `upload-images.js`. | dev, staging, prod (first launch) |
-| `upload-images.js` | `npm run seed:images -- ./path/to/images` | Uploads a folder of images to Cloudinary under `bhaktiyatra/<env>/temples/<slug>/` and writes a manifest used by `seed-content.js`. | dev, staging, prod |
+| `seed-content.js` | `npm run seed:content -w backend [-- --draft]` | Upserts temples and circuits from `backend/scripts/data/temples.data.js` (logic in `scripts/lib/content-seed.js`, also used by the E2E server). Published by default; `--draft` seeds drafts. Refuses `NODE_ENV=production` unless `--allow-production` is passed. Images reference existing Cloudinary public IDs. | dev, staging, prod (first launch, after owner review) |
+| ~~`upload-images.js`~~ | — | Not built (ADR-028): seed images are the owner's existing Cloudinary assets, and new photos are uploaded in the admin temple editor. | — |
 | `seed-sample-tours.js` | `npm run seed:sample-tours` | Creates 5 sample tours with departures over the next 3 months. Refuses to run when `NODE_ENV=production`. | dev, staging |
 | `seed-e2e.js` | `npm run seed:e2e` | Wipes and seeds the fixed E2E dataset described in `10-testing/01-test-strategy.md`. Refuses unless `NODE_ENV=test` or `development`. | dev, test |
 | `reconcile-payments.js` | `npm run payments:reconcile -- --order <id>` | Fetches payments for one order (or all pending 20–120 min old) from Razorpay and runs `confirmBooking` for missed captures. (Should, Phase 6) | all |
@@ -21,7 +21,7 @@
 
 ## Content data files
 
-`backend/scripts/data/temples.json` — array of Temple documents without `_id`, `images` as `[ { file: 'kedarnath-1.jpg', alt: '...' } ]` resolved via the upload manifest. Source of truth for the initial list is `docs/07-content/02-initial-temples.md`; the JSON is generated from research and reviewed by the owner before seeding.
+`backend/scripts/data/temples.data.js` — an ES module exporting `TEMPLES` (22 temples drafted by Claude per ADR-015, each with sources and check date in `notes`), `CIRCUITS` (Char Dham, 12 Jyotirlingas, Bada Char Dham, temples in traditional order) and `REVIEW_NOTE`. Images are `[publicId, alt]` pairs pointing at photos already in the owner's Cloudinary library; each photo was viewed before use, and mislabeled or watermarked ones were left out. `tests/unit/content-data.test.js` checks the file (required fields, valid states, coordinates inside India, unique slugs, circuits reference known temples). The plan for the full list stays in `docs/07-content/02-initial-temples.md`.
 
 ## Migration strategy
 

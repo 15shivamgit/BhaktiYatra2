@@ -169,6 +169,22 @@ describe('session lifecycle', () => {
     expect(res.body.code).toBe('ACCOUNT_DISABLED');
   });
 
+  it('/session answers 200 with null for guests and the user when signed in', async () => {
+    const guest = await request(app).get(api('/session'));
+    expect(guest.status).toBe(200);
+    expect(guest.body.data.user).toBeNull();
+    const bad = await request(app).get(api('/session')).set('Cookie', 'by_session=junk');
+    expect(bad.status).toBe(200);
+    expect(bad.body.data.user).toBeNull();
+
+    const user = await makeUser();
+    const agent = request.agent(app);
+    await loginAgent(agent, user.email);
+    const signedIn = await agent.get(api('/session'));
+    expect(signedIn.body.data.user.email).toBe(user.email);
+    expect(signedIn.headers['cache-control']).toBe('no-store');
+  });
+
   it('a tampered cookie is 401 SESSION_EXPIRED', async () => {
     const res = await request(app).get(api('/me')).set('Cookie', 'by_session=not.a.jwt');
     expect(res.status).toBe(401);

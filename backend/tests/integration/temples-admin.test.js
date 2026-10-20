@@ -70,6 +70,13 @@ describe('create and update', () => {
     expect(await AuditLog.exists({ action: 'temple.create' })).toBeTruthy();
   });
 
+  it('creates a draft with an empty description and lists it as a publish problem', async () => {
+    const res = await agent.post(base).send({ ...minimal, description: '' });
+    expect(res.status).toBe(201);
+    const detail = await agent.get(`${base}/${res.body.data.id}`);
+    expect(detail.body.meta.publishProblems.map((p) => p.path)).toContain('description');
+  });
+
   it('refuses unknown fields such as status or images on create', async () => {
     const res = await agent.post(base).send({ ...minimal, status: 'published' });
     expect(res.status).toBe(422);

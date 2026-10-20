@@ -29,7 +29,11 @@ Auth: required
 ## GET /auth/me
 Auth: required  
 200: `{ "data": { "user": PublicUser } }` (shape shown under register)  
-401 if no/invalid cookie. The frontend calls this on load to hydrate the user state.
+401 if no/invalid cookie.
+
+## GET /auth/session
+Auth: optional  
+200: `{ "data": { "user": PublicUser | null } }`, `Cache-Control: no-store`. Never 401, so guests do not produce error noise in the browser console. The frontend calls this on load (and on tab focus) to hydrate the user state.
 
 ## PATCH /auth/me
 Auth: required  

@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const WEB_PORT = 3100;
 const API_PORT = 5100;
+const REVALIDATE_SECRET = 'e2e-revalidate-secret';
 
 export default defineConfig({
   testDir: './e2e',
@@ -24,18 +25,23 @@ export default defineConfig({
       // API with an in-memory MongoDB and seeded accounts; never touches a real database.
       command: 'node ../backend/scripts/e2e-server.js',
       url: `http://localhost:${API_PORT}/api/v1/health`,
-      env: { E2E_API_PORT: String(API_PORT), E2E_WEB_ORIGIN: `http://localhost:${WEB_PORT}` },
+      env: {
+        E2E_API_PORT: String(API_PORT),
+        E2E_WEB_ORIGIN: `http://localhost:${WEB_PORT}`,
+        E2E_REVALIDATE_SECRET: REVALIDATE_SECRET,
+      },
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
     },
     {
       // Production build: closer to real deployments, and it does not clash with a developer's
       // `next dev` (Next 16 allows only one dev server per project directory).
-      command: `npx next build && npx next start -p ${WEB_PORT}`,
+      command: `node e2e/wait-for-api.mjs http://localhost:${API_PORT}/api/v1/health && npx next build && npx next start -p ${WEB_PORT}`,
       url: `http://localhost:${WEB_PORT}`,
       env: {
         NEXT_PUBLIC_API_BASE_URL: `http://localhost:${API_PORT}/api/v1`,
         NEXT_PUBLIC_SITE_URL: `http://localhost:${WEB_PORT}`,
+        REVALIDATE_SECRET,
         NEXT_TELEMETRY_DISABLED: '1',
       },
       reuseExistingServer: !process.env.CI,

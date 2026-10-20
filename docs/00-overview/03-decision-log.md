@@ -80,7 +80,7 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 ## ADR-015 — Temple content authored by Claude, reviewed by owner
 **Date:** 2026-10-20 · **Status:** accepted  
 **Context:** The owner asked Claude to research and write temple content.  
-**Decision:** During Phase 3, Claude drafts temple and circuit content into `backend/scripts/data/temples.json` and `circuits.json`, following `07-content/01-content-guidelines.md`. Every draft records its sources and check date in internal notes. Timings and fees are marked "verify locally" when sources disagree. The owner reviews before content is published.  
+**Decision:** During Phase 3, Claude drafts temple and circuit content into `backend/scripts/data/temples.data.js` (temples and circuits in one module), following `07-content/01-content-guidelines.md`. Every draft records its sources and check date in internal notes. Timings and fees are marked "verify locally" when sources disagree. The owner reviews before content is published.  
 **Consequences:** Content quality depends on source availability; timings must be rechecked before each pilgrimage season.
 
 ## ADR-016 — Local-only development until a domain is purchased
@@ -134,3 +134,20 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 **Date:** 2026-10-20 · **Status:** accepted (corrects `06-design/01-design-system.md`)  
 **Context:** Measured contrast showed white text on saffron `#D9731F` is only 3.27:1, failing WCAG AA (4.5:1). Success `#2F7D4F` on its soft tint (4.35:1) and warning `#B7791F` on its tint (3.24:1) also failed.  
 **Decision:** `--color-primary` is `#B4580F` (white text 4.83:1; as text on the page background 4.72:1), hover `#A84F0C`. Saffron `#D9731F` stays as `--color-saffron` for decoration only (icons, rules, focus ring). Success becomes `#256B42` (5.56:1 on its tint) and warning `#8A5A12` (5.27:1).
+
+**Addendum (Phase 3):** primary `#B4580F` as text is only 4.45:1 on the tinted `surface-muted` section background, below AA. On tinted backgrounds, links use accent `#7A1F2B` (9.4:1). axe caught this on the home page "View all" links.
+
+## ADR-026 — Temple and circuit pages: render on first visit, redirect in the page
+**Date:** 2026-10-20 · **Status:** accepted  
+**Context:** With Cache Components, `generateStaticParams` must return at least one entry, which would make every build depend on a reachable API with published content. Slug renames must keep old addresses working (spec: 301).  
+**Decision:** Detail pages have no `generateStaticParams`. Each page renders on its first visit inside `<Suspense>`, then stays cached (`'use cache'`, `cacheLife('content')` = 5 min, tag `content`) until the API's revalidation call expires it. Content fetchers return empty results during `next build` so builds never call the API. For a renamed slug the API answers 301 with JSON `{ redirect: { slug } }`, and the page calls `permanentRedirect()`. Because the page has already started streaming, Next.js delivers that redirect as an instant client redirect with a `<meta http-equiv="refresh">`, not an HTTP 301 status. Google treats an instant meta refresh as a permanent redirect.  
+**Consequences:** Builds and CI need no API. The first visitor to a page after a deploy waits for one API call. A true HTTP 301 would need a per-request lookup in `proxy.js` (an API call on every detail request); revisit if Search Console shows problems. Metadata on these pages is streamed into `<body>` for normal browsers and placed in `<head>` for HTML-only crawlers (Next.js `htmlLimitedBots`), so Lighthouse with its default user agent reports a missing meta description (SEO 92) while crawlers get 100.
+
+## ADR-027 — View counts by beacon; session check that never 401s
+**Date:** 2026-10-20 · **Status:** accepted (changes `04-api/03-temples-circuits.md` and `02-auth.md`)  
+**Decision:** `GET /temples/:slug` no longer increments `viewCount`: cached pages call the API rarely, so counts would be meaningless. The detail page sends `POST /temples/:slug/views` once per browser session, skipping admins and bots; the endpoint is rate limited. The frontend loads the user with `GET /auth/session`, which returns `{ user: null }` for guests instead of 401, so public pages produce no console errors. `GET /auth/me` keeps its 401 contract.
+
+## ADR-028 — Admin content tools
+**Date:** 2026-10-20 · **Status:** accepted  
+**Decision:** Rich text uses Tiptap 3 (StarterKit limited to what the API sanitiser keeps: H3/H4, bold, italic, lists, quotes, links). The temple editor is a tabbed react-hook-form form; photos save immediately through their own endpoints, other fields with "Save changes"; publishing is disabled while there are unsaved edits and shows the API's `publishProblems`. Circuit temple order uses move up/down buttons instead of drag and drop: keyboard and screen-reader friendly with no extra library. The map picker loads Leaflet only when its tab is open. `upload-images.js` is not built: seed photos are the owner's existing Cloudinary assets and new ones go through the admin uploader. Admin pages render inside `<Suspense>` because the auth guard reads the pathname.
+

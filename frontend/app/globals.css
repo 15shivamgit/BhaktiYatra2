@@ -74,6 +74,50 @@
     outline-offset: 2px;
   }
 
+  /* Sanitised HTML from the CMS (temple description, history, …). */
+  .rich-text {
+    max-width: 72ch;
+    color: var(--color-text);
+  }
+  .rich-text > * + * {
+    margin-top: 1rem;
+  }
+  .rich-text h2,
+  .rich-text h3,
+  .rich-text h4 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    margin-top: 1.75rem;
+  }
+  .rich-text h3 {
+    font-size: 1.25rem;
+  }
+  .rich-text ul,
+  .rich-text ol {
+    padding-left: 1.5rem;
+  }
+  .rich-text ul {
+    list-style: disc;
+  }
+  .rich-text ol {
+    list-style: decimal;
+  }
+  .rich-text a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .rich-text blockquote {
+    border-left: 3px solid var(--color-gold);
+    padding-left: 1rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  html {
+    scroll-padding-top: 5rem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
