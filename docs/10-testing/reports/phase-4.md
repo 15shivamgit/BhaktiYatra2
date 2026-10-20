@@ -42,6 +42,10 @@ E2E journeys added:
 - **Admin:** create a tour, see what is missing, fill the itinerary, inclusions and temples, upload a photo, publish; add one departure and a weekly series; raise seats; cancel a date; the public page shows the remaining three dates and the sitemap lists the tour.
 - **axe:** tour list, tour detail and the admin tour editor including the departures tab.
 
+## CI
+
+GitHub Actions run 39436691152 passed all three jobs: secrets-scan, build-and-test, e2e.
+
 ## Lighthouse (mobile, local production build, `lighthouse@12.8.2`)
 
 `/tours/char-dham-yatra-haridwar`, two runs:
