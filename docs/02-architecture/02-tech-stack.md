@@ -6,9 +6,9 @@ Versions below are targets. In Phase 1, install the latest stable release that s
 
 | Concern | Choice | Notes |
 |---|---|---|
-| Framework | Next.js (App Router) | Server Components for public pages; `next/image` with Cloudinary loader |
+| Framework | Next.js 16 (App Router, Turbopack, Cache Components) | Server Components for public pages; `'use cache'` for public data (ADR-022) |
 | Language | JavaScript + JSDoc | No TypeScript (ADR-002) |
-| Styling | Tailwind CSS | Tokens in `tailwind.config.js` / CSS variables per `06-design/01-design-system.md` |
+| Styling | Tailwind CSS 4 | Tokens in `app/globals.css` `@theme`; no `tailwind.config.js` (ADR-022) |
 | Components | shadcn/ui (Radix primitives) | Copy-in components; consistent, accessible |
 | Icons | lucide-react | Single icon set; drop react-icons |
 | Forms | react-hook-form + zod | Shared schemas with API where practical |
@@ -28,24 +28,24 @@ Versions below are targets. In Phase 1, install the latest stable release that s
 
 | Concern | Choice | Notes |
 |---|---|---|
-| Runtime | Node.js LTS, ES modules | `"type": "module"` |
-| Framework | Express 4 (or 5 if stable at Phase 1) | Async error wrapper |
-| Database | MongoDB Atlas + Mongoose 8 | Transactions on replica set |
+| Runtime | Node.js 24 LTS, ES modules | `"type": "module"`; `.nvmrc` = 24 |
+| Framework | Express 5 | Async errors handled natively (ADR-019) |
+| Database | MongoDB Atlas + Mongoose 9 | Transactions on replica set |
 | Validation | zod | Middleware `validate({ body, query, params })` |
 | Auth | jsonwebtoken, bcryptjs (cost 12), cookie-parser | httpOnly cookie |
-| Security | helmet, cors, express-rate-limit, express-mongo-sanitize, hpp | |
+| Security | helmet, cors, express-rate-limit; custom `sanitizeBody` + `simple` query parser | mongo-sanitize/hpp incompatible with Express 5 (ADR-019) |
 | Uploads | multer (memory) → cloudinary SDK | MIME sniff with `file-type` |
 | Payments | razorpay SDK + node `crypto` for HMAC | Raw body for webhook route |
 | PDF | pdfkit | Fonts bundled (Noto Sans for ₹ and Devanagari later) |
 | QR | qrcode | Signed token payload |
-| Email | nodemailer + SMTP (Brevo) ; templates with `mjml` or handlebars-lite | Plain-text fallback |
+| Email | Resend SDK (ADR-018); handlebars templates | Plain-text fallback |
 | Jobs | node-cron | Hold expiry (1 min), email retry (1 min), reconciliation (hourly) |
 | Logging | pino + pino-http | Request id, no PII |
 | Errors | @sentry/node | |
 | HTML sanitising | sanitize-html | For rich text fields |
 | Slugs | slugify | |
 | IDs | nanoid (custom alphabet) | Booking references |
-| Env | dotenv + zod env schema | Fail fast |
+| Env | Node `--env-file-if-exists` + zod env schema | Fail fast; no dotenv (ADR-019) |
 | Testing | Vitest + Supertest + mongodb-memory-server | Provider mocks |
 | Lint/format | ESLint (flat config) + Prettier | Shared root config |
 

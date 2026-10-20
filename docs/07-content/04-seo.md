@@ -47,7 +47,7 @@ Validate with Google's Rich Results Test during Phase 3/4 QA.
 
 ## Rendering and performance
 
-- Public pages: Server Components, `revalidate = 300`. No client-side-only content for primary text.
+- Public pages: Server Components whose data comes from `'use cache'` functions with `cacheLife` (~5 min) and cache tags (ADR-022). No client-side-only content for primary text.
 - Images: `next/image` with Cloudinary loader; explicit `width/height`; LCP image `priority`.
 - Core Web Vitals targets: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 (reserve image space, no layout shift from late fonts: `size-adjust` fallback).
 

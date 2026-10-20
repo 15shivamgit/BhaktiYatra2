@@ -56,4 +56,5 @@ Single document `settings` with: `business: { legalName, address, supportEmail, 
 
 ### GET /health  (public)
 200 `{ "success": true, "data": { "status": "ok", "version": "1.0.0", "uptimeSec": 1234, "db": "up", "time": "…" } }`  
-503 with `db: "down"` when Mongo ping fails. No auth, no rate limit, excluded from logs.
+503 when Mongo ping fails, using the error envelope with the report in `details`:
+`{ "success": false, "code": "SERVICE_UNAVAILABLE", "message": "Database is unreachable", "details": { "status": "degraded", "db": "down", … }, "requestId": "…" }`. No auth, excluded from request logs, `Cache-Control: no-store`.

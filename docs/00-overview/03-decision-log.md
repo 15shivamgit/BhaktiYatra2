@@ -91,3 +91,35 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 ## ADR-017 — Legacy images may be reused
 **Date:** 2026-10-20 · **Status:** accepted  
 **Decision:** The owner confirmed rights to the images in the old `Frontend/src/assets` folder. They may be uploaded to Cloudinary and used for temple pages, with descriptive alt text. Third-party images added later still need licence records.
+
+## ADR-018 — Resend replaces Brevo for email
+**Date:** 2026-10-20 · **Status:** accepted (supersedes the provider choice in ADR-003/PROJECT_CONTEXT #11)  
+**Context:** The owner created a Resend account and API key.  
+**Decision:** Transactional email goes through Resend using its Node SDK (`resend`). Env: `RESEND_API_KEY`, `MAIL_FROM`, `MAIL_REPLY_TO`. Until a domain is verified in Resend, sending is limited to Resend's test sender and the account owner's address; Phase 7 dev testing uses that. The provider sits behind `providers/mail.provider.js` so it can be swapped.  
+**Consequences:** No SMTP variables. Domain verification (SPF/DKIM) moves to Resend in Phase 10.
+
+## ADR-019 — Express 5, built-in env loading, custom body sanitiser
+**Date:** 2026-10-20 · **Status:** accepted  
+**Decision:** Express 5 (stable; async errors reach the error handler without wrappers, so no `asyncHandler`). Env files load with Node's `--env-file-if-exists=.env` flag instead of `dotenv`. `express-mongo-sanitize` and `hpp` are dropped because they write to `req.query`, which is read-only in Express 5; instead the app uses the `simple` query parser (no nested objects) plus a small `sanitizeBody` middleware, and Zod `.strict()` schemas remain the main guard. Validated values live on `req.valid`.  
+**Consequences:** Fewer dependencies; behaviour covered by `tests/integration/errors.test.js`.
+
+## ADR-020 — Google sign-in not in v1 scope (pending owner decision)
+**Date:** 2026-10-20 · **Status:** proposed  
+**Context:** Google OAuth client credentials appeared in the owner's `.env`, but the spec has email/password only.  
+**Decision:** Phase 2 builds email/password as specified. Google sign-in can be added as a Should item in Phase 2 if the owner confirms; it would add `googleId` to User and a `/auth/google` flow on the Express API (no NextAuth, to keep one auth system).
+
+## ADR-021 — Cloudinary image inventory and quality gap
+**Date:** 2026-10-20 · **Status:** accepted  
+**Context:** The owner's Cloudinary folder `BhaktiYatra` holds 186 assets. 158 are temple photos, but 137 of them are about 300×180 px. That is too small for hero or gallery use (guideline: ≥ 1600 px). The folder also contains personal documents that are not part of the project.  
+**Decision:** `backend/scripts/data/cloudinary-images.json` lists temple, brand and needs-review images and names (without URLs) the excluded personal files. Small images may be used only as thumbnails. Phase 3 needs larger photos for at least the ★ temples. New uploads go to `bhaktiyatra/<env>/…` folders as the spec says.
+
+## ADR-022 — Next.js 16 Cache Components and Tailwind CSS 4
+**Date:** 2026-10-20 · **Status:** accepted  
+**Context:** Phase 1 installed Next.js 16.4 and Tailwind CSS 4.3, both newer than the spec assumed. Next 16 enables `cacheComponents` and `partialPrefetching`; fetches are uncached by default and uncached data must render inside `<Suspense>`. Tailwind 4 has no `tailwind.config.js`; tokens live in CSS under `@theme`.  
+**Decision:** Keep `cacheComponents: true` and `partialPrefetching: true`. Public content fetchers are `'use cache'` functions with `cacheLife('minutes')` (≈5 min) and `cacheTag('temple:<slug>')`, `cacheTag('temples')` etc. On-demand revalidation calls `revalidateTag` for those tags (and `revalidatePath` where a path is simpler). Request-time data (API status, user data) renders inside `<Suspense>`. Design tokens live in `frontend/app/globals.css` `@theme`. Error boundaries use the Next 16 `retry` prop. Read `node_modules/next/dist/docs/` before using a Next API (as `frontend/AGENTS.md` instructs).  
+**Consequences:** References to `export const revalidate = 300` in these docs mean "cache for about five minutes with `cacheLife`". Vitest cannot render async Server Components, so those are covered by Playwright.
+
+## ADR-023 — Accessible primary colour
+**Date:** 2026-10-20 · **Status:** accepted (corrects `06-design/01-design-system.md`)  
+**Context:** Measured contrast showed white text on saffron `#D9731F` is only 3.27:1, failing WCAG AA (4.5:1). Success `#2F7D4F` on its soft tint (4.35:1) and warning `#B7791F` on its tint (3.24:1) also failed.  
+**Decision:** `--color-primary` is `#B4580F` (white text 4.83:1; as text on the page background 4.72:1), hover `#A84F0C`. Saffron `#D9731F` stays as `--color-saffron` for decoration only (icons, rules, focus ring). Success becomes `#256B42` (5.56:1 on its tint) and warning `#8A5A12` (5.27:1).
