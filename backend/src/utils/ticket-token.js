@@ -1,12 +1,14 @@
 import { errors, jwtVerify, SignJWT } from 'jose';
 import { TICKET_VALID_DAYS_AFTER_START } from '../config/documents.js';
+import { randomToken } from './crypto.js';
 
 const AUDIENCE = 'bhaktiyatra:ticket';
 const key = (secret) => new TextEncoder().encode(secret);
 
 /**
  * QR ticket token: HS256 JWT { ref, dep } valid until a week after the departure starts.
- * Signed with TICKET_SIGNING_SECRET, separate from session JWTs.
+ * Signed with TICKET_SIGNING_SECRET, separate from session JWTs. A random id makes every token
+ * unique, so a regenerated ticket never repeats the old one.
  */
 export function signTicketToken({ reference, departureId, startDate }, secret) {
   const exp = Math.floor(
@@ -15,6 +17,7 @@ export function signTicketToken({ reference, departureId, startDate }, secret) {
   return new SignJWT({ ref: reference, dep: String(departureId) })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
+    .setJti(randomToken(8))
     .setAudience(AUDIENCE)
     .setExpirationTime(exp)
     .sign(key(secret));

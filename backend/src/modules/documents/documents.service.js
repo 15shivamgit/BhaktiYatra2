@@ -73,6 +73,48 @@ export async function issueDocuments(ctx, bookingId, now = new Date()) {
   return updated ?? Booking.findById(booking._id);
 }
 
+/**
+ * Admin "regenerate documents": a fresh ticket token (old QR codes stop verifying) and new issue
+ * times; the invoice number never changes. A booking without documents gets them issued.
+ * @returns {Promise<any>} the updated booking
+ */
+export async function regenerateDocuments(ctx, bookingId, now = new Date()) {
+  const booking = await Booking.findById(bookingId);
+  if (!booking) throw AppError.notFound('Booking not found');
+  if (booking.bookingStatus !== 'confirmed') {
+    throw AppError.conflict(
+      ERROR_CODES.INVALID_TRANSITION,
+      'Documents exist only for confirmed bookings',
+    );
+  }
+  if (!booking.invoice?.number || !booking.ticket?.token) {
+    return issueDocuments(ctx, booking._id, now);
+  }
+  if (!ctx.env.TICKET_SIGNING_SECRET) {
+    throw new AppError(503, ERROR_CODES.SERVICE_UNAVAILABLE, 'TICKET_SIGNING_SECRET is not set');
+  }
+  const token = await signTicketToken(
+    {
+      reference: booking.bookingReference,
+      departureId: booking.departure,
+      startDate: booking.snapshot.startDate,
+    },
+    ctx.env.TICKET_SIGNING_SECRET,
+  );
+  return Booking.findOneAndUpdate(
+    { _id: booking._id },
+    {
+      $set: {
+        'ticket.token': token,
+        'ticket.generatedAt': now,
+        'invoice.generatedAt': now,
+      },
+      $push: { timeline: { at: now, event: 'documents_regenerated', by: 'system' } },
+    },
+    { returnDocument: 'after' },
+  );
+}
+
 /** Issue documents without failing the caller (used right after confirmation). */
 export async function issueDocumentsQuietly(ctx, bookingId) {
   try {

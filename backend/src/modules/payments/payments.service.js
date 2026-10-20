@@ -80,6 +80,7 @@ export async function confirmBooking(ctx, bookingId, payment, now = new Date()) 
         $set: {
           providerPaymentId: payment.paymentId,
           status: 'captured',
+          capturedAt: now,
           method: payment.method,
           signatureVerified: Boolean(payment.signatureVerified),
           verifiedVia: payment.via,

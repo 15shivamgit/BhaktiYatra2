@@ -55,6 +55,7 @@ const bookingSchema = new mongoose.Schema(
           processedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
           refundAmount: Number,
           refundReference: String,
+          refundMethod: { type: String, enum: ['razorpay', 'bank', 'none'] },
           refundedAt: Date,
         },
         { _id: false },

@@ -129,11 +129,15 @@ export async function processEmailQueue(ctx, now = new Date()) {
   return { sent, failed };
 }
 
-/** Emails that failed all attempts (admin dashboard alert count, Phase 8). */
-export function failedEmailCount() {
+/**
+ * Emails that failed all attempts (admin dashboard alert count).
+ * @param {{ since?: Date }} [options] count only failures last tried after this time
+ */
+export function failedEmailCount({ since } = {}) {
   return NotificationLog.countDocuments({
     status: 'failed',
     attempts: { $gte: EMAIL_MAX_ATTEMPTS },
+    ...(since && { updatedAt: { $gte: since } }),
   });
 }
 

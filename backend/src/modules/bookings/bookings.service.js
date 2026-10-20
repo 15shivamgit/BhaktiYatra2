@@ -19,7 +19,7 @@ const TOUR_FIELDS = 'title slug status durationDays images';
 
 /* ---------- helpers ---------- */
 
-async function releaseSeats(departureId, seats, session) {
+export async function releaseSeats(departureId, seats, session) {
   await TourDeparture.updateOne(
     { _id: departureId },
     { $inc: { seatsAvailable: seats } },

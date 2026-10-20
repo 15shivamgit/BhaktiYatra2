@@ -36,6 +36,18 @@ function tripLines(b) {
   ];
 }
 
+function cancelledOutro(b) {
+  if (b.paymentStatus === 'pending' || b.paymentStatus === 'failed') return 'Nothing was charged.';
+  const refund = b.cancellation?.refundAmount;
+  if (refund > 0) {
+    return `A refund of ${money(refund)} has been started to your original payment method. It usually reaches you within 5–7 working days.`;
+  }
+  if (b.cancellation?.processedBy) {
+    return 'Under our cancellation policy no refund is due for this booking.';
+  }
+  return 'If a refund is due, it is processed as described in our cancellation policy.';
+}
+
 /** Each template: (data, links) → { subject, heading, intro, rows?, outro?, cta? } */
 const TEMPLATES = {
   welcome: ({ name }, links) => ({
@@ -79,10 +91,7 @@ const TEMPLATES = {
     heading: `Namaste ${booking.contact.name},`,
     intro: `Your booking for ${booking.snapshot.tourTitle} has been cancelled.`,
     rows: tripLines(booking),
-    outro:
-      booking.paymentStatus === 'pending' || booking.paymentStatus === 'failed'
-        ? 'Nothing was charged.'
-        : 'If a refund is due, it is processed as described in our cancellation policy.',
+    outro: cancelledOutro(booking),
     cta: { label: 'My bookings', url: `${links.site}/account/bookings` },
   }),
 
