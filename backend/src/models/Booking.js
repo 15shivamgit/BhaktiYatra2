@@ -61,6 +61,22 @@ const bookingSchema = new mongoose.Schema(
       ),
       default: undefined,
     },
+    /** QR ticket: signed token (also printed as the verify URL) and issue time. */
+    ticket: {
+      type: new mongoose.Schema(
+        { token: String, generatedAt: Date, publicId: String },
+        { _id: false },
+      ),
+      default: undefined,
+    },
+    /** Invoice number INV-YYYY-NNNNNN (never reused) and issue time. */
+    invoice: {
+      type: new mongoose.Schema(
+        { number: String, generatedAt: Date, publicId: String },
+        { _id: false },
+      ),
+      default: undefined,
+    },
     notes: {
       type: [
         new mongoose.Schema(
@@ -95,5 +111,9 @@ bookingSchema.index({ bookingStatus: 1, holdExpiresAt: 1 });
 bookingSchema.index({ 'contact.email': 1 });
 bookingSchema.index({ 'contact.phone': 1 });
 bookingSchema.index({ createdAt: -1 });
+bookingSchema.index(
+  { 'invoice.number': 1 },
+  { unique: true, partialFilterExpression: { 'invoice.number': { $type: 'string' } } },
+);
 
 export const Booking = mongoose.models.Booking ?? mongoose.model('Booking', bookingSchema);

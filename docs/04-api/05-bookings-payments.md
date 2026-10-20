@@ -73,10 +73,12 @@ Development and tests only: exists only while the stub provider allows simulatio
 
 ## GET /bookings/:reference/ticket
 Auth: owner or admin  
-200: `application/pdf` stream, `Content-Disposition: attachment; filename="BhaktiYatra-Ticket-<ref>.pdf"`. 404 if not generated yet (`bookingStatus !== confirmed`).
+200: `application/pdf`, `Content-Disposition: attachment; filename="BhaktiYatra-Ticket-<ref>.pdf"` (exposed through CORS). 404 for other users, and with "being prepared" while the booking is not confirmed or the documents are not issued yet. 401 for guests.
 
 ## GET /bookings/:reference/invoice
-Same as ticket.
+Same as ticket; file name `BhaktiYatra-Invoice-<INV-YYYY-NNNNNN>.pdf`.
+
+As built (Phase 7): PDFs are rendered on request from the booking (invoice number, ticket token and issue time are stored on it), so downloads and email attachments are always identical and nothing is stored in Cloudinary (ADR-033).
 
 ---
 
@@ -131,7 +133,7 @@ Auth: none (used by QR scanners)
 ```json
 { "success": true, "data": { "valid": true, "bookingReference": "BY-20260510-7K3QZ", "tour": "Char Dham Yatra", "startDate": "…", "seats": 2, "travellerCount": 2, "bookingStatus": "confirmed" } }
 ```
-`valid: false` with `reason` (`expired_token`, `not_found`, `cancelled`) and 200 status (scanner-friendly). Rate limited 60/min per IP.
+`valid: false` with `reason` (`expired_token`, `not_found`, `cancelled`) and 200 status (scanner-friendly). Rate limited 60/min per IP (`RATE_LIMIT_TICKET_VERIFY_MAX`). Also includes `endDate`. Never returns traveller names or contact details. A token replaced by a regenerated ticket answers `not_found`.
 
 ---
 

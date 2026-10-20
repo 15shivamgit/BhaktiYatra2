@@ -30,7 +30,7 @@ async function main() {
     process.exit(1);
   }
 
-  const providers = createProviders(env);
+  const providers = createProviders(env, logger);
   const app = createApp({ env, logger, providers });
   const stopJobs = env.JOBS_ENABLED ? startJobs({ env, logger, providers }) : () => {};
   const server = app.listen(env.PORT, () => {

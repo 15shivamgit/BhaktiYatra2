@@ -75,7 +75,10 @@ const envSchema = z.object({
   // Phase 7+
   TICKET_SIGNING_SECRET: z.string().min(32).optional(),
   RESEND_API_KEY: z.string().optional(),
-  MAIL_FROM: z.string().optional(),
+  MAIL_FROM: z.string().default('BhaktiYatra <onboarding@resend.dev>'),
+  /** resend when RESEND_API_KEY is set, otherwise console (logs instead of sending). */
+  MAIL_PROVIDER: z.enum(['resend', 'console']).optional(),
+  RATE_LIMIT_TICKET_VERIFY_MAX: z.coerce.number().int().positive().default(60),
   MAIL_REPLY_TO: z.string().optional(),
   ADMIN_NOTIFY_EMAIL: z.email().optional(),
 
@@ -121,6 +124,12 @@ export function parseEnv(raw) {
   // booking creation answer "payment is not configured".
   if (data.PAYMENTS_PROVIDER === 'razorpay' && ['production', 'staging'].includes(data.NODE_ENV)) {
     for (const key of ['RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET']) {
+      if (!data[key]) problems.push(`${key} is required in ${data.NODE_ENV}`);
+    }
+  }
+  if (['production', 'staging'].includes(data.NODE_ENV)) {
+    // Tickets and email must work wherever real bookings happen.
+    for (const key of ['TICKET_SIGNING_SECRET', 'RESEND_API_KEY', 'ADMIN_NOTIFY_EMAIL']) {
       if (!data[key]) problems.push(`${key} is required in ${data.NODE_ENV}`);
     }
   }

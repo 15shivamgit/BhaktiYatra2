@@ -29,9 +29,17 @@ const sentence = (text) => (/[.!?]$/.test(text.trim()) ? text.trim() : `${text.t
  * expired / pending_confirmation / payment_received_no_seats. Razorpay Checkout when the API
  * uses Razorpay; "simulate" buttons with the dev stub.
  * @param {{ booking: any, payment: any, offsetMs: number, retryHref: string,
- *   onRetry?: () => void, onChange: (booking: any) => void }} props
+ *   onRetry?: () => void, onChange: (booking: any) => void, email?: string }} props
  */
-export default function PaymentPanel({ booking, payment, offsetMs, retryHref, onRetry, onChange }) {
+export default function PaymentPanel({
+  booking,
+  payment,
+  offsetMs,
+  retryHref,
+  onRetry,
+  onChange,
+  email,
+}) {
   const pending = booking.bookingStatus === 'pending';
   const { expired, label } = useCountdown(pending ? booking.holdExpiresAt : null, offsetMs);
   const [phase, setPhase] = useState('awaiting_payment');
@@ -167,6 +175,7 @@ export default function PaymentPanel({ booking, payment, offsetMs, retryHref, on
         </h2>
         <p className="mt-1 text-sm">
           {t('booking.confirmedText', { reference: booking.bookingReference })}
+          {email ? ` ${t('booking.ticketSent', { email })}` : ''}
         </p>
         <Link
           href="/account/bookings"

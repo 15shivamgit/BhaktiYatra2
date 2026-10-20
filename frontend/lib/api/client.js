@@ -45,3 +45,30 @@ export async function apiFetch(path, { method = 'GET', body, headers = {}, signa
   }
   return parseResponse(res);
 }
+
+/**
+ * Download a file the API serves to the signed-in user (ticket, invoice) and save it.
+ * Throws ApiError (for example 404 "being prepared") instead of saving an error page.
+ * @param {string} path
+ * @param {string} fallbackName file name when the response does not suggest one
+ */
+export async function apiDownload(path, fallbackName) {
+  let res;
+  try {
+    res = await fetch(`${PUBLIC_API_BASE_URL}${path}`, { credentials: 'include' });
+  } catch (cause) {
+    throw networkError(cause);
+  }
+  if (!res.ok) await parseResponse(res); // throws the API error
+  const disposition = res.headers.get('Content-Disposition') ?? '';
+  const name = disposition.match(/filename="([^"]+)"/)?.[1] ?? fallbackName;
+  const url = URL.createObjectURL(await res.blob());
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  return name;
+}

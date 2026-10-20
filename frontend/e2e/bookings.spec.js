@@ -204,6 +204,29 @@ test.describe('booking a tour', () => {
     await expect(page.getByRole('heading', { name: 'Booking confirmed' })).toBeVisible();
     await expect(page.locator('header').getByText('Confirmed', { exact: true })).toBeVisible();
     await expect(page.getByText('Payment received', { exact: true })).toBeVisible(); // history
+
+    // Phase 7: the e-ticket and invoice are ready to download.
+    const documents = page.getByRole('region', { name: 'E-ticket and invoice' });
+    await expect(documents.getByRole('button', { name: 'Download e-ticket' })).toBeVisible({
+      timeout: 15_000,
+    });
+    const reference = (await page.locator('p.font-mono').first().textContent()).trim();
+    const [ticket] = await Promise.all([
+      page.waitForEvent('download'),
+      documents.getByRole('button', { name: 'Download e-ticket' }).click(),
+    ]);
+    expect(ticket.suggestedFilename()).toBe(`BhaktiYatra-Ticket-${reference}.pdf`);
+    const [invoice] = await Promise.all([
+      page.waitForEvent('download'),
+      documents.getByRole('button', { name: 'Download invoice' }).click(),
+    ]);
+    expect(invoice.suggestedFilename()).toMatch(/^BhaktiYatra-Invoice-INV-\d{4}-\d{6}\.pdf$/);
+  });
+
+  test('the ticket check page rejects a damaged ticket', async ({ page }) => {
+    await page.goto('/verify/not-a-real-ticket-token');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Not valid');
+    await expect(page.getByText('This ticket could not be found.')).toBeVisible();
   });
 
   test('TC-PAY-12 never spins forever when verify cannot be reached', async ({ page }) => {

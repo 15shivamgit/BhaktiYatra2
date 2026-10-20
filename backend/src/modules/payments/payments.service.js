@@ -8,6 +8,7 @@ import { randomToken } from '../../utils/crypto.js';
 import { recordAudit } from '../audit/audit.service.js';
 import { getBookingForViewer } from '../bookings/bookings.service.js';
 import { assertTransition, timelineEntry } from '../bookings/transitions.js';
+import { issueDocumentsQuietly } from '../documents/documents.service.js';
 import { enqueueNotification } from '../notifications/notifications.service.js';
 import { syncFullStatus } from '../tours/departures.service.js';
 
@@ -119,7 +120,8 @@ export async function confirmBooking(ctx, bookingId, payment, now = new Date()) 
       payload: { bookingReference: booking.bookingReference },
     });
   } else {
-    // Ticket and invoice generation and the email itself arrive with Phase 7.
+    // Invoice number and ticket token now; the email job attaches the PDFs.
+    await issueDocumentsQuietly(ctx, booking._id);
     await enqueueNotification(ctx, {
       type: 'booking_confirmed',
       to: booking.contact.email,

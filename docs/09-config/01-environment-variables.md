@@ -36,6 +36,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `RESEND_API_KEY` | yes (Phase 7) | `re_…` | Resend (ADR-018) |
 | `MAIL_FROM` | yes (Phase 7) | `BhaktiYatra <onboarding@resend.dev>` until a domain is verified | |
 | `MAIL_REPLY_TO` | no | `support@bhaktiyatra.in` | |
+| `MAIL_PROVIDER` | no | `resend` when `RESEND_API_KEY` is set, else `console` | `console` logs emails instead of sending (offline development, E2E) |
+| `RATE_LIMIT_TICKET_VERIFY_MAX` | no | `60` | ticket checks per minute per IP |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
 | `HOLD_MINUTES` | no | `15` | seat hold length; fractions are allowed for tests (the E2E server uses 1) |
 | `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `15` | booking creations per user per window |

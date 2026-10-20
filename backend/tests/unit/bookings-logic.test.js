@@ -112,6 +112,9 @@ describe('payment provider safety', () => {
     RAZORPAY_KEY_ID: 'rzp_test_x',
     RAZORPAY_KEY_SECRET: 'secret',
     RAZORPAY_WEBHOOK_SECRET: 'whsec',
+    TICKET_SIGNING_SECRET: 't'.repeat(32),
+    RESEND_API_KEY: 're_test',
+    ADMIN_NOTIFY_EMAIL: 'owner@example.com',
   };
 
   it('refuses the stub payment provider in production', () => {

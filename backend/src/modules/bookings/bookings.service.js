@@ -264,6 +264,14 @@ export async function cancelByUser(ctx, user, reference, reason, req, now = new 
       reason,
       req,
     });
+    await enqueueNotification(ctx, {
+      type: 'booking_cancelled',
+      to: booking.contact.email,
+      dedupeKey: `booking_cancelled:${booking._id}`,
+      user: booking.user,
+      booking: booking._id,
+      payload: { bookingReference: booking.bookingReference },
+    });
     return getBookingForViewer(user, reference);
   }
 
@@ -306,6 +314,7 @@ export async function cancelByUser(ctx, user, reference, reason, req, now = new 
         dedupeKey: `cancellation_requested_admin:${booking._id}:${now.getTime()}`,
         booking: booking._id,
         payload: { bookingReference: booking.bookingReference, reason: reason ?? '' },
+        user: booking.user,
       });
     }
     return getBookingForViewer(user, reference);

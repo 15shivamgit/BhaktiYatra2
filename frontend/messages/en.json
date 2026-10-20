@@ -659,7 +659,7 @@
     "holdExpiredText": "The seats were released because payment was not completed in time.",
     "tryAgain": "Try again",
     "confirmedTitle": "Booking confirmed",
-    "confirmedText": "Your booking {reference} is confirmed. Your e-ticket and invoice will appear here and in your email.",
+    "confirmedText": "Your booking {reference} is confirmed.",
     "noSeatsText": "We received your payment, but the seats sold out after your hold ended. We will contact you within 24 hours to offer another date or a full refund.",
     "cancelBooking": "Cancel booking",
     "requestCancellation": "Request cancellation",
@@ -724,6 +724,27 @@
     "checkoutDismissed": "Payment was cancelled. You can try again while your seats are held.",
     "stillHeld": "Your seats are still held for {time}.",
     "openingCheckout": "Opening secure payment…",
-    "securePayment": "Secure payment by Razorpay: UPI, cards, net banking and wallets."
+    "securePayment": "Secure payment by Razorpay: UPI, cards, net banking and wallets.",
+    "ticketSent": "Your e-ticket and invoice are on their way to {email}.",
+    "documents": "E-ticket and invoice",
+    "documentsText": "Show the QR code on the e-ticket at pickup. A copy was emailed to {email}.",
+    "downloadTicket": "Download e-ticket",
+    "downloadInvoice": "Download invoice",
+    "documentsPreparing": "Your e-ticket and invoice are being prepared. This page updates on its own."
+  },
+  "verify": {
+    "title": "Ticket check",
+    "valid": "Valid ticket",
+    "invalid": "Not valid",
+    "reason_cancelled": "This booking is cancelled.",
+    "reason_expired_token": "This ticket has expired.",
+    "reason_not_found": "This ticket could not be found. It may be damaged or replaced by a newer ticket.",
+    "reference": "Booking",
+    "tour": "Tour",
+    "dates": "Dates",
+    "seats": "Seats",
+    "travellers": "Travellers",
+    "status": "Status",
+    "help": "Questions? Call {phone}."
   }
 }

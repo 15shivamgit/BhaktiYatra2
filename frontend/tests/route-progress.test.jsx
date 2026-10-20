@@ -13,6 +13,8 @@ function Page() {
   return (
     <>
       <RouteProgress />
+      {/* A plain anchor on purpose: the bar must react to any same-site link. */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a href="/temples">Temples</a>
       <a href="#main">Skip</a>
       <a href="https://example.com/">Elsewhere</a>

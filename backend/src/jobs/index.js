@@ -1,4 +1,5 @@
 import { expireHolds, reconcileInventory } from '../modules/bookings/bookings.service.js';
+import { processEmailQueue } from '../modules/notifications/mailer.service.js';
 import { reconcilePayments } from '../modules/payments/razorpay.service.js';
 import { completeDepartures } from '../modules/tours/departures.service.js';
 
@@ -12,6 +13,7 @@ const HOUR_MS = 60 * MINUTE_MS;
  */
 export const JOBS = Object.freeze([
   { name: 'expire-holds', everyMs: MINUTE_MS, run: () => expireHolds() },
+  { name: 'send-emails', everyMs: MINUTE_MS, run: (ctx) => processEmailQueue(ctx) },
   { name: 'complete-departures', everyMs: HOUR_MS, run: () => completeDepartures() },
   // Catches captured payments whose webhook and verify call were both lost.
   { name: 'reconcile-payments', everyMs: HOUR_MS, run: (ctx) => reconcilePayments(ctx) },

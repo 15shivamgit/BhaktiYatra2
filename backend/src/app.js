@@ -20,7 +20,7 @@ import { apiRouter } from './routes.js';
  *   providers?: Partial<import('./providers/index.js').Providers> }} deps
  */
 export function createApp({ env, logger, providers: overrides = {} }) {
-  const providers = { ...createProviders(env), ...overrides };
+  const providers = { ...createProviders(env, logger), ...overrides };
   const app = express();
 
   app.disable('x-powered-by');
@@ -43,7 +43,7 @@ export function createApp({ env, logger, providers: overrides = {} }) {
       credentials: true,
       methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Idempotency-Key', 'X-Request-Id'],
-      exposedHeaders: ['X-Request-Id'],
+      exposedHeaders: ['X-Request-Id', 'Content-Disposition'],
       maxAge: 600,
     }),
   );

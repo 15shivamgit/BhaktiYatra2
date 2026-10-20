@@ -37,6 +37,8 @@ const env = parseEnv({
   BCRYPT_ROUNDS: '4',
   RATE_LIMIT_ENABLED: 'false',
   JOBS_ENABLED: 'false',
+  TICKET_SIGNING_SECRET: 'e2e-ticket-signing-secret-0123456789abcdef',
+  MAIL_PROVIDER: 'console',
   // Short holds let E2E watch the countdown run out (default 1 minute).
   HOLD_MINUTES: process.env.E2E_HOLD_MINUTES ?? '1',
 });

@@ -191,3 +191,13 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **E2E** runs the real Checkout → verify path: the E2E API uses the Razorpay provider with a fake REST API, and Playwright serves a stub `checkout.js` that signs with a test-only secret. The real Razorpay Checkout is tried manually in test mode.
 - **UI** follows the spec's states; a spinner never lasts more than 60 seconds (verify times out at 20 s, then the page polls until 60 s and shows "Payment received, confirming").
 
+## ADR-033 — Phase 7: documents rendered on demand, Resend over REST, template functions
+**Date:** 2026-10-21 · **Status:** accepted (changes the storage and template choices in `05-features/06-tickets-invoices-email.md`)
+**Decision:**
+- **No PDF storage.** A confirmed booking gets its invoice number (`INV-YYYY-NNNNNN`, atomic per-year counter, unique index) and a signed ticket token once. The ticket and invoice PDFs are rendered from the booking on every download and email (pdfkit, bundled Noto Sans for ₹, QR via `qrcode`). Regeneration is automatic and identical; there is no Cloudinary upload to fail, no private-file signing, and nothing to clean up. Rendering takes milliseconds.
+- **Resend over its REST API** (no SDK), same pattern as Razorpay; `MAIL_PROVIDER=console` logs instead of sending.
+- **Templates are plain functions** with a shared HTML layout (inline styles for Gmail and Outlook), escaping and a text part, instead of handlebars files. Fewer moving parts; the same output.
+- **Queue rules:** the job claims one message at a time with a conditional update (no double sends), backs off 1/5/30 minutes, stops after 3 attempts (`failed`, counted for the Phase 8 dashboard), and ignores messages queued more than 24 hours ago (for example from before email sending existed). Password reset is sent during the request and only its outcome is logged.
+- **Emails added:** user cancels an unpaid booking (`booking_cancelled`), admin cancels a departure (`departure_cancelled` to each affected traveller), `payment.failed` webhook (`payment_failed`). The confirmation goes to the booking contact and, if different, the account email.
+- **Deployed environments** must set `TICKET_SIGNING_SECRET`, `RESEND_API_KEY` and `ADMIN_NOTIFY_EMAIL`.
+

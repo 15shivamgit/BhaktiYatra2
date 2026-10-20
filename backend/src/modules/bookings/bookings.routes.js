@@ -4,6 +4,7 @@ import { createRateLimiter } from '../../middleware/rate-limit.js';
 import { validate } from '../../middleware/validate.js';
 import { AppError } from '../../utils/app-error.js';
 import { recordAudit } from '../audit/audit.service.js';
+import { renderDocument } from '../documents/documents.service.js';
 import { simulatePayment } from '../payments/payments.service.js';
 import { toBookingDetail, toBookingSummary } from './bookings.mapper.js';
 import * as schemas from './bookings.schemas.js';
@@ -139,6 +140,21 @@ export function bookingsRouter(ctx) {
       meta: { serverTime: new Date().toISOString(), payment: providerInfo(ctx, booking) },
     });
   });
+
+  // Downloads: owner or admin; 404 for anyone else and while the document is being prepared.
+  for (const kind of ['ticket', 'invoice']) {
+    router.get(`/:reference/${kind}`, validate(schemas.referenceSchema), async (req, res) => {
+      const booking = await service.getBookingForViewer(req.user, req.valid.params.reference);
+      const { filename, buffer } = await renderDocument(ctx, booking, kind);
+      res
+        .set({
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'Content-Length': String(buffer.length),
+        })
+        .send(buffer);
+    });
+  }
 
   // Development and test only: the stub provider has no real checkout (ADR-031).
   if (ctx.providers.payments.simulate) {

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Modal from '@/components/admin/Modal';
 import BookingStatus from '@/components/bookings/BookingStatus';
+import DocumentDownloads from '@/components/bookings/DocumentDownloads';
 import PaymentPanel from '@/components/bookings/PaymentPanel';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
@@ -188,6 +189,7 @@ export default function BookingDetailView({ reference }) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-6">
           <PaymentPanel
+            email={booking.contact?.email}
             booking={booking}
             payment={meta?.payment}
             offsetMs={offsetMs}
@@ -198,6 +200,8 @@ export default function BookingDetailView({ reference }) {
               reload();
             }}
           />
+
+          <DocumentDownloads booking={booking} onRefresh={reload} />
 
           {booking.bookingStatus === 'cancellation_requested' && booking.cancellationQuote && (
             <Alert tone="info">

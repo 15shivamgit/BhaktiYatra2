@@ -16,6 +16,7 @@ import {
 } from '../../utils/dates.js';
 import { recordAudit } from '../audit/audit.service.js';
 import { revalidateContent } from '../content/revalidate.js';
+import { enqueueNotification } from '../notifications/notifications.service.js';
 import { toDepartureAdmin } from './departure-state.js';
 
 const MAX_RETRIES = 5;
@@ -389,6 +390,10 @@ export async function cancelDeparture(ctx, id, { reason }, actor, req, now = new
   const departure = await getDeparture(id);
   assertEditable(departure);
 
+  const toNotify = await Booking.find({
+    departure: departure._id,
+    bookingStatus: { $in: ['pending', 'confirmed'] },
+  }).select('_id user contact.email');
   const session = await mongoose.startSession();
   let affected = { pending: 0, confirmed: 0 };
   try {
@@ -457,7 +462,16 @@ export async function cancelDeparture(ctx, id, { reason }, actor, req, now = new
     req,
   });
   await refreshTourPage(ctx, departure.tour);
-  // Notifying affected travellers (departure_cancelled email) arrives with Phase 7.
+  for (const booking of toNotify) {
+    await enqueueNotification(ctx, {
+      type: 'departure_cancelled',
+      to: booking.contact.email,
+      dedupeKey: `departure_cancelled:${booking._id}`,
+      user: booking.user,
+      booking: booking._id,
+      payload: { reason },
+    });
+  }
   return { departure: await getDepartureAdmin(departure._id, now), affected };
 }
 

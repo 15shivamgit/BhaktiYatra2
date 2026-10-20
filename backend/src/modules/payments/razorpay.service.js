@@ -165,6 +165,16 @@ async function onFailed(ctx, payment, eventId) {
     { $set: { rawSnapshot: paymentSnapshot(payment) }, $addToSet: { webhookEventIds: eventId } },
     { sort: { createdAt: -1 } },
   );
+  if (booking.bookingStatus === 'pending') {
+    await enqueueNotification(ctx, {
+      type: 'payment_failed',
+      to: booking.contact.email,
+      dedupeKey: `payment_failed:${booking._id}:${payment.id}`,
+      user: booking.user,
+      booking: booking._id,
+      payload: { reason: payment.error_description ?? null },
+    });
+  }
   return 'payment_failed';
 }
 

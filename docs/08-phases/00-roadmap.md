@@ -11,7 +11,7 @@ Phases run strictly in order. A phase starts only when the previous phase's exit
 | 4 | Tours & Departures | Tour catalogue, departures, inventory admin | 3 | built; Lighthouse Performance open (`10-testing/reports/phase-4.md`) |
 | 5 | Booking & Inventory | Holds, expiry job, booking pages, state machine | 4 | done; payments simulated until Phase 6 (`10-testing/reports/phase-5.md`) |
 | 6 | Payments | Razorpay order, verify, webhook, idempotent confirmation, payment UI | 5 | built and tested with a fake Razorpay; a real test-mode payment needs new test keys (`10-testing/reports/phase-6.md`) |
-| 7 | Documents & Email | Ticket, QR verify, invoice, email queue with retry, secure downloads | 6 | planned |
+| 7 | Documents & Email | Ticket, QR verify, invoice, email queue with retry, secure downloads | 6 | built; real inbox delivery and phone QR scan to check (`10-testing/reports/phase-7.md`) |
 | 8 | Admin Operations | Dashboard, bookings/payments/users/contacts admin, cancellations, audit viewer | 7 | planned |
 | 9 | Quality Assurance | Full test pass, E2E, a11y, performance, security review | 8 | planned |
 | 10 | Deployment & Handover | Staging + production live, smoke tests, runbook | 9 | planned |

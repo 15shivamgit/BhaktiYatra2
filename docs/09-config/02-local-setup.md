@@ -43,12 +43,7 @@ Tests use `mongodb-memory-server` (replica set mode) and need no database.
 
 ## Email in development
 
-```bash
-docker run -d --name by-mailpit -p 8025:8025 -p 1025:1025 axllent/mailpit
-# SMTP_HOST=localhost SMTP_PORT=1025 SMTP_USER= SMTP_PASS=
-# UI: http://localhost:8025
-```
-Without Docker, leave SMTP unset in Phases 2–6; the console transport logs emails.
+Email goes through Resend (ADR-018, ADR-033). With `RESEND_API_KEY` set, the API sends real emails every minute from the queue. Until a domain is verified in Resend, the test sender (`onboarding@resend.dev`) can only deliver to the email address of the Resend account; other addresses fail and are retried three times. Set `MAIL_PROVIDER=console` to log emails instead of sending them. Password reset emails are sent immediately; with the console provider the reset link is logged in development.
 
 ## Razorpay test payments locally (Phase 6)
 
