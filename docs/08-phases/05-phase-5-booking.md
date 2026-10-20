@@ -23,9 +23,11 @@
 
 ## Exit criteria
 
-- [ ] Concurrency test passes reliably 10 runs in a row.
-- [ ] Expired holds released within 2 minutes in a manual run with `HOLD_MINUTES=1`.
-- [ ] Reconciliation reports zero mismatches after a randomized test run (create/cancel/expire mix).
-- [ ] User cannot see another user's booking by reference (404).
-- [ ] Policy from `07-content/05-cancellation-refund-policy.md` shown on the refund-policy page and booking detail; `CANCELLATION_SLABS` used for the suggested refund.
-- [ ] All Phase 5 tests green.
+Status on 2026-10-20 (details in `10-testing/reports/phase-5.md`):
+
+- [x] Concurrency test passes reliably 10 runs in a row.
+- [x] Expired holds released within 2 minutes in a manual run with `HOLD_MINUTES=1`.
+- [x] Reconciliation reports zero mismatches after a randomized test run (create/cancel/expire mix).
+- [x] User cannot see another user's booking by reference (404).
+- [x] Policy from `07-content/05-cancellation-refund-policy.md` shown on the refund-policy page and booking detail; `CANCELLATION_SLABS` used for the suggested refund.
+- [x] All Phase 5 tests green.

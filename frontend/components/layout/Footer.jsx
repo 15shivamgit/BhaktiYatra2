@@ -46,11 +46,11 @@ export default function Footer() {
             <p className="font-semibold text-text">{t('footer.contactHeading')}</p>
             <p>{BUSINESS.address}</p>
             <p>
-              <a className="hover:text-primary" href={BUSINESS.phoneHref}>
+              <a className="hover:text-accent hover:underline" href={BUSINESS.phoneHref}>
                 {BUSINESS.phoneDisplay}
               </a>
               {' · '}
-              <a className="hover:text-primary" href={`mailto:${BUSINESS.email}`}>
+              <a className="hover:text-accent hover:underline" href={`mailto:${BUSINESS.email}`}>
                 {BUSINESS.email}
               </a>
             </p>
@@ -62,7 +62,7 @@ export default function Footer() {
             <ul className="mt-3 space-y-2 text-sm text-text-muted">
               {column.links.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-primary">
+                  <Link href={link.href} className="hover:text-accent hover:underline">
                     {link.key ? t(link.key) : link.label}
                   </Link>
                 </li>

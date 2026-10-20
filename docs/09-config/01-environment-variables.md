@@ -24,7 +24,7 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `SITE_URL` | yes | `http://localhost:3000` | used in emails and QR links |
 | `REVALIDATE_SECRET` | yes | random | shared with frontend |
 | `TICKET_SIGNING_SECRET` | yes (Phase 7) | random | separate from JWT |
-| `PAYMENTS_PROVIDER` | no | `razorpay` | `stub` in tests and Phase 5 |
+| `PAYMENTS_PROVIDER` | no | `stub` | `stub` fakes orders (Phase 5, tests); `razorpay` from Phase 6. The API refuses to start with `stub` when `NODE_ENV=production` |
 | `RAZORPAY_KEY_ID` | yes (Phase 6) | `rzp_test_…` | public id |
 | `RAZORPAY_KEY_SECRET` | yes (Phase 6) | | server only |
 | `RAZORPAY_WEBHOOK_SECRET` | yes (Phase 6) | | set in Razorpay dashboard |
@@ -36,7 +36,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `MAIL_FROM` | yes (Phase 7) | `BhaktiYatra <onboarding@resend.dev>` until a domain is verified | |
 | `MAIL_REPLY_TO` | no | `support@bhaktiyatra.in` | |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
-| `HOLD_MINUTES` | no | `15` | |
+| `HOLD_MINUTES` | no | `15` | seat hold length; fractions are allowed for tests (the E2E server uses 1) |
+| `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `15` | booking creations per user per window |
 | `MAX_SEATS_PER_BOOKING` | no | `10` | |
 | `BOOKING_CUTOFF_HOURS` | no | `24` | default for new departures |
 | `RATE_LIMIT_ENABLED` | no | `true` | `false` in tests |

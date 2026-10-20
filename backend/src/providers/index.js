@@ -1,6 +1,7 @@
 import { createCloudinaryProvider } from './cloudinary.provider.js';
 import { createFrontendProvider } from './frontend.provider.js';
 import { createGoogleProvider } from './google.provider.js';
+import { createPaymentsProvider } from './payments.provider.js';
 
 /**
  * Build the external-service clients from configuration. Tests replace any of them with fakes.
@@ -19,6 +20,11 @@ export function createProviders(env) {
       apiSecret: env.CLOUDINARY_API_SECRET,
     }),
     frontend: createFrontendProvider({ siteUrl: env.SITE_URL, secret: env.REVALIDATE_SECRET }),
+    payments: createPaymentsProvider({
+      provider: env.PAYMENTS_PROVIDER,
+      nodeEnv: env.NODE_ENV,
+      keyId: env.RAZORPAY_KEY_ID,
+    }),
   };
 }
 

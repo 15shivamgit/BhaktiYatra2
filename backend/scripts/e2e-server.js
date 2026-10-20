@@ -36,6 +36,9 @@ const env = parseEnv({
   BCRYPT_ROUNDS: '4',
   RATE_LIMIT_ENABLED: 'false',
   JOBS_ENABLED: 'false',
+  // Short holds let E2E watch the countdown run out (default 1 minute).
+  HOLD_MINUTES: process.env.E2E_HOLD_MINUTES ?? '1',
+  PAYMENTS_PROVIDER: 'stub',
 });
 const logger = createLogger({ level: env.LOG_LEVEL });
 await connectDb(env.MONGO_URL, logger, { attempts: 1 });

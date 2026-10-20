@@ -1,16 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { expectNoSeriousA11yViolations } from './helpers';
+import { expectNoSeriousA11yViolations, openFilters } from './helpers';
 
 const CHAR_DHAM = '/tours/char-dham-yatra-haridwar';
 const count = (page) => page.getByRole('status').filter({ hasText: /tours?$/ });
-
-/** On phones the filter panel is collapsed behind a button. */
-async function openFilters(page) {
-  const toggle = page.getByRole('button', { name: /^Filters/ });
-  if ((await toggle.isVisible()) && (await toggle.getAttribute('aria-expanded')) !== 'true') {
-    await toggle.click();
-  }
-}
 
 test.describe('tour list', () => {
   test('lists sample tours with prices and next dates', async ({ page }) => {
@@ -83,17 +75,20 @@ test.describe('tour detail', () => {
     ).toBeVisible();
     await expect(page.locator('#departures tbody tr')).toHaveCount(3);
 
-    const panel = page.locator('#book');
+    const panel = page.locator('#book').filter({ visible: true });
     await expect(panel).toContainText('₹32,999');
     await panel.getByRole('radio').nth(1).check();
     await expect(panel).toContainText('₹34,999');
-    await expect(panel).toContainText('Online booking opens soon');
-
-    await panel.getByRole('link', { name: 'Send an enquiry' }).click();
-    await expect(page).toHaveURL(/\/contact\?subject=/);
-    await expect(page.getByLabel('Subject (optional)')).toHaveValue(
-      'Enquiry: Char Dham Yatra from Haridwar',
+    // Guests are sent to log in first, then straight to the booking page for that date.
+    await expect(panel.getByRole('link', { name: 'Book now' })).toHaveAttribute(
+      'href',
+      /^\/login\?next=%2Ftours%2Fchar-dham-yatra-haridwar%2Fbook%3Fdeparture%3D[a-f0-9]{24}$/,
     );
+  });
+
+  test('an enquiry link opens the contact form with the subject filled in', async ({ page }) => {
+    await page.goto('/contact?subject=Enquiry%3A%20Char%20Dham%20Yatra');
+    await expect(page.getByLabel('Subject (optional)')).toHaveValue('Enquiry: Char Dham Yatra');
   });
 
   test('ships TouristTrip, FAQ and breadcrumb structured data', async ({ request }) => {
@@ -120,11 +115,11 @@ test.describe('tour detail', () => {
   test('phones get a sticky bar that jumps to the date picker', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'The bar is for small screens');
     await page.goto(CHAR_DHAM);
-    const bar = page.getByRole('link', { name: 'Choose a date' });
+    const bar = page.locator('a[href="#book"]').filter({ visible: true });
     await expect(bar).toBeVisible();
     await bar.click();
     await expect(page).toHaveURL(/#book$/);
-    await expect(page.locator('#book')).toBeInViewport();
+    await expect(page.locator('#book').filter({ visible: true })).toBeInViewport();
   });
 
   test('unknown tour shows the not-found page', async ({ page }) => {

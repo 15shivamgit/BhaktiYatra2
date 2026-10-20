@@ -45,3 +45,31 @@ export async function expectNoSeriousA11yViolations(page) {
     'serious/critical axe violations',
   ).toEqual([]);
 }
+
+const API = 'http://localhost:5100/api/v1';
+
+/**
+ * Register a fresh user through the API; the session cookie lands in the page's browser context,
+ * so the page is signed in afterwards. Each test gets its own user (pending-booking limits).
+ */
+export async function registerUser(page, { name = 'Pilgrim Test' } = {}) {
+  const email = uniqueEmail('booker');
+  const res = await page.request.post(`${API}/auth/register`, {
+    data: { name, email, password: 'E2e-Booker-Pass-1', phone: '9876543210' },
+  });
+  if (!res.ok()) throw new Error(`register failed: ${res.status()} ${await res.text()}`);
+  return { name, email, password: 'E2e-Booker-Pass-1' };
+}
+
+/**
+ * On phones the filter panel is collapsed behind a "Filters" button. A click that lands before
+ * React has hydrated does nothing, so retry until the panel reports it is open.
+ */
+export async function openFilters(page) {
+  if ((page.viewportSize()?.width ?? 1280) >= 1024) return; // always open from lg up
+  const toggle = page.getByRole('button', { name: /^Filters/ });
+  await expect(async () => {
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 1000 });
+  }).toPass({ timeout: 15_000 });
+}

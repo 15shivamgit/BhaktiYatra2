@@ -1,6 +1,8 @@
+import { expireHolds, reconcileInventory } from '../modules/bookings/bookings.service.js';
 import { completeDepartures } from '../modules/tours/departures.service.js';
 
-const HOUR_MS = 3_600_000;
+const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
 
 /**
  * In-process jobs (docs/03-database/03-indexes-constraints.md "Jobs"). Each job only calls a
@@ -8,7 +10,18 @@ const HOUR_MS = 3_600_000;
  * going is never started again in parallel. Single API instance assumed (ADR-030).
  */
 export const JOBS = Object.freeze([
+  { name: 'expire-holds', everyMs: MINUTE_MS, run: () => expireHolds() },
   { name: 'complete-departures', everyMs: HOUR_MS, run: () => completeDepartures() },
+  {
+    name: 'reconcile-inventory',
+    everyMs: HOUR_MS,
+    run: async ({ logger }) => {
+      const { checked, mismatches } = await reconcileInventory();
+      // Never auto-fixed in v1: an admin checks and runs scripts/reconcile-inventory.js --fix.
+      for (const mismatch of mismatches) logger.error(mismatch, 'Inventory mismatch');
+      return { checked, mismatches: mismatches.length };
+    },
+  },
 ]);
 
 /**
@@ -16,7 +29,8 @@ export const JOBS = Object.freeze([
  * @param {typeof JOBS} [jobs]
  * @returns {() => void} stop function
  */
-export function startJobs({ logger }, jobs = JOBS) {
+export function startJobs(ctx, jobs = JOBS) {
+  const { logger } = ctx;
   const timers = [];
   for (const job of jobs) {
     let running = false;
@@ -25,7 +39,7 @@ export function startJobs({ logger }, jobs = JOBS) {
       running = true;
       const started = Date.now();
       try {
-        const result = await job.run();
+        const result = await job.run(ctx);
         logger.info({ job: job.name, ms: Date.now() - started, ...result }, 'Job finished');
       } catch (error) {
         logger.error({ job: job.name, err: error.message }, 'Job failed');

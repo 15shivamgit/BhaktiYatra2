@@ -1,7 +1,9 @@
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Suspense } from 'react';
 import { preconnect } from 'react-dom';
 import { Toaster } from 'sonner';
 import Footer from '@/components/layout/Footer';
+import PendingBookingBanner from '@/components/bookings/PendingBookingBanner';
 import Navbar from '@/components/layout/Navbar';
 import { UserProvider } from '@/lib/auth/user-context';
 import { SITE_URL } from '@/lib/config';
@@ -47,6 +49,9 @@ export default function RootLayout({ children }) {
         </a>
         <UserProvider>
           <Navbar />
+          <Suspense fallback={null}>
+            <PendingBookingBanner />
+          </Suspense>
           <main id="main" className="flex-1">
             {children}
           </main>

@@ -168,3 +168,15 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **Booking switch.** The tour page shows "Book now" only when `NEXT_PUBLIC_FEATURE_BOOKING=true` (Phase 5). Until then it offers an enquiry (contact form prefilled with the tour) and a call button. Tours are always in the navigation; the `NEXT_PUBLIC_FEATURE_TOURS` flag is gone.
 - **Tour pages** follow ADR-026 (render on first visit, cached under the `content` tag; every tour or departure change revalidates the tour). Seat counts shown there can be up to five minutes old; the booking page will read `GET /departures/:id`, which is never cached.
 
+## ADR-031 — Phase 5: bookings with a stub payment provider
+**Date:** 2026-10-20 · **Status:** accepted
+**Decision:**
+- **Stub first.** `PAYMENTS_PROVIDER` defaults to `stub` until Razorpay is wired in Phase 6, and the API refuses to start with the stub in production. The stub fakes order ids, so seat holds, expiry and cancellation are proven without money.
+- **Simulator.** `POST /bookings/:reference/simulate-payment` exists only while the stub allows it (never in production). It calls the real `confirmBooking`, so the idempotent confirmation and the late-payment path (re-hold, or `payment_received_no_seats`) are already built and tested for Phase 6. The booking page shows "Simulate payment" buttons only when the API says `simulate: true`.
+- **Idempotency.** Keys are stored per user in MongoDB with a 10-minute TTL (works across restarts); a different body with the same key gets 422; a failed request releases the key.
+- **Pending limit** counts unpaid bookings whose hold has not ended, so an expired hold the job has not processed yet does not block a new booking.
+- **References** use the booking date in India: `BY-YYYYMMDD-XXXXX` with an alphabet without look-alikes.
+- **Notifications** (`booking_confirmed`, `payment_received_no_seats`, `cancellation_requested_admin`) are queued after the transaction commits; their dedupe keys prevent duplicates. Sending arrives in Phase 7.
+- **Live booking switch.** The tour page shows "Book now" when `NEXT_PUBLIC_FEATURE_BOOKING=true`. It is on in local development and E2E, and stays off in production until Phase 6.
+- **"Try again"** after an expired hold resets the booking page in place, because a link to the same URL does not remount the page in the App Router.
+

@@ -45,7 +45,9 @@ Server steps (single service method `createBooking`):
   }
 }
 ```
-Errors: 401, 404 `NOT_FOUND` (departure), 409 `SEATS_UNAVAILABLE`, 409 `TOO_MANY_PENDING`, 410 `DEPARTURE_CLOSED`, 422, 429, 502.
+Errors: 401, 404 `NOT_FOUND` (departure or unpublished tour), 409 `SEATS_UNAVAILABLE` (`details.seatsAvailable`; also for a `full` departure), 409 `TOO_MANY_PENDING` (counts unpaid bookings whose hold has not ended), 410 `DEPARTURE_CLOSED` (inside the cutoff, or departure `cancelled`/`completed`), 422 (including `IDEMPOTENCY_KEY_REUSED` when a key is replayed with a different body), 429, 502 `PROVIDER_ERROR`, 503 while the configured provider cannot create orders.
+
+As built (Phase 5): `payment.simulate` is `true` only with the stub provider outside production; `meta.serverTime` lets the client run the countdown on the server clock; a replayed `Idempotency-Key` returns the stored body with header `Idempotent-Replayed: true`. Keys are stored per user for 10 minutes (MongoDB TTL); a failed request releases its key. Phone numbers are normalised to E.164 (`+91…`).
 
 ## GET /bookings/my
 Auth: user  
@@ -53,6 +55,8 @@ Query: `status` (bookingStatus), `page`, `limit`
 200: `BookingSummary[]` newest first.
 
 ## GET /bookings/:reference
+`meta` carries `serverTime` and `payment: { provider, keyId, simulate }`. `BookingDetail` also has `cancellationQuote: { daysBefore, chargePct, suggestedRefund, departureCancelled }` for confirmed bookings and cancellation requests (`CANCELLATION_SLABS`).
+
 Auth: user (owner) or admin  
 200: `BookingDetail`. 404 for other users' bookings (not 403, to avoid reference probing).
 
@@ -63,6 +67,9 @@ Behaviour by current state:
 - `pending` → `cancelled`, release hold, Payment `created` → `failed` ("cancelled_by_user"). 200.
 - `confirmed` → `cancellation_requested` (user) ; admin uses `/admin/bookings/:id/cancel` instead. 200. Enqueues `cancellation_requested_admin` notification.
 - anything else → 409 `INVALID_TRANSITION`.
+
+## POST /bookings/:reference/simulate-payment
+Development and tests only: exists only while the stub provider allows simulation (never in production). Body `{ "outcome": "success" | "failure" }`. Success runs the real `confirmBooking` (including the late-payment path); failure records a failed attempt and keeps the booking `pending`. 200: `{ booking: BookingDetail, state }`.
 
 ## GET /bookings/:reference/ticket
 Auth: owner or admin  
