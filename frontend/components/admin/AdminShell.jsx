@@ -12,7 +12,7 @@ const NAV = [
   { href: '/admin/temples', key: 'admin.temples', icon: Landmark },
   { href: '/admin/circuits', key: 'admin.circuits', icon: Route },
   { href: '/admin/contacts', key: 'admin.contacts', icon: Inbox },
-  { href: '/admin/tours', key: 'admin.tours', icon: Map, phase: 4 },
+  { href: '/admin/tours', key: 'admin.tours', icon: Map },
   { href: '/admin/bookings', key: 'admin.bookings', icon: CalendarCheck, phase: 8 },
   { href: '/admin/users', key: 'admin.users', icon: Users, phase: 8 },
 ];

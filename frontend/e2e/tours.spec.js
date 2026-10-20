@@ -35,9 +35,14 @@ test.describe('tour list', () => {
     await expect(count(page)).toHaveText('1 tour');
 
     await page.goto('/tours?days=1-3&sort=price');
-    await expect(count(page)).toHaveText('2 tours');
-    const titles = page.getByRole('main').getByRole('article').getByRole('heading', { level: 3 });
-    await expect(titles.filter({ visible: true })).toHaveText([
+    // The admin journey may add its own short "E2E Yatra" tour while tests run in parallel.
+    const titles = page
+      .getByRole('main')
+      .getByRole('article')
+      .getByRole('heading', { level: 3 })
+      .filter({ visible: true })
+      .filter({ hasNotText: /^E2E / });
+    await expect(titles).toHaveText([
       'Ujjain and Omkareshwar Jyotirlinga Yatra',
       'Puri Jagannath Darshan',
     ]);

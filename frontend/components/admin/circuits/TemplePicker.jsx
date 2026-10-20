@@ -13,7 +13,12 @@ import { t } from '@/lib/i18n';
  * Ordered list of temples in a circuit, with search to add more. Order is the route order.
  * @param {{ value: { id: string, name: string, city?: string, status?: string }[], onChange: (list: any[]) => void, error?: string }} props
  */
-export default function TemplePicker({ value, onChange, error }) {
+export default function TemplePicker({
+  value,
+  onChange,
+  error,
+  title = t('adminContent.templesInRoute'),
+}) {
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
   const [searching, setSearching] = useState(false);
@@ -58,14 +63,12 @@ export default function TemplePicker({ value, onChange, error }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-display text-lg font-semibold text-accent">
-          {t('adminContent.templesInRoute')}
-        </h2>
+        <h2 className="font-display text-lg font-semibold text-accent">{title}</h2>
         {error && <p className="mt-1 text-sm text-danger">{error}</p>}
         {value.length === 0 ? (
           <p className="mt-2 text-sm text-text-muted">{t('adminContent.noTemplesInRoute')}</p>
         ) : (
-          <ol className="mt-3 space-y-2" aria-label={t('adminContent.templesInRoute')}>
+          <ol className="mt-3 space-y-2" aria-label={title}>
             {value.map((temple, index) => (
               <li
                 key={temple.id}

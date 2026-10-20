@@ -46,7 +46,7 @@ Full reasoning: `00-overview/03-decision-log.md`.
 
 ## Current status (2026-10-20)
 
-Phases 1 (Foundation), 2 (Authentication, including Google sign-in) and 3 (Temple Explore: public temple and circuit pages, admin content tools, 22 drafted temples) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype (`legacy/`) was deleted after Phase 3 with the owner's approval; it remains in Git history (ADR-029). Reports: `10-testing/reports/phase-1.md`, `phase-2.md`, `phase-3.md`. Open from Phase 3: Lighthouse mobile Performance (63–67, target 85) and the Rich Results Test. Next: Phase 4 (Tours & Departures).
+Phases 1 (Foundation), 2 (Authentication, including Google sign-in) 3 (Temple Explore: public temple and circuit pages, admin content tools, 22 drafted temples) and 4 (Tours & Departures: tour catalogue, departures with safe seat inventory, sample tours) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype (`legacy/`) was deleted after Phase 3 with the owner's approval; it remains in Git history (ADR-029). Reports: `10-testing/reports/phase-1.md` to `phase-4.md`. Open: Lighthouse mobile Performance on detail pages (about 57–67, target 85) and the Rich Results Test. Online booking stays switched off (`NEXT_PUBLIC_FEATURE_BOOKING`) until Phase 5. Next: Phase 5 (Booking & Inventory).
 
 ## State of the old code (as of 2026-10-20)
 

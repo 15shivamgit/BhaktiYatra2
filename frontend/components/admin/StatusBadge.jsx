@@ -9,6 +9,10 @@ const TONES = {
   read: 'bg-surface-muted text-text-muted',
   replied: 'bg-success-soft text-success',
   spam: 'bg-danger-soft text-danger',
+  scheduled: 'bg-success-soft text-success',
+  full: 'bg-warning-soft text-warning',
+  completed: 'bg-surface-muted text-text-muted',
+  cancelled: 'bg-danger-soft text-danger',
 };
 
 const LABELS = {
@@ -19,6 +23,10 @@ const LABELS = {
   read: 'Read',
   replied: 'Replied',
   spam: 'Spam',
+  scheduled: 'Scheduled',
+  full: 'Full',
+  completed: 'Completed',
+  cancelled: 'Cancelled',
 };
 
 /** Status shown as text (never colour alone). */

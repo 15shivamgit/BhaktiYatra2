@@ -62,8 +62,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `NEXT_PUBLIC_ENV` | no | `development` | shows env badge in admin; staging noindex |
 | `NEXT_PUBLIC_GOOGLE_SIGNIN` | no | (unset = shown) | set to `false` to hide "Continue with Google" when the API has no Google credentials |
 | `NEXT_PUBLIC_SENTRY_DSN` | no | | |
-| `NEXT_PUBLIC_FEATURE_TOURS` | no | `false` | Phase 3 flag; removed in Phase 4 |
-| `NEXT_PUBLIC_FEATURE_BOOKING` | no | `false` | Phase 4 flag; removed in Phase 5 |
+| `NEXT_PUBLIC_FEATURE_TOURS` | — | — | Removed in Phase 4: tours are always shown |
+| `NEXT_PUBLIC_FEATURE_BOOKING` | no | `false` | `true` shows "Book now" on tour pages (Phase 5); until then an enquiry button. Removed once booking is live |
 
 Rule: anything prefixed `NEXT_PUBLIC_` is visible to every visitor. Never put secrets there.
 

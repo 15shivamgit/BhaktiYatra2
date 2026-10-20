@@ -338,7 +338,7 @@ function TempleEditorForm({ initial, initialProblems, options }) {
           <div {...tabPanelProps('temple', 'media', tab)} className="focus:outline-none">
             <p className="mb-4 text-sm text-text-muted">{t('adminContent.mediaNote')}</p>
             <ImageManager
-              templeId={temple.id}
+              endpoint={`/admin/temples/${temple.id}/images`}
               images={temple.images}
               maxImages={options.maxImages}
               onChange={(images) => {

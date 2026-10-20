@@ -2,7 +2,7 @@
 
 import { ArrowDown, ArrowUp, Star, Trash2, Upload } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
@@ -12,11 +12,13 @@ import { errorMessage } from '@/lib/api/messages';
 import { t } from '@/lib/i18n';
 
 /**
- * Upload, describe, order and remove a temple's photos (FR-ADMINCONTENT-02). Uploads go
+ * Upload, describe, order and remove photos of a temple or tour (FR-ADMINCONTENT-02). Uploads go
  * straight to the API; alt/order/primary edits are saved together with "Save photo details".
- * @param {{ templeId: string, images: any[], maxImages: number, onChange: (images: any[]) => void }} props
+ * @param {{ endpoint: string, images: any[], maxImages: number, onChange: (images: any[]) => void }} props
+ *   endpoint: e.g. "/admin/temples/<id>/images"
  */
-export default function ImageManager({ templeId, images, maxImages, onChange }) {
+export default function ImageManager({ endpoint, images, maxImages, onChange }) {
+  const inputId = useId();
   const [draft, setDraft] = useState(images);
   const [lastSynced, setLastSynced] = useState(images);
   const [pending, setPending] = useState([]); // [{ file, alt, preview }]
@@ -46,7 +48,7 @@ export default function ImageManager({ templeId, images, maxImages, onChange }) 
     for (const item of pending) form.append('files', item.file);
     form.append('alts', JSON.stringify(pending.map((item) => item.alt)));
     try {
-      const body = await apiUpload(`/admin/temples/${templeId}/images`, form);
+      const body = await apiUpload(endpoint, form);
       const failed = body.meta?.failed ?? [];
       toast.success(t('adminContent.uploaded', { count: pending.length - failed.length }));
       if (failed.length)
@@ -77,7 +79,7 @@ export default function ImageManager({ templeId, images, maxImages, onChange }) 
     setBusy(true);
     setError(null);
     try {
-      const body = await apiFetch(`/admin/temples/${templeId}/images`, {
+      const body = await apiFetch(endpoint, {
         method: 'PATCH',
         body: {
           images: draft.map((img, i) => ({
@@ -102,10 +104,9 @@ export default function ImageManager({ templeId, images, maxImages, onChange }) 
     setBusy(true);
     setError(null);
     try {
-      await apiFetch(
-        `/admin/temples/${templeId}/images?publicId=${encodeURIComponent(image.publicId)}`,
-        { method: 'DELETE' },
-      );
+      await apiFetch(`${endpoint}?publicId=${encodeURIComponent(image.publicId)}`, {
+        method: 'DELETE',
+      });
       onChange(images.filter((img) => img.publicId !== image.publicId));
     } catch (err) {
       setError(errorMessage(err));
@@ -202,10 +203,10 @@ export default function ImageManager({ templeId, images, maxImages, onChange }) 
             multiple
             onChange={choose}
             className="sr-only"
-            id="temple-image-input"
+            id={inputId}
           />
           <label
-            htmlFor="temple-image-input"
+            htmlFor={inputId}
             className="mt-3 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-md border border-accent px-4 text-sm font-medium text-accent hover:bg-accent-soft"
           >
             <Upload aria-hidden="true" className="size-4" />

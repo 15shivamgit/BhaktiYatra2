@@ -157,3 +157,14 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 **Decision:** Removed from the working tree. The untracked `legacy/backend/.env` was deleted too; its only settings missing from the new `backend/.env` were Gmail SMTP values (replaced by Resend, ADR-018, and due for rotation) and two old Google and Cloudinary key names.  
 **Consequences:** The old code and images stay in Git history; commit `22465dc` is the last one that contains them (`git show 22465dc:legacy/<path>`). Tours, bookings and payments in Phases 4 to 6 follow `docs/`, not the old code.
 
+## ADR-030 — Phase 4: dates, inventory, jobs and the booking switch
+**Date:** 2026-10-20 · **Status:** accepted
+**Decision:**
+- **Dates.** Departure dates are calendar days in India: stored as midnight IST, exchanged as `"YYYY-MM-DD"`. "Today", month filters and the completion job use IST (`backend/src/utils/dates.js`). The frontend formats these strings in UTC so the day never shifts in another time zone.
+- **Booking schema first.** The `Booking` model is defined in Phase 4 because inventory rules (committed seats, cancel, delete and archive guards) read it. Creating bookings arrives in Phase 5.
+- **Inventory.** Seat changes are one conditional `findOneAndUpdate` (`seatsAvailable ≥ −delta` and `totalSeats` unchanged), retried on concurrent edits, so total seats never drop below committed seats. Departure date edits are refused while seats are booked **or held** (stricter than the spec's "confirmed"), because pending holds also carry the old dates.
+- **Cancel.** Runs in a transaction: pending bookings expire with seats released; confirmed ones become `cancellation_requested` with `departureCancelled: true` for refunds in Phase 8. The traveller email comes with Phase 7.
+- **Jobs.** A small in-process scheduler (`backend/src/jobs/index.js`, `setInterval`, no overlapping runs) instead of node-cron; jobs only call services. Single API instance assumed, as in the architecture doc. `complete-departures` runs hourly.
+- **Booking switch.** The tour page shows "Book now" only when `NEXT_PUBLIC_FEATURE_BOOKING=true` (Phase 5). Until then it offers an enquiry (contact form prefilled with the tour) and a call button. Tours are always in the navigation; the `NEXT_PUBLIC_FEATURE_TOURS` flag is gone.
+- **Tour pages** follow ADR-026 (render on first visit, cached under the `content` tag; every tour or departure change revalidates the tour). Seat counts shown there can be up to five minutes old; the booking page will read `GET /departures/:id`, which is never cached.
+

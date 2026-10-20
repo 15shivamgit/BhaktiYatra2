@@ -26,6 +26,7 @@ test.describe('admin content (J8)', () => {
     page,
     request,
   }) => {
+    test.slow(); // long journey; the full suite runs four workers in parallel
     const name = `E2E Temple ${suffix()}`;
     await page
       .getByRole('navigation', { name: 'Admin panel' })
@@ -74,7 +75,7 @@ test.describe('admin content (J8)', () => {
 
     await page.getByRole('tab', { name: 'Photos' }).click();
     await page
-      .locator('#temple-image-input')
+      .locator('input[type="file"]')
       .setInputFiles({ name: 'shrine.png', mimeType: 'image/png', buffer: PNG });
     await page.getByLabel('Alt text shrine.png').fill('Small white shrine beside a banyan tree');
     await page.getByRole('button', { name: 'Upload photos' }).click();
@@ -183,6 +184,140 @@ test.describe('admin content (J8)', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Kedarnath Temple');
     await expectNoSeriousA11yViolations(page);
     await page.getByRole('tab', { name: 'Timings & festivals' }).click();
+    await expectNoSeriousA11yViolations(page);
+  });
+});
+
+/** "YYYY-MM-DD" for today + n days in India. */
+const dayFromToday = (n) =>
+  new Date(Date.now() + 330 * 60_000 + n * 86_400_000).toISOString().slice(0, 10);
+
+test.describe('admin tours (Phase 4)', () => {
+  test.skip(({ isMobile }) => isMobile, 'Admin journeys run on the desktop project');
+
+  test.beforeEach(async ({ page }) => {
+    await login(page, ACCOUNTS.admin);
+    await expect(page).toHaveURL('/admin');
+  });
+
+  test('creates a tour with itinerary and departures, publishes it, and manages seats', async ({
+    page,
+    request,
+  }) => {
+    test.slow(); // long journey; the full suite runs four workers in parallel
+    const title = `E2E Yatra ${suffix()}`;
+    await page
+      .getByRole('navigation', { name: 'Admin panel' })
+      .getByRole('link', { name: 'Tours' })
+      .click();
+    await page.getByRole('link', { name: 'New tour' }).click();
+    await page.getByLabel('Title', { exact: true }).fill(title);
+    await page.getByLabel('Summary').fill('Two calm days by the Ganga with aarti and darshan.');
+    await page.getByLabel('Destinations').fill('Haridwar, Rishikesh');
+    await page.getByLabel('Days', { exact: true }).fill('2');
+    await page.getByLabel('Nights', { exact: true }).fill('1');
+    await page.getByLabel('Base price (₹ per person)').fill('9999');
+    await page.getByLabel('Pickup cities').fill('Haridwar');
+    await page.getByRole('button', { name: 'Create draft' }).click();
+    await expect(page).toHaveURL(/\/admin\/tours\/[a-f0-9]{24}$/);
+
+    const missing = page.getByRole('status').filter({ hasText: 'Not ready to publish' });
+    await expect(missing).toContainText('Upload at least one image');
+    await expect(missing).toContainText('The itinerary needs exactly 2 days');
+    await expect(missing).toContainText('Add at least one inclusion');
+
+    await page.getByRole('tab', { name: 'Itinerary' }).click();
+    await page
+      .getByRole('group', { name: 'Day 1' })
+      .getByLabel('Day title')
+      .fill('Arrive in Haridwar');
+    await page
+      .getByRole('group', { name: 'Day 2' })
+      .getByLabel('Day title')
+      .fill('Rishikesh and return');
+    await page.getByRole('tab', { name: 'Inclusions' }).click();
+    await page.getByLabel('What is included').fill('Hotel stay\nAC transport');
+    await page.getByRole('tab', { name: 'Temples' }).click();
+    const search = page.getByLabel('Find a temple to add');
+    await search.fill('Kedarnath');
+    await search.press('Enter');
+    await page.getByRole('button', { name: 'Add temple: Kedarnath Temple' }).click();
+    await page.getByRole('button', { name: 'Save changes' }).click();
+    await expect(page.getByText('Saved.')).toBeVisible();
+    await expect(missing).not.toContainText('itinerary');
+
+    await page.getByRole('tab', { name: 'Photos' }).click();
+    await page
+      .locator('input[type="file"]')
+      .setInputFiles({ name: 'ghat.png', mimeType: 'image/png', buffer: PNG });
+    await page.getByLabel('Alt text ghat.png').fill('Evening aarti on the ghat');
+    await page.getByRole('button', { name: 'Upload photos' }).click();
+    await expect(missing).toBeHidden();
+    await page.getByRole('button', { name: 'Publish' }).click();
+    await expect(page.getByText(/^Published\./)).toBeVisible();
+
+    // Departures: one single date, then a weekly series.
+    await page.getByRole('tab', { name: 'Departures' }).click();
+    await page.getByRole('button', { name: 'Add departure' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Start date').fill(dayFromToday(20));
+    await dialog.getByLabel('Total seats').fill('30');
+    await dialog.getByRole('button', { name: 'Add departure' }).click();
+    await expect(page.getByText('Departure added.')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Repeat dates' }).click();
+    await dialog.getByLabel('First date').fill(dayFromToday(30));
+    await dialog.getByLabel('Last date').fill(dayFromToday(44));
+    await dialog.getByLabel('Total seats').fill('20');
+    await dialog.getByRole('button', { name: 'Create departures' }).click();
+    await expect(page.getByText('3 departures created.')).toBeVisible();
+
+    const rows = page.getByRole('table', { name: 'Departures' }).locator('tbody tr');
+    await expect(rows).toHaveCount(4);
+
+    await page.getByRole('button', { name: `Seats: ${dayFromToday(20)}` }).click();
+    await dialog.getByLabel('Total seats').fill('35');
+    await dialog.getByLabel('Reason').fill('Added a second bus');
+    await dialog.getByRole('button', { name: 'Update seats' }).click();
+    await expect(page.getByText('Seats updated.')).toBeVisible();
+    await expect(rows.first()).toContainText('35');
+
+    await page.getByRole('button', { name: `Cancel: ${dayFromToday(44)}` }).click();
+    await dialog.getByLabel('Reason').fill('Road closed for repairs');
+    await dialog.getByRole('button', { name: 'Cancel departure' }).click();
+    await expect(page.getByText(/^Departure cancelled\./)).toBeVisible();
+    await expect(rows.last()).toContainText('Cancelled');
+
+    // Public page shows the three open dates; the sitemap lists the tour.
+    const slug = (
+      await page
+        .locator('header')
+        .getByText(/^\/tours\//)
+        .textContent()
+    ).replace('/tours/', '');
+    await page.goto(`/tours/${slug}`);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.locator('#departures tbody tr')).toHaveCount(3);
+    await expect
+      .poll(
+        async () => (await (await request.get('/sitemap.xml')).text()).includes(`/tours/${slug}`),
+        { timeout: 15_000 },
+      )
+      .toBe(true);
+  });
+
+  test('tour editor has no serious accessibility violations', async ({ page }) => {
+    await page.goto('/admin/tours');
+    await page
+      .getByRole('main')
+      .getByRole('link', { name: 'Char Dham Yatra from Haridwar' })
+      .click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Char Dham Yatra from Haridwar',
+    );
+    await expectNoSeriousA11yViolations(page);
+    await page.getByRole('tab', { name: 'Departures' }).click();
+    await expect(page.getByRole('table', { name: 'Departures' })).toBeVisible();
     await expectNoSeriousA11yViolations(page);
   });
 });

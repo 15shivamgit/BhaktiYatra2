@@ -37,12 +37,13 @@ export function formFieldFor(path) {
  * @param {(name: string, error: object, options?: object) => void} setError
  * @param {{ path: string, message: string }[] | undefined} details
  * @param {string[]} topLevelFields keys of the form values
+ * @param {(path: string) => string} [mapPath] API path → form field (defaults to the temple form)
  */
-export function applyApiErrors(setError, details, topLevelFields) {
+export function applyApiErrors(setError, details, topLevelFields, mapPath = formFieldFor) {
   const unmatched = [];
   let first = true;
   for (const detail of details ?? []) {
-    const name = formFieldFor(detail.path);
+    const name = mapPath(detail.path);
     if (topLevelFields.includes(name.split('.')[0])) {
       setError(name, { type: 'server', message: detail.message }, { shouldFocus: first });
       first = false;
