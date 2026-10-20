@@ -1,0 +1,26 @@
+{
+  "name": "bhaktiyatra",
+  "private": true,
+  "version": "0.1.0",
+  "description": "BhaktiYatra: explore India's temples and book pilgrimage tours",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web -c yellow,cyan \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "lint": "npm run lint -w backend && npm run lint -w frontend",
+    "test": "npm run test -w backend && npm run test -w frontend",
+    "test:e2e": "npm run test:e2e -w frontend",
+    "build": "npm run build -w frontend",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "concurrently": "10.0.6",
+    "prettier": "3.9.10"
+  }
+}

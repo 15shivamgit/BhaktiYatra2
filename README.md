@@ -1,145 +1,66 @@
-# 🕉️ BhaktiYatra – Pilgrimage Travel & Booking Platform
+# BhaktiYatra
 
-A full-stack MERN travel booking system designed for pilgrimage tours across India with online payments, admin management, ticket PDF + QR code, and email booking confirmation.
+Explore India's temples and book organised pilgrimage tours.
 
----
+BhaktiYatra has two connected halves. **Explore** is an SEO-friendly directory of temples with darshan timings, history, festivals, how to reach and maps. **Travel** offers pilgrimage tours with dated departures, seat inventory, Razorpay payments, PDF tickets with QR codes and an admin back-office.
 
-## 🚀 Features
+> **Status:** rebuild in progress. Phase 1 (Foundation) of 10. The previous prototype lives in `legacy/` for reference only.
 
-### 👤 User Features
+## Documentation
 
-✔ Browse tours & pilgrimage destinations  
-✔ View tour details  
-✔ Seat availability in real-time  
-✔ Online payment via Razorpay  
-✔ Instant ticket (PDF + QR Code) on email  
-✔ My Bookings page  
-✔ User authentication (JWT based)
+Everything is specified in [`docs/`](docs/README.md) before it is built. Start with [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md). Development rules are in [`docs/CLAUDE.md`](docs/CLAUDE.md) and the phase plan is in [`docs/08-phases/`](docs/08-phases/00-roadmap.md).
 
-### 🔐 Admin Features
+## Tech stack
 
-✔ Admin dashboard with live stats  
-✔ Add / Edit / Delete tours  
-✔ Upload tour image  
-✔ Manage seats availability  
-✔ View & manage all bookings  
-✔ Download customer tickets  
-✔ Role-based route protection
+| Layer                | Technology                                           |
+| -------------------- | ---------------------------------------------------- |
+| Frontend             | Next.js (App Router), React, Tailwind CSS            |
+| Backend              | Node.js 24, Express 5 (ES modules), Zod              |
+| Database             | MongoDB Atlas with Mongoose                          |
+| Images and documents | Cloudinary                                           |
+| Payments             | Razorpay                                             |
+| Email                | Resend                                               |
+| Testing              | Vitest, Supertest, mongodb-memory-server, Playwright |
 
----
+## Repository layout
 
-## 🛠 Tech Stack
+```
+backend/    Express API (/api/v1)
+frontend/   Next.js app
+docs/       Specification (source of truth)
+legacy/     Old Vite + Express prototype, reference only; removed after Phase 3
+```
 
-| Category       | Technology                       |
-| -------------- | -------------------------------- |
-| Frontend       | React.js, TailwindCSS            |
-| Backend        | Node.js, Express.js              |
-| Database       | MongoDB Atlas                    |
-| Authentication | JWT                              |
-| Payments       | Razorpay                         |
-| Email          | Nodemailer                       |
-| Ticket         | PDFKit + QRCode                  |
-| Deployment     | Vercel / Render / AWS (optional) |
+## Run locally
 
----
-
-## 📂 Folder Structure
-
-BhaktiYatra/
-│
-├─ frontend/ (React)
-│ ├─ src/
-│ │ ├─ Components/
-│ │ ├─ Pages/
-│ │ ├─ api.js
-│ │ ├─ App.jsx
-│ │ └─ ...
-│
-├─ backend/ (Node / Express)
-│ ├─ controllers/
-│ ├─ models/
-│ ├─ routes/
-│ ├─ middleware/
-│ ├─ uploads/
-│ ├─ tickets/
-│ ├─ index.js
-│ └─ .env
-│
-└─ README.md
-
----
-
-## 🔧 Environment Variables
-
-Create `.env` inside **backend/**:
-
-PORT=5000
-MONGO_URL=...............
-JWT_SECRET=################
-
-RAZORPAY_KEY_ID=************\*\*\*\*************
-RAZORPAY_KEY_SECRET=******\*\*\*\*******
-
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=1\***\*@gmail.com
-SMTP_PASS=****\*\*\*\*******
-
----
-
-## ▶ Run Locally
-
-### 1️⃣ Backend
+Requirements: Node.js 24 (see `.nvmrc`) and npm.
 
 ```bash
-cd backend
-npm install
-npm run dev
-
-
-
-##2️⃣ Frontend
-cd frontend
-npm install
-npm run dev
-
-
-
-
-💳 Payment Workflow
-
-1. User selects seats and pays using Razorpay
-
-2. Payment verified by backend
-
-3. Seats reduce automatically
-
-4. Ticket PDF generated + QR code attached
-
-5. Ticket emailed to customer
-
-
- ## Screenshots
- | Home Page                     | Admin Dashboard                 |
-| ----------------------------- | ------------------------------- |
-| ![home](src/assets/home.png) | ![admin](src/assets/dashbord.png) |
-
-
-
-⭐ Contribution
-
-Pull Requests welcome!
-Follow the standard GitHub Flow.
-
-
-📄 License
-
-This project is licensed under the MIT License — free to use and modify.
-
-
-
-🙏 Credits
-
-Developed with ❤️ by Shivam Singh
-If this project helped you, please ⭐ the repo!
+npm ci
+cp backend/.env.example backend/.env          # then fill in MONGO_URL at minimum
+cp frontend/.env.example frontend/.env.local
+npm run dev                                   # API on :5000, web on :3000
 ```
+
+Check the API: <http://localhost:5000/api/v1/health>
+
+Full setup and troubleshooting: [`docs/09-config/02-local-setup.md`](docs/09-config/02-local-setup.md).
+
+## Scripts
+
+| Command            | What it does                     |
+| ------------------ | -------------------------------- |
+| `npm run dev`      | Start API and web together       |
+| `npm test`         | Backend and frontend tests       |
+| `npm run test:e2e` | Playwright end-to-end tests      |
+| `npm run lint`     | ESLint in both apps              |
+| `npm run format`   | Prettier                         |
+| `npm run build`    | Production build of the frontend |
+
+## Security
+
+Never commit `.env` files. Only `.env.example` files belong in Git.
+
+## Contact
+
+BhaktiYatra · Ramdiri-3, Begusarai, Bihar 851129 · +91 74888 81563 · 15shivambgs@gmail.com

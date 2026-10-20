@@ -1,10 +1,33 @@
+# Environment files (secrets) — never commit
+.env
+.env.*
+!.env.example
+backend/.env
+**/.env
+
 # Dependencies
 node_modules/
 
-# Production builds
+# Builds and caches
 dist/
 dist-ssr/
-*.local
+.next/
+out/
+coverage/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Test output
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Runtime files
+uploads/
+tickets/
+!legacy/backend/uploads/
 
 # Logs
 logs
@@ -20,8 +43,10 @@ lerna-debug.log*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.local

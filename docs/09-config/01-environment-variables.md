@@ -26,18 +26,16 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `CLOUDINARY_API_KEY` | yes (Phase 3) | | |
 | `CLOUDINARY_API_SECRET` | yes (Phase 3) | | |
 | `CLOUDINARY_FOLDER` | no | `bhaktiyatra/dev` | per env |
-| `SMTP_HOST` | yes (Phase 7) | `smtp-relay.brevo.com` | Mailpit: `localhost` |
-| `SMTP_PORT` | no | `587` | STARTTLS; Mailpit `1025` |
-| `SMTP_SECURE` | no | `false` | `true` only for port 465 |
-| `SMTP_USER` | yes (Phase 7) | | |
-| `SMTP_PASS` | yes (Phase 7) | | |
-| `MAIL_FROM` | yes (Phase 7) | `BhaktiYatra <bookings@bhaktiyatra.in>` | |
+| `RESEND_API_KEY` | yes (Phase 7) | `re_…` | Resend (ADR-018) |
+| `MAIL_FROM` | yes (Phase 7) | `BhaktiYatra <onboarding@resend.dev>` until a domain is verified | |
 | `MAIL_REPLY_TO` | no | `support@bhaktiyatra.in` | |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
 | `HOLD_MINUTES` | no | `15` | |
 | `MAX_SEATS_PER_BOOKING` | no | `10` | |
 | `BOOKING_CUTOFF_HOURS` | no | `24` | default for new departures |
 | `RATE_LIMIT_ENABLED` | no | `true` | `false` in tests |
+| `RATE_LIMIT_GLOBAL_MAX` | no | `300` | requests per window per IP |
+| `RATE_LIMIT_GLOBAL_WINDOW_MIN` | no | `15` | window length in minutes |
 | `JOBS_ENABLED` | no | `true` | `false` in tests; run jobs manually |
 | `LOG_LEVEL` | no | `info` | `debug` in dev |
 | `SENTRY_DSN` | no | | |
@@ -78,5 +76,5 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | `COOKIE_DOMAIN` | (empty) | `.staging-domain` or proxy | `.bhaktiyatra.in` |
 | `RAZORPAY_*` | test | test | live |
 | `CLOUDINARY_FOLDER` | `bhaktiyatra/dev` | `bhaktiyatra/staging` | `bhaktiyatra/prod` |
-| `SMTP_*` | Mailpit | Brevo | Brevo |
+| `MAIL_FROM` | Resend test sender | verified domain | verified domain |
 | `LOG_LEVEL` | debug | info | info |

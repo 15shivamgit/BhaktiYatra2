@@ -22,7 +22,7 @@ BhaktiYatra is a web platform to **explore India's religious temples** and, buil
 | 8 | Database | MongoDB Atlas + Mongoose | Team familiarity; document-shaped content |
 | 9 | Payments | Razorpay, test mode until QA passes | Indian market |
 | 10 | Images | Cloudinary from day one | Render/Vercel disks are ephemeral |
-| 11 | Email | Nodemailer over a transactional SMTP provider (Brevo recommended), never personal Gmail in production | Deliverability and limits |
+| 11 | Email | **Resend** (owner's account), never personal Gmail (ADR-018) | Deliverability and limits |
 | 12 | Auth | JWT in **httpOnly cookie** | Safer than localStorage against XSS |
 | 13 | Validation | **Zod** on the backend for every request; shared schemas where useful | One validator, good errors |
 | 14 | Seat inventory | **Hold on order creation, 15-minute expiry**, confirm on verified payment | Prevents overselling during checkout |
@@ -43,6 +43,10 @@ Full reasoning: `00-overview/03-decision-log.md`.
 | Cancellation policy | `07-content/05-cancellation-refund-policy.md` (draft, needs legal review before live payments) |
 | Temple content | Drafted by Claude from research, reviewed by the owner (ADR-015) |
 | Legacy images | Owner confirmed rights to the images in `Frontend/src/assets` (ADR-017) |
+
+## Current status (2026-10-20)
+
+Phase 1 (Foundation) is built: `backend/` (Express 5 API with health check) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/`. Report: `10-testing/reports/phase-1.md`. Next: Phase 2 (Authentication).
 
 ## State of the old code (as of 2026-10-20)
 

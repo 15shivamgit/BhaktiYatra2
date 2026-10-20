@@ -71,11 +71,11 @@ BhaktiYatra2/
 │   ├── hooks/
 │   ├── messages/en.json
 │   ├── public/                      # favicon, og-default.jpg, static images
-│   ├── styles/globals.css
+│   │   (design tokens live in app/globals.css)
 │   ├── tests/                       # Vitest + RTL
 │   ├── e2e/                         # Playwright
-│   ├── next.config.js
-│   ├── tailwind.config.js
+│   ├── next.config.mjs
+│   ├── vitest.config.js / playwright.config.js
 │   ├── package.json
 │   └── .env.example
 │

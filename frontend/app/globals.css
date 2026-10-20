@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens: docs/06-design/01-design-system.md.
+ * Tailwind v4 reads tokens from @theme, so `bg-primary`, `text-text-muted`,
+ * `rounded-md`, `max-w-page`, `font-display` etc. come from here.
+ * All text/background pairs used together are at least 4.5:1 (checked 2026-10-20).
+ */
+@theme {
+  --color-bg: #fffcf7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f1e8;
+  --color-border: #e8e0d2;
+  --color-text: #1f1b16;
+  --color-text-muted: #6b6157;
+
+  /* Saffron: decorative only (icons, rules, focus ring). Not for text or button fills. */
+  --color-saffron: #d9731f;
+  /* Primary: buttons and links. White on primary = 4.83:1, primary on bg = 4.72:1. */
+  --color-primary: #b4580f;
+  --color-primary-hover: #a84f0c;
+  --color-primary-soft: #fbebdd;
+
+  --color-accent: #7a1f2b;
+  --color-accent-soft: #f3e3e5;
+  --color-gold: #c8a24a;
+
+  --color-success: #256b42;
+  --color-success-soft: #e3f2e8;
+  --color-warning: #8a5a12;
+  --color-warning-soft: #fbf1dc;
+  --color-danger: #b3261e;
+  --color-danger-soft: #f9e1df;
+  --color-info: #2b5f9e;
+  --color-info-soft: #e1eaf6;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --container-page: 80rem; /* 1280px → max-w-page */
+  --container-narrow: 50rem; /* 800px → max-w-narrow */
+
+  --shadow-card: 0 1px 2px rgb(31 27 22 / 0.06);
+  --shadow-card-hover: 0 8px 24px rgb(31 27 22 / 0.1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-saffron);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

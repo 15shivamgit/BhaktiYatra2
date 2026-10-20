@@ -1,0 +1,15 @@
+export const API_PREFIX = '/api/v1';
+
+/** Machine-readable error codes used in the error envelope (docs/04-api/01-conventions.md). */
+export const ERROR_CODES = Object.freeze({
+  BAD_REQUEST: 'BAD_REQUEST',
+  UNAUTHENTICATED: 'UNAUTHENTICATED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
+  PAYLOAD_TOO_LARGE: 'PAYLOAD_TOO_LARGE',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  RATE_LIMITED: 'RATE_LIMITED',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
+});

@@ -4,8 +4,8 @@ Phases run strictly in order. A phase starts only when the previous phase's exit
 
 | Phase | Name | Main outcome | Depends on | Status |
 |---|---|---|---|---|
-| 0 | Specification | This `docs/` tree approved | — | in-progress |
-| 1 | Foundation | Monorepo, both apps boot, env validation, health check, CI, secrets cleaned | 0 | planned |
+| 0 | Specification | This `docs/` tree approved | — | done |
+| 1 | Foundation | Monorepo, both apps boot, env validation, health check, CI, secrets cleaned | 0 | done (history rewrite pending owner approval; see `10-testing/reports/phase-1.md`) |
 | 2 | Authentication | Register/login/logout/me/profile/reset, roles, guards, audit base | 1 | planned |
 | 3 | Temple Explore | Temples, circuits, admin content tools, public pages, SEO, sitemap, static pages | 2 | planned |
 | 4 | Tours & Departures | Tour catalogue, departures, inventory admin | 3 | planned |

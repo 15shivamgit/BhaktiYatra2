@@ -21,7 +21,7 @@ Delivery URLs in API responses are the stored `url`; the frontend's Cloudinary l
 `POST {FRONTEND_URL}/api/revalidate`  
 Headers: `x-revalidate-secret: <REVALIDATE_SECRET>`  
 Body: `{ "paths": ["/temples/kedarnath-rudraprayag", "/temples", "/sitemap.xml"] }`  
-200 `{ "revalidated": true, "paths": [...] }`; 401 on bad secret. Implemented as a Next.js route handler calling `revalidatePath` for each path.
+200 `{ "revalidated": true, "paths": [...] }`; 401 on bad secret. Implemented as a Next.js route handler. Body may carry `tags` (preferred, calls `revalidateTag`) and/or `paths` (calls `revalidatePath`).
 
 ## Sitemap and robots
 

@@ -54,14 +54,14 @@ sequenceDiagram
   participant API as Express API
   participant DB as MongoDB
   B->>FE: GET /temples/kashi-vishwanath-varanasi
-  FE->>API: GET /api/v1/temples/kashi-vishwanath-varanasi (revalidate: 300s)
+  FE->>API: GET /api/v1/temples/kashi-vishwanath-varanasi ('use cache', ~5 min, tag temple:slug)
   API->>DB: findOne({slug, status:'published'}) + nearby + circuits + tours
   DB-->>API: temple document(s)
   API-->>FE: { success, data }
   FE-->>B: HTML with metadata, JSON-LD, images (Cloudinary URLs)
 ```
 
-Public list and detail fetches use Next.js fetch caching with `revalidate` (5 minutes) and on-demand revalidation triggered by the API when admin publishes (`POST /revalidate` on the frontend with a shared secret). Fallback: time-based revalidation alone.
+Public list and detail fetches are `'use cache'` functions with `cacheLife` (about 5 minutes) and cache tags such as `temple:<slug>` and `temples`. When admin publishes, the API calls `POST /api/revalidate` on the frontend with a shared secret, which runs `revalidateTag` for the affected tags. Fallback: the `cacheLife` expiry alone. Request-time data renders inside `<Suspense>` (Next 16 Cache Components, ADR-022).
 
 ## Data flow: booking and payment (summary)
 

@@ -1,0 +1,1439 @@
+{
+  "generatedAt": "2026-10-20T06:41:27.176Z",
+  "cloudName": "hboje2fj",
+  "assetFolder": "BhaktiYatra",
+  "note": "Personal/non-temple files in this Cloudinary folder are deliberately excluded and listed only by name.",
+  "excludedPersonal": [
+    "admit_sem3",
+    "Backup-codes-15shivambgs.txt",
+    "MCA-3_Sem_Time_Table_Nov._2025_Publish",
+    "Naved_Project_Report_2",
+    "Practical_Timetable_Final.docx",
+    "Profile",
+    "RESUME.docx",
+    "Shivam_Kumar_Resume",
+    "shivam-removebg-preview"
+  ],
+  "brand": [
+    {
+      "publicId": "about",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476866/about.jpg",
+      "width": 5184,
+      "height": 2916,
+      "format": "jpg",
+      "kb": 3099
+    },
+    {
+      "publicId": "about-AyS-V8sq",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476866/about-AyS-V8sq.jpg",
+      "width": 1500,
+      "height": 844,
+      "format": "jpg",
+      "kb": 1898
+    },
+    {
+      "publicId": "logo3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477029/logo3.jpg",
+      "width": 500,
+      "height": 500,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "logoY",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477030/logoY.jpg",
+      "width": 500,
+      "height": 500,
+      "format": "jpg",
+      "kb": 18
+    }
+  ],
+  "needsReview": [
+    {
+      "publicId": "abhi",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477173/abhi.jpg",
+      "width": 973,
+      "height": 1280,
+      "format": "jpg",
+      "kb": 96
+    },
+    {
+      "publicId": "adi",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477170/adi.jpg",
+      "width": 400,
+      "height": 376,
+      "format": "jpg",
+      "kb": 21
+    },
+    {
+      "publicId": "ayodhya",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477174/ayodhya.jpg",
+      "width": 3024,
+      "height": 4032,
+      "format": "jpg",
+      "kb": 1418
+    },
+    {
+      "publicId": "golden",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477170/golden.jpg",
+      "width": 6506,
+      "height": 4337,
+      "format": "jpg",
+      "kb": 1068
+    },
+    {
+      "publicId": "krishna",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477053/krishna.jpg",
+      "width": 261,
+      "height": 193,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "level3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477027/level3.jpg",
+      "width": 540,
+      "height": 1204,
+      "format": "jpg",
+      "kb": 86
+    },
+    {
+      "publicId": "ov68D81B1VgX_KBdziS4r",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477023/ov68D81B1VgX_KBdziS4r.png",
+      "width": 864,
+      "height": 1184,
+      "format": "png",
+      "kb": 1604
+    },
+    {
+      "publicId": "pra",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477171/pra.jpg",
+      "width": 432,
+      "height": 356,
+      "format": "jpg",
+      "kb": 16
+    },
+    {
+      "publicId": "radha",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477183/radha.jpg",
+      "width": 3024,
+      "height": 4032,
+      "format": "jpg",
+      "kb": 2049
+    },
+    {
+      "publicId": "radha_2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477022/radha_2.jpg",
+      "width": 1200,
+      "height": 1600,
+      "format": "jpg",
+      "kb": 1898
+    },
+    {
+      "publicId": "ram",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477180/ram.jpg",
+      "width": 2698,
+      "height": 6000,
+      "format": "jpg",
+      "kb": 2620
+    },
+    {
+      "publicId": "shiv",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477169/shiv.jpg",
+      "width": 500,
+      "height": 500,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "smt",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477171/smt.jpg",
+      "width": 1280,
+      "height": 773,
+      "format": "jpg",
+      "kb": 218
+    },
+    {
+      "publicId": "ujjain",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477182/ujjain.jpg",
+      "width": 2268,
+      "height": 4032,
+      "format": "jpg",
+      "kb": 1955
+    },
+    {
+      "publicId": "yuk",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477171/yuk.jpg",
+      "width": 564,
+      "height": 352,
+      "format": "jpg",
+      "kb": 26
+    }
+  ],
+  "temple": [
+    {
+      "publicId": "akshardham",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476890/akshardham.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "akshardham1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476890/akshardham1.jpg",
+      "width": 266,
+      "height": 190,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "akshardham2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476891/akshardham2.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "akshardham3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476891/akshardham3.jpg",
+      "width": 187,
+      "height": 270,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "akshardham4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476892/akshardham4.jpg",
+      "width": 324,
+      "height": 155,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "akshardham5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792476893/akshardham5.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "akshardham6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477076/akshardham6.jpg",
+      "width": 341,
+      "height": 148,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "amarnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477176/amarnath.jpg",
+      "width": 4000,
+      "height": 2250,
+      "format": "jpg",
+      "kb": 1976
+    },
+    {
+      "publicId": "ambaji1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477073/ambaji1.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "ambaji2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477072/ambaji2.jpg",
+      "width": 324,
+      "height": 155,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "ambaji3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477071/ambaji3.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "ambaji4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477070/ambaji4.jpg",
+      "width": 324,
+      "height": 155,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "ashok",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477036/ashok.jpg",
+      "width": 261,
+      "height": 193,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "ashok2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477035/ashok2.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "badrinath1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477160/badrinath1.jpg",
+      "width": 3472,
+      "height": 4630,
+      "format": "jpg",
+      "kb": 2500
+    },
+    {
+      "publicId": "badrinath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477174/badrinath2.jpg",
+      "width": 3472,
+      "height": 4630,
+      "format": "jpg",
+      "kb": 2593
+    },
+    {
+      "publicId": "badrinath3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477156/badrinath3.jpg",
+      "width": 2582,
+      "height": 2548,
+      "format": "jpg",
+      "kb": 1148
+    },
+    {
+      "publicId": "bageshswar",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477048/bageshswar.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "banaras-CVxmzokW",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477203/banaras-CVxmzokW.jpg",
+      "width": 1500,
+      "height": 1000,
+      "format": "jpg",
+      "kb": 1898
+    },
+    {
+      "publicId": "bankebihari",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477052/bankebihari.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "bhimashankar",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477091/bhimashankar.jpg",
+      "width": 295,
+      "height": 171,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "dharidevi1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477060/dharidevi1.jpg",
+      "width": 279,
+      "height": 181,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "dharidevi2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477059/dharidevi2.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "dharidevi3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477058/dharidevi3.jpg",
+      "width": 248,
+      "height": 203,
+      "format": "jpg",
+      "kb": 7
+    },
+    {
+      "publicId": "dwarka",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477154/dwarka.jpg",
+      "width": 5542,
+      "height": 4158,
+      "format": "jpg",
+      "kb": 3023
+    },
+    {
+      "publicId": "dwarka-DfaCeDpf",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477207/dwarka-DfaCeDpf.jpg",
+      "width": 1500,
+      "height": 1125,
+      "format": "jpg",
+      "kb": 1898
+    },
+    {
+      "publicId": "dwarka1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477146/dwarka1.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "dwarka2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477145/dwarka2.jpg",
+      "width": 298,
+      "height": 169,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "dwarka3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477144/dwarka3.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "dwarka4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477143/dwarka4.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "gangotri",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477066/gangotri.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "gangotri2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477066/gangotri2.jpg",
+      "width": 288,
+      "height": 175,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "garhi",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477056/garhi.jpg",
+      "width": 288,
+      "height": 175,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "garhi2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477055/garhi2.jpg",
+      "width": 194,
+      "height": 259,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "garhi3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477054/garhi3.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "goldentample",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477191/goldentample.jpg",
+      "width": 1024,
+      "height": 683,
+      "format": "jpg",
+      "kb": 213
+    },
+    {
+      "publicId": "grisneswer",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477084/grisneswer.jpg",
+      "width": 310,
+      "height": 163,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "haridwar",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477096/haridwar.jpg",
+      "width": 252,
+      "height": 200,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "haridwar1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477095/haridwar1.jpg",
+      "width": 269,
+      "height": 187,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "jageshwar",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477062/jageshwar.jpg",
+      "width": 279,
+      "height": 181,
+      "format": "jpg",
+      "kb": 16
+    },
+    {
+      "publicId": "jagnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477047/jagnath.jpg",
+      "width": 278,
+      "height": 181,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "jagnath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477046/jagnath2.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "jagnath3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477045/jagnath3.jpg",
+      "width": 278,
+      "height": 181,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "jagshwar2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477061/jagshwar2.jpg",
+      "width": 284,
+      "height": 177,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "kalika",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477069/kalika.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "kalika2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477068/kalika2.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "kamakhya",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477082/kamakhya.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 7
+    },
+    {
+      "publicId": "kamakhya2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477082/kamakhya2.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "kash1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477138/kash1.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "kash2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477137/kash2.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "kash3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477136/kash3.jpg",
+      "width": 311,
+      "height": 162,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "kash4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477135/kash4.jpg",
+      "width": 310,
+      "height": 163,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "kash5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477134/kash5.jpg",
+      "width": 213,
+      "height": 237,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "kash6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477133/kash6.jpg",
+      "width": 297,
+      "height": 170,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "kedar1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477172/kedar1.jpg",
+      "width": 4608,
+      "height": 3456,
+      "format": "jpg",
+      "kb": 3456
+    },
+    {
+      "publicId": "kedar10",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477124/kedar10.jpg",
+      "width": 168,
+      "height": 300,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "kedar2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477190/kedar2.jpg",
+      "width": 3112,
+      "height": 4798,
+      "format": "jpg",
+      "kb": 2556
+    },
+    {
+      "publicId": "kedar3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477168/kedar3.jpg",
+      "width": 4000,
+      "height": 6000,
+      "format": "jpg",
+      "kb": 5550
+    },
+    {
+      "publicId": "kedar4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477159/kedar4.jpg",
+      "width": 4000,
+      "height": 3000,
+      "format": "jpg",
+      "kb": 2013
+    },
+    {
+      "publicId": "kedar5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477128/kedar5.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "kedar6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477127/kedar6.jpg",
+      "width": 255,
+      "height": 198,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "kedar7",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477126/kedar7.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "kedar8",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477126/kedar8.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "kedar9",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477125/kedar9.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 7
+    },
+    {
+      "publicId": "kedarjii",
+      "url": "https://res.cloudinary.com/hboje2fj/video/upload/v1792477208/kedarjii.mp4",
+      "width": 1080,
+      "height": 1920,
+      "format": "mp4",
+      "kb": 6534
+    },
+    {
+      "publicId": "konark",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477044/konark.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "konark2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477043/konark2.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "konark3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477042/konark3.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "konark4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477042/konark4.jpg",
+      "width": 301,
+      "height": 167,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "konark5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477041/konark5.jpg",
+      "width": 237,
+      "height": 213,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "mahakaleshwer",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477093/mahakaleshwer.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "mallika",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477094/mallika.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "meenakshi",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477038/meenakshi.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "meenakshi2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477037/meenakshi2.jpg",
+      "width": 183,
+      "height": 276,
+      "format": "jpg",
+      "kb": 16
+    },
+    {
+      "publicId": "modhera",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477076/modhera.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "modhera2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477075/modhera2.jpg",
+      "width": 225,
+      "height": 224,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "modhera3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477074/modhera3.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "nageshwer",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477086/nageshwer.jpg",
+      "width": 324,
+      "height": 155,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "nageshwer2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477085/nageshwer2.jpg",
+      "width": 312,
+      "height": 161,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "nageshwer3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477085/nageshwer3.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "nagnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477051/nagnath.jpg",
+      "width": 273,
+      "height": 184,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "nagnath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477050/nagnath2.jpg",
+      "width": 254,
+      "height": 199,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "ohmkaleshwer",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477092/ohmkaleshwer.jpg",
+      "width": 287,
+      "height": 175,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "pashupati",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477049/pashupati.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "pashupati2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477049/pashupati2.jpg",
+      "width": 301,
+      "height": 167,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "prem",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477175/prem.jpg",
+      "width": 2825,
+      "height": 1771,
+      "format": "jpg",
+      "kb": 475
+    },
+    {
+      "publicId": "prerm",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477112/prerm.jpg",
+      "width": 196,
+      "height": 257,
+      "format": "jpg",
+      "kb": 19
+    },
+    {
+      "publicId": "prerm1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477110/prerm1.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "prerm10",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477104/prerm10.jpg",
+      "width": 265,
+      "height": 190,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "prerm2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477111/prerm2.jpg",
+      "width": 212,
+      "height": 238,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "prerm3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477109/prerm3.jpg",
+      "width": 262,
+      "height": 192,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "prerm5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477108/prerm5.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "prerm6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477107/prerm6.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "prerm7",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477106/prerm7.jpg",
+      "width": 258,
+      "height": 196,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "prerm8",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477106/prerm8.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "prerm9",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477105/prerm9.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "puri1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477165/puri1.jpg",
+      "width": 6000,
+      "height": 4000,
+      "format": "jpg",
+      "kb": 4131
+    },
+    {
+      "publicId": "puri2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477160/puri2.jpg",
+      "width": 5213,
+      "height": 3881,
+      "format": "jpg",
+      "kb": 3320
+    },
+    {
+      "publicId": "puri3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477154/puri3.jpg",
+      "width": 3456,
+      "height": 4608,
+      "format": "jpg",
+      "kb": 2730
+    },
+    {
+      "publicId": "ram1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477118/ram1.jpg",
+      "width": 269,
+      "height": 187,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "ram2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477118/ram2.jpg",
+      "width": 296,
+      "height": 170,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "ram3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477117/ram3.jpg",
+      "width": 274,
+      "height": 184,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "ram4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477116/ram4.jpg",
+      "width": 277,
+      "height": 182,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "ram5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477116/ram5.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "ram6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477115/ram6.jpg",
+      "width": 196,
+      "height": 257,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "ram7",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477114/ram7.jpg",
+      "width": 299,
+      "height": 168,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "ram8",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477113/ram8.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "ram9",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477112/ram9.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "rames",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477165/rames.jpg",
+      "width": 2732,
+      "height": 4096,
+      "format": "jpg",
+      "kb": 2522
+    },
+    {
+      "publicId": "rames-ldrQM_0j",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477198/rames-ldrQM_0j.jpg",
+      "width": 1067,
+      "height": 1600,
+      "format": "jpg",
+      "kb": 1899
+    },
+    {
+      "publicId": "rames2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477149/rames2.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "rames4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477147/rames4.jpg",
+      "width": 276,
+      "height": 183,
+      "format": "jpg",
+      "kb": 17
+    },
+    {
+      "publicId": "ramMandir",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477182/ramMandir.jpg",
+      "width": 4032,
+      "height": 2268,
+      "format": "jpg",
+      "kb": 2717
+    },
+    {
+      "publicId": "ramMandir--b7cF0yd",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477205/ramMandir--b7cF0yd.jpg",
+      "width": 1500,
+      "height": 844,
+      "format": "jpg",
+      "kb": 1898
+    },
+    {
+      "publicId": "ramws3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477148/ramws3.jpg",
+      "width": 282,
+      "height": 179,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "rukhmini",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477067/rukhmini.jpg",
+      "width": 372,
+      "height": 135,
+      "format": "jpg",
+      "kb": 6
+    },
+    {
+      "publicId": "sai",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477034/sai.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "sai2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477033/sai2.jpg",
+      "width": 194,
+      "height": 259,
+      "format": "jpg",
+      "kb": 15
+    },
+    {
+      "publicId": "sai4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477032/sai4.jpg",
+      "width": 194,
+      "height": 259,
+      "format": "jpg",
+      "kb": 16
+    },
+    {
+      "publicId": "sankat",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477056/sankat.jpg",
+      "width": 226,
+      "height": 223,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "sarnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477099/sarnath.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "sarnath1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477099/sarnath1.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 16
+    },
+    {
+      "publicId": "sarnath3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477098/sarnath3.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "sarnath4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477097/sarnath4.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "somnath1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477123/somnath1.jpg",
+      "width": 268,
+      "height": 188,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "somnath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477122/somnath2.jpg",
+      "width": 389,
+      "height": 129,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "somnath3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477121/somnath3.jpg",
+      "width": 195,
+      "height": 259,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "somnath4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477120/somnath4.jpg",
+      "width": 257,
+      "height": 196,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "somnath5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477120/somnath5.jpg",
+      "width": 183,
+      "height": 275,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "somnath6",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477119/somnath6.jpg",
+      "width": 286,
+      "height": 176,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "sri1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477103/sri1.jpg",
+      "width": 267,
+      "height": 189,
+      "format": "jpg",
+      "kb": 22
+    },
+    {
+      "publicId": "sri2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477102/sri2.jpg",
+      "width": 250,
+      "height": 201,
+      "format": "jpg",
+      "kb": 24
+    },
+    {
+      "publicId": "sri3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477101/sri3.jpg",
+      "width": 257,
+      "height": 196,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "sri4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477101/sri4.jpg",
+      "width": 235,
+      "height": 215,
+      "format": "jpg",
+      "kb": 24
+    },
+    {
+      "publicId": "tarapith",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477081/tarapith.jpg",
+      "width": 284,
+      "height": 177,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "tiru1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477142/tiru1.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "tiru2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477142/tiru2.jpg",
+      "width": 251,
+      "height": 201,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "tiru3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477141/tiru3.jpg",
+      "width": 299,
+      "height": 168,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "tiru4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477140/tiru4.jpg",
+      "width": 276,
+      "height": 182,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "tiru5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477139/tiru5.jpg",
+      "width": 284,
+      "height": 177,
+      "format": "jpg",
+      "kb": 17
+    },
+    {
+      "publicId": "tirumala",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477040/tirumala.jpg",
+      "width": 318,
+      "height": 158,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "tirumala2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477039/tirumala2.jpg",
+      "width": 275,
+      "height": 183,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "trimbakeshwar",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477090/trimbakeshwar.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "trimbakeshwar1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477090/trimbakeshwar1.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "trimbakeshwar2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477088/trimbakeshwar2.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 10
+    },
+    {
+      "publicId": "tulsimans",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477057/tulsimans.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 13
+    },
+    {
+      "publicId": "tungnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477063/tungnath.jpg",
+      "width": 279,
+      "height": 181,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "tungnath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477062/tungnath2.jpg",
+      "width": 276,
+      "height": 182,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "vaidnath",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477088/vaidnath.jpg",
+      "width": 273,
+      "height": 184,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "vaidnath2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477087/vaidnath2.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 14
+    },
+    {
+      "publicId": "vaishno1",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477132/vaishno1.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 17
+    },
+    {
+      "publicId": "vaishno2",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477132/vaishno2.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 11
+    },
+    {
+      "publicId": "vaishno3",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477131/vaishno3.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 12
+    },
+    {
+      "publicId": "vaishno4",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477130/vaishno4.jpg",
+      "width": 300,
+      "height": 168,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "vaishno5",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477129/vaishno5.jpg",
+      "width": 297,
+      "height": 170,
+      "format": "jpg",
+      "kb": 9
+    },
+    {
+      "publicId": "vaishnodevi",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477181/vaishnodevi.jpg",
+      "width": 4000,
+      "height": 2252,
+      "format": "jpg",
+      "kb": 1337
+    },
+    {
+      "publicId": "venk",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477027/venk.jpg",
+      "width": 259,
+      "height": 194,
+      "format": "jpg",
+      "kb": 8
+    },
+    {
+      "publicId": "yamunotri",
+      "url": "https://res.cloudinary.com/hboje2fj/image/upload/v1792477064/yamunotri.jpg",
+      "width": 201,
+      "height": 251,
+      "format": "jpg",
+      "kb": 16
+    }
+  ]
+}

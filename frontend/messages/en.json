@@ -1,0 +1,43 @@
+{
+  "site": {
+    "name": "BhaktiYatra",
+    "tagline": "Explore the sacred heart of India",
+    "description": "Discover India's temples: darshan timings, history, festivals and how to reach. Book organised pilgrimage tours."
+  },
+  "nav": {
+    "skipToContent": "Skip to content",
+    "temples": "Temples",
+    "circuits": "Circuits",
+    "tours": "Tours",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Log in",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "primary": "Primary"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "contactHeading": "Contact"
+  },
+  "home": {
+    "comingSoon": "We are rebuilding BhaktiYatra. Temple guides and pilgrimage tours are coming soon.",
+    "systemStatus": "System status"
+  },
+  "status": {
+    "apiOk": "API connected",
+    "apiDegraded": "API running, database unreachable",
+    "apiDown": "API unreachable",
+    "checking": "Checking API…",
+    "version": "Version {version}"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "withReference": "Something went wrong. Reference: {requestId}",
+    "network": "We could not reach the server. Check your connection and try again.",
+    "retry": "Try again",
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you are looking for does not exist or has moved.",
+    "goHome": "Go to home page"
+  }
+}

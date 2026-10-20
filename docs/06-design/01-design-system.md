@@ -4,29 +4,30 @@ Goal: a calm, premium, trustworthy pilgrimage-travel look. Warm neutrals, one sa
 
 ## Colour tokens
 
-Defined as CSS variables in `styles/globals.css` and mapped in `tailwind.config.js` (`colors.primary = 'hsl(var(--primary))'`, etc.). Light theme only in v1; variables make dark theme possible later.
+Defined in `frontend/app/globals.css` inside Tailwind 4's `@theme` block as `--color-<name>`, which generates utilities such as `bg-primary`, `text-text-muted`, `border-border` (ADR-022). Light theme only in v1; variables make dark theme possible later.
 
 | Token | Hex | Use |
 |---|---|---|
-| `--bg` | `#FFFCF7` | page background (warm off-white) |
-| `--surface` | `#FFFFFF` | cards, panels |
-| `--surface-muted` | `#F6F1E8` | section bands, table headers |
-| `--border` | `#E8E0D2` | hairlines |
-| `--text` | `#1F1B16` | primary text |
-| `--text-muted` | `#6B6157` | secondary text |
-| `--primary` | `#D9731F` | saffron: primary buttons, links, active states |
-| `--primary-hover` | `#BF6118` | |
-| `--primary-soft` | `#FBEBDD` | tinted backgrounds, badges |
-| `--accent` | `#7A1F2B` | maroon: headings accents, emphasis, admin sidebar |
-| `--accent-soft` | `#F3E3E5` | |
-| `--gold` | `#C8A24A` | decorative rules, ratings later |
-| `--success` | `#2F7D4F` / soft `#E3F2E8` | confirmed, published |
-| `--warning` | `#B7791F` / soft `#FBF1DC` | pending, few seats |
-| `--danger` | `#B3261E` / soft `#F9E1DF` | cancelled, errors |
-| `--info` | `#2B5F9E` / soft `#E1EAF6` | neutral status |
-| `--focus` | `#D9731F` with 2 px offset ring | focus visible |
+| `--color-bg` | `#FFFCF7` | page background (warm off-white) |
+| `--color-surface` | `#FFFFFF` | cards, panels |
+| `--color-surface-muted` | `#F6F1E8` | section bands, table headers |
+| `--color-border` | `#E8E0D2` | hairlines |
+| `--color-text` | `#1F1B16` | primary text (16.7:1 on bg) |
+| `--color-text-muted` | `#6B6157` | secondary text (5.9:1 on bg) |
+| `--color-saffron` | `#D9731F` | **decorative only**: icons, rules, focus ring. Never text or button fill (3.27:1 with white) |
+| `--color-primary` | `#B4580F` | primary buttons (white text 4.83:1), links (4.72:1 on bg), active states |
+| `--color-primary-hover` | `#A84F0C` | |
+| `--color-primary-soft` | `#FBEBDD` | tinted backgrounds; text on it uses `accent` |
+| `--color-accent` | `#7A1F2B` | maroon: heading accents, emphasis, admin sidebar (10.2:1 with white) |
+| `--color-accent-soft` | `#F3E3E5` | |
+| `--color-gold` | `#C8A24A` | decorative rules, ratings later |
+| `--color-success` | `#256B42` / soft `#E3F2E8` | confirmed, published (5.56:1) |
+| `--color-warning` | `#8A5A12` / soft `#FBF1DC` | pending, few seats (5.27:1) |
+| `--color-danger` | `#B3261E` / soft `#F9E1DF` | cancelled, errors (5.25:1) |
+| `--color-info` | `#2B5F9E` / soft `#E1EAF6` | neutral status (5.35:1) |
+| focus ring | `saffron`, 2 px, 2 px offset | `:focus-visible` |
 
-Contrast: all text/background pairs meet 4.5:1; `--primary` on white is used for text only at ≥ 18 px bold or as button background with white text (checked ≥ 4.5:1).
+Contrast was measured on 2026-10-20 (ADR-023). Status text always sits on its own soft tint.
 
 ## Typography
 
@@ -118,21 +119,18 @@ Loaded via `next/font` with `display: swap`. Devanagari fallback later: `Noto Se
 - Prices as `₹24,999` (Indian grouping), dates as `10 May 2026`, times `04:00 – 11:00 IST`.
 - Error copy tells what happened and what to do next.
 
-## Tailwind config excerpt
+## Tailwind 4 theme excerpt
 
-```js
-// tailwind.config.js (excerpt)
-theme: {
-  extend: {
-    colors: {
-      bg: 'hsl(var(--bg))', surface: 'hsl(var(--surface))',
-      primary: { DEFAULT: 'hsl(var(--primary))', hover: 'hsl(var(--primary-hover))', soft: 'hsl(var(--primary-soft))' },
-      accent: { DEFAULT: 'hsl(var(--accent))', soft: 'hsl(var(--accent-soft))' },
-      // success, warning, danger, info likewise
-    },
-    fontFamily: { display: ['var(--font-display)'], sans: ['var(--font-sans)'] },
-    borderRadius: { sm: '6px', md: '10px', lg: '16px', xl: '24px' },
-    maxWidth: { container: '1280px' },
-  }
+```css
+/* frontend/app/globals.css (excerpt) */
+@import 'tailwindcss';
+@theme {
+  --color-primary: #b4580f;      /* bg-primary, text-primary */
+  --color-accent: #7a1f2b;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;  /* font-display */
+  --radius-md: 10px;             /* rounded-md */
+  --container-page: 80rem;       /* max-w-page (1280px) */
+  --container-narrow: 50rem;     /* max-w-narrow (800px) */
 }
 ```
