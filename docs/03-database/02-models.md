@@ -10,16 +10,18 @@ Field tables use: **type**, **required** (R) / optional (O), default, notes. All
 |---|---|---|---|---|
 | name | String (2–80) | R | | trimmed |
 | email | String | R | | lowercase, trimmed, unique, valid email |
-| passwordHash | String | R | | bcrypt; `select: false` |
+| passwordHash | String | O | | bcrypt; `select: false`; absent for Google-only accounts |
+| googleId | String | O | | Google `sub`; unique, sparse (ADR-020) |
+| avatarUrl | URL | O | | from Google profile |
 | phone | String | O | | E.164 or 10-digit Indian; normalised to `+91XXXXXXXXXX` |
 | role | Enum `user` \| `admin` | R | `user` | |
 | isActive | Boolean | R | `true` | |
-| emailVerifiedAt | Date | O | | reserved; not enforced in v1 |
+| emailVerifiedAt | Date | O | | set when Google confirms the email; not enforced in v1 |
 | lastLoginAt | Date | O | | |
-| tokenInvalidBefore | Date | O | | tokens issued before this are rejected |
-| passwordReset | `{ tokenHash, expiresAt }` | O | | cleared after use |
+| sessionVersion | Int | R | `0` | copied into the JWT as `sv`; incremented on password change/reset (ADR-025) |
+| passwordReset | `{ tokenHash, expiresAt }` | O | | `select: false`; cleared after use |
 
-Serialisation: `toJSON` removes `passwordHash`, `passwordReset`, `tokenInvalidBefore`, `__v`.
+Serialisation (public user shape): `{ id, name, email, phone, role, avatarUrl, hasPassword, googleLinked, createdAt }`. Never includes `passwordHash`, `passwordReset`, `sessionVersion`, `googleId`.
 
 ---
 

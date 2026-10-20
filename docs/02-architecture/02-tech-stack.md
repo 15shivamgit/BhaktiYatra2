@@ -11,7 +11,8 @@ Versions below are targets. In Phase 1, install the latest stable release that s
 | Styling | Tailwind CSS 4 | Tokens in `app/globals.css` `@theme`; no `tailwind.config.js` (ADR-022) |
 | Components | shadcn/ui (Radix primitives) | Copy-in components; consistent, accessible |
 | Icons | lucide-react | Single icon set; drop react-icons |
-| Forms | react-hook-form + zod | Shared schemas with API where practical |
+| Forms | react-hook-form + zod | Small in-house resolver (`lib/forms/zod-resolver.js`); `@hookform/resolvers` 6 has unresolvable peer deps |
+| Menus | @radix-ui/react-dropdown-menu | Accessible account menu |
 | Data fetching | native `fetch` (server), TanStack Query (client admin/account) | Cache keys per entity |
 | Maps | react-leaflet + OpenStreetMap tiles | No API key; cluster plugin for list map |
 | Carousel | embla-carousel-react | Replaces react-slick |
@@ -22,7 +23,7 @@ Versions below are targets. In Phase 1, install the latest stable release that s
 | SEO | Next metadata API, `next-sitemap` or route handler | JSON-LD via helper |
 | i18n (later) | next-intl | Strings in `messages/en.json` from day one |
 | Errors | @sentry/nextjs | DSN via env |
-| Testing | Vitest + React Testing Library; Playwright | See `10-testing/` |
+| Testing | Vitest + React Testing Library + user-event; Playwright + @axe-core/playwright | E2E runs against `backend/scripts/e2e-server.js` (in-memory MongoDB) |
 
 ## Backend (`backend/`)
 
@@ -32,7 +33,7 @@ Versions below are targets. In Phase 1, install the latest stable release that s
 | Framework | Express 5 | Async errors handled natively (ADR-019) |
 | Database | MongoDB Atlas + Mongoose 9 | Transactions on replica set |
 | Validation | zod | Middleware `validate({ body, query, params })` |
-| Auth | jsonwebtoken, bcryptjs (cost 12), cookie-parser | httpOnly cookie |
+| Auth | jose (session JWTs and Google ID tokens), bcryptjs (cost from `BCRYPT_ROUNDS`, default 12), cookie-parser | httpOnly cookie; ADR-025 |
 | Security | helmet, cors, express-rate-limit; custom `sanitizeBody` + `simple` query parser | mongo-sanitize/hpp incompatible with Express 5 (ADR-019) |
 | Uploads | multer (memory) → cloudinary SDK | MIME sniff with `file-type` |
 | Payments | razorpay SDK + node `crypto` for HMAC | Raw body for webhook route |

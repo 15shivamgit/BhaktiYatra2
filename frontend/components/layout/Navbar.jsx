@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { t } from '@/lib/i18n';
 import Container from './Container';
+import UserMenu from './UserMenu';
 
 const LINKS = [
   { href: '/temples', key: 'nav.temples' },
@@ -11,14 +12,14 @@ const LINKS = [
 ];
 
 /**
- * Phase 1 placeholder navbar. The full version (auth menu, mobile sheet, search) arrives in
- * Phases 2–3 per docs/06-design/02-page-specs.md. Links point at routes built in Phase 3.
+ * Site navbar. Section links point at routes built in Phase 3; the mobile menu and search
+ * arrive then too (docs/06-design/02-page-specs.md). The account menu works on all sizes.
  */
 export default function Navbar() {
   return (
     <header className="border-b border-border bg-surface">
-      <Container className="flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="font-display text-2xl font-semibold text-accent">
+      <Container className="flex h-16 items-center gap-6">
+        <Link href="/" className="mr-auto font-display text-2xl font-semibold text-accent">
           Bhakti<span className="text-primary">Yatra</span>
         </Link>
         <nav aria-label={t('nav.primary')} className="hidden md:block">
@@ -36,6 +37,7 @@ export default function Navbar() {
             ))}
           </ul>
         </nav>
+        <UserMenu />
       </Container>
     </header>
   );

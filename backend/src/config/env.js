@@ -37,10 +37,18 @@ const envSchema = z.object({
   RATE_LIMIT_GLOBAL_WINDOW_MIN: z.coerce.number().int().positive().default(15),
   JOBS_ENABLED: booleanFromString.default(true),
 
-  // Phase 2+
-  JWT_SECRET: z.string().min(32, 'must be at least 32 characters').optional(),
+  RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
+  RATE_LIMIT_AUTH_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+
+  // Phase 2: authentication
+  JWT_SECRET: z.string().min(32, 'must be at least 32 characters'),
   JWT_SECRET_PREVIOUS: z.string().min(32).optional(),
+  JWT_EXPIRES_IN_DAYS: z.coerce.number().int().min(1).max(30).default(7),
   COOKIE_DOMAIN: z.string().optional(),
+  BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_REDIRECT_URI: z.url().optional(),
 
   // Phase 3+
   REVALIDATE_SECRET: z.string().min(16).optional(),

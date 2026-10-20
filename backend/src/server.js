@@ -22,7 +22,7 @@ async function main() {
   const logger = createLogger({ level: env.LOG_LEVEL, pretty: env.NODE_ENV === 'development' });
 
   try {
-    await connectDb(env.MONGO_URL, logger);
+    await connectDb(env.MONGO_URL, logger, { autoIndex: env.NODE_ENV !== 'production' });
   } catch (error) {
     logger.fatal({ err: error.message }, 'Could not connect to MongoDB; exiting');
     process.exit(1);

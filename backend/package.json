@@ -13,14 +13,18 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed:admin": "node --env-file-if-exists=.env scripts/seed-admin.js",
+    "e2e:server": "node scripts/e2e-server.js"
   },
   "dependencies": {
+    "bcryptjs": "3.0.3",
     "cookie-parser": "1.4.7",
     "cors": "2.8.6",
     "express": "5.3.0",
     "express-rate-limit": "8.7.1",
     "helmet": "8.3.0",
+    "jose": "6.2.13",
     "mongoose": "9.11.2",
     "pino": "10.4.0",
     "pino-http": "11.0.0",

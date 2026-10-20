@@ -14,6 +14,7 @@
 7. Rate limits on auth routes.
 8. Admin users endpoints (`GET/PATCH /admin/users`) with self-modification guard and audit.
 9. `scripts/seed-admin.js`.
+9a. Google sign-in (ADR-020): `GET /auth/google` and `/auth/google/callback` with PKCE, state and nonce; ID-token verification with `jose`; link or create users; frontend forwarder route `/api/auth/callback/google`; "Continue with Google" button; "Set a password" for Google-only accounts.
 10. Tests (unit + integration): every endpoint happy path and errors; password never serialised; cookie flags; 401/403 matrix; rate limit; deactivated user; token invalidation after password change.
 
 ### Frontend

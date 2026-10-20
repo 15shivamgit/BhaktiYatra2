@@ -10,9 +10,15 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `PORT` | no | `5000` | Render sets this |
 | `APP_VERSION` | no | `1.0.0` | shown in health |
 | `MONGO_URL` | yes | `mongodb+srv://user:pass@cluster/bhaktiyatra_dev` | per-env database and user |
-| `JWT_SECRET` | yes | 64 hex chars | `openssl rand -hex 32` |
+| `JWT_SECRET` | yes | 64 hex chars | `openssl rand -hex 32`; at least 32 characters |
 | `JWT_SECRET_PREVIOUS` | no | | accepted during rotation |
-| `JWT_EXPIRES_IN` | no | `7d` | |
+| `JWT_EXPIRES_IN_DAYS` | no | `7` | session length |
+| `BCRYPT_ROUNDS` | no | `12` | tests use `4` |
+| `RATE_LIMIT_AUTH_MAX` | no | `10` | login/register/forgot/Google start per IP per window |
+| `RATE_LIMIT_AUTH_WINDOW_MIN` | no | `15` | |
+| `GOOGLE_CLIENT_ID` | no | `…apps.googleusercontent.com` | Google sign-in disabled when unset (ADR-020) |
+| `GOOGLE_CLIENT_SECRET` | no | | server only |
+| `GOOGLE_REDIRECT_URI` | no | `${SITE_URL}/api/auth/callback/google` | must be registered in Google Cloud Console |
 | `COOKIE_DOMAIN` | prod | `.bhaktiyatra.in` | empty in dev |
 | `FRONTEND_URLS` | yes | `http://localhost:3000` | comma-separated allowed origins |
 | `SITE_URL` | yes | `http://localhost:3000` | used in emails and QR links |
@@ -54,6 +60,7 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | yes (Phase 3) | | image loader |
 | `REVALIDATE_SECRET` | yes (Phase 3) | | must match backend |
 | `NEXT_PUBLIC_ENV` | no | `development` | shows env badge in admin; staging noindex |
+| `NEXT_PUBLIC_GOOGLE_SIGNIN` | no | (unset = shown) | set to `false` to hide "Continue with Google" when the API has no Google credentials |
 | `NEXT_PUBLIC_SENTRY_DSN` | no | | |
 | `NEXT_PUBLIC_FEATURE_TOURS` | no | `false` | Phase 3 flag; removed in Phase 4 |
 | `NEXT_PUBLIC_FEATURE_BOOKING` | no | `false` | Phase 4 flag; removed in Phase 5 |

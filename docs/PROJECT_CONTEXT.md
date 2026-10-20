@@ -46,12 +46,12 @@ Full reasoning: `00-overview/03-decision-log.md`.
 
 ## Current status (2026-10-20)
 
-Phase 1 (Foundation) is built: `backend/` (Express 5 API with health check) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/`. Report: `10-testing/reports/phase-1.md`. Next: Phase 2 (Authentication).
+Phases 1 (Foundation) and 2 (Authentication, including Google sign-in) are built: `backend/` (Express 5 API) and `frontend/` (Next.js 16) run together with `npm run dev`. The old prototype is in `legacy/`. Reports: `10-testing/reports/phase-1.md`, `phase-2.md`. Next: Phase 3 (Temple Explore).
 
 ## State of the old code (as of 2026-10-20)
 
-- `Frontend/` holds a Vite React SPA (moved there from the repo root in commit `c44b916`), `backend/` holds an Express CommonJS API.
-- **Secrets are committed** in `backend/.env` (MongoDB, Razorpay, Gmail). They must be rotated before Phase 1 and the file removed from Git history.
+- `Frontend/` held a Vite React SPA (moved there from the repo root in commit `03cc7f7`), `backend/` held an Express CommonJS API. Both now live in `legacy/`.
+- **Secrets were committed** in `backend/.env` (MongoDB, Razorpay, Gmail). The file was removed from `main` and `shivam-kumar-dev` history on 2026-10-20 (ADR-024), but GitHub's PR #1 ref still points at the old commits, so the credentials must be treated as public and rotated.
 - Frontend `package.json` references a missing `src/dataconnect-generated` folder, so a fresh `npm install` fails.
 - Two booking flows exist; one skips Razorpay signature verification, the other never decrements seats and double-applies GST.
 - Reusable: Home page sections (Hero, Features, Gallery, Banner, Footer, Navbar), ~160 temple images in `src/assets/`, Tailwind setup.

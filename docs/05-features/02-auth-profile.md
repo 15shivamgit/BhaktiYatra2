@@ -31,6 +31,13 @@ Requirements: FR-AUTH-01…09. Phase 2.
 - `/account`: edit name and phone; change password section (current, new, confirm).
 - Success toasts; errors inline.
 
+### Continue with Google (ADR-020)
+1. Login and register pages show "Continue with Google" above the email form.
+2. The button is a full-page link to `GET /api/v1/auth/google?next=<return path>`; the API redirects to Google's account chooser.
+3. Google returns to `/api/auth/callback/google` on the frontend, which forwards to the API callback. The API signs the user in (creating or linking the account) and redirects to the return path.
+4. On failure the API redirects to `/login?error=google_cancelled|google_failed|account_disabled` and the login page explains it.
+5. A Google-only account has no password; the profile page offers "Set a password" (no current password needed).
+
 ### Forgot / reset password
 - `/forgot-password`: email → always "If an account exists, we've sent a link".
 - Email contains link valid 30 min.
@@ -44,7 +51,8 @@ Requirements: FR-AUTH-01…09. Phase 2.
 - Registration sends `welcome` email (non-blocking).
 - New users are `role: user`. Admin promotion only via admin UI or seed script.
 - Deactivated users cannot log in (401 `ACCOUNT_DISABLED`) and existing sessions fail on next request.
-- Changing password invalidates other sessions (via `tokenInvalidBefore`) but keeps the current one by reissuing the cookie.
+- Changing or resetting the password invalidates other sessions (via `sessionVersion`, ADR-025); a password change keeps the current device signed in by reissuing the cookie.
+- A verified Google email that matches an existing account links Google to it; Google sign-in never creates a second account for the same email.
 
 ## Edge cases
 

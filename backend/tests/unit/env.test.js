@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { EnvError, parseEnv } from '../../src/config/env.js';
 
-const minimal = { MONGO_URL: 'mongodb://localhost:27017/bhaktiyatra_dev' };
+const minimal = {
+  MONGO_URL: 'mongodb://localhost:27017/bhaktiyatra_dev',
+  JWT_SECRET: 'unit-test-secret-that-is-at-least-32-chars',
+};
 
 describe('parseEnv', () => {
   it('applies defaults for a minimal valid environment', () => {
@@ -21,11 +24,12 @@ describe('parseEnv', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(EnvError);
       expect(error.problems).toContain('MONGO_URL is required');
+      expect(error.problems).toContain('JWT_SECRET is required');
     }
   });
 
   it('treats empty strings as unset', () => {
-    expect(() => parseEnv({ MONGO_URL: '' })).toThrow(/MONGO_URL is required/);
+    expect(() => parseEnv({ ...minimal, MONGO_URL: '' })).toThrow(/MONGO_URL is required/);
   });
 
   it('collects several problems at once', () => {

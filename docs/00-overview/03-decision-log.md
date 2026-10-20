@@ -103,10 +103,21 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 **Decision:** Express 5 (stable; async errors reach the error handler without wrappers, so no `asyncHandler`). Env files load with Node's `--env-file-if-exists=.env` flag instead of `dotenv`. `express-mongo-sanitize` and `hpp` are dropped because they write to `req.query`, which is read-only in Express 5; instead the app uses the `simple` query parser (no nested objects) plus a small `sanitizeBody` middleware, and Zod `.strict()` schemas remain the main guard. Validated values live on `req.valid`.  
 **Consequences:** Fewer dependencies; behaviour covered by `tests/integration/errors.test.js`.
 
-## ADR-020 — Google sign-in not in v1 scope (pending owner decision)
-**Date:** 2026-10-20 · **Status:** proposed  
-**Context:** Google OAuth client credentials appeared in the owner's `.env`, but the spec has email/password only.  
-**Decision:** Phase 2 builds email/password as specified. Google sign-in can be added as a Should item in Phase 2 if the owner confirms; it would add `googleId` to User and a `/auth/google` flow on the Express API (no NextAuth, to keep one auth system).
+## ADR-020 — Google sign-in in Phase 2
+**Date:** 2026-10-20 · **Status:** accepted (owner confirmed)  
+**Context:** Google OAuth client credentials are in the owner's `.env`; the owner asked for Google sign-in alongside email/password.  
+**Decision:** The Express API runs the OAuth 2.0 authorisation-code flow with PKCE, `state` and `nonce` (no NextAuth, so there is one session system). `GET /auth/google` redirects to Google; Google returns to the frontend URL already registered in Google Cloud Console (`/api/auth/callback/google`), whose Next.js route handler forwards the query string to `GET /auth/google/callback` on the API. The API exchanges the code, verifies the ID token (issuer, audience, nonce, `email_verified`), then signs in, links or creates the user and sets the normal session cookie. A verified Google email that matches an existing password account is linked to it.  
+**Consequences:** User gets `googleId` and `avatarUrl`; `passwordHash` becomes optional. Google-only users can set a password later through "forgot password" or the profile page.
+
+## ADR-024 — Remove backend/.env from Git history
+**Date:** 2026-10-20 · **Status:** done (owner approved)  
+**Decision:** `git filter-branch --index-filter 'git rm --cached --ignore-unmatch backend/.env'` on `main` and `shivam-kumar-dev`, then `--force-with-lease` pushes. A full backup bundle was taken first. All commit IDs on both branches changed.  
+**Consequences:** Other clones must re-clone or `git fetch && git reset --hard origin/<branch>`. GitHub keeps `refs/pull/1/head` (read-only) pointing at the old history, and old commits may stay viewable by ID until GitHub garbage-collects them; only GitHub Support can purge them. Rotating the leaked credentials remains mandatory.
+
+## ADR-025 — Sessions: `jose` JWTs and a session version
+**Date:** 2026-10-20 · **Status:** accepted (refines ADR-007)  
+**Decision:** Use `jose` for both our session JWTs (HS256) and Google ID-token verification (remote JWKS), instead of `jsonwebtoken` plus a second library. Replace `tokenInvalidBefore` with an integer `sessionVersion` on User, copied into the JWT as `sv`; a token is valid only while `sv` matches. Password change and password reset increment it (signing out other devices); the current device gets a fresh cookie. Logout clears the cookie only. bcrypt cost is `BCRYPT_ROUNDS` (default 12; tests use 4).  
+**Consequences:** No clock-skew edge cases when invalidating sessions. A "sign out everywhere" button can be added later by incrementing `sessionVersion`.
 
 ## ADR-021 — Cloudinary image inventory and quality gap
 **Date:** 2026-10-20 · **Status:** accepted  

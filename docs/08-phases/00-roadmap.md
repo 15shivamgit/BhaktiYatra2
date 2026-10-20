@@ -6,7 +6,7 @@ Phases run strictly in order. A phase starts only when the previous phase's exit
 |---|---|---|---|---|
 | 0 | Specification | This `docs/` tree approved | — | done |
 | 1 | Foundation | Monorepo, both apps boot, env validation, health check, CI, secrets cleaned | 0 | done (history rewrite pending owner approval; see `10-testing/reports/phase-1.md`) |
-| 2 | Authentication | Register/login/logout/me/profile/reset, roles, guards, audit base | 1 | planned |
+| 2 | Authentication | Register/login/logout/me/profile/reset, roles, guards, audit base, Google sign-in | 1 | done (`10-testing/reports/phase-2.md`) |
 | 3 | Temple Explore | Temples, circuits, admin content tools, public pages, SEO, sitemap, static pages | 2 | planned |
 | 4 | Tours & Departures | Tour catalogue, departures, inventory admin | 3 | planned |
 | 5 | Booking & Inventory | Holds, expiry job, booking pages, state machine | 4 | planned |

@@ -1,6 +1,8 @@
 import { Cormorant_Garamond, Inter } from 'next/font/google';
+import { Toaster } from 'sonner';
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
+import { UserProvider } from '@/lib/auth/user-context';
 import { SITE_URL } from '@/lib/config';
 import { t } from '@/lib/i18n';
 import './globals.css';
@@ -40,11 +42,14 @@ export default function RootLayout({ children }) {
         >
           {t('nav.skipToContent')}
         </a>
-        <Navbar />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <UserProvider>
+          <Navbar />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </UserProvider>
+        <Toaster position="top-center" richColors closeButton />
       </body>
     </html>
   );

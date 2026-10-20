@@ -27,6 +27,18 @@ export class AppError extends Error {
     return new AppError(404, ERROR_CODES.NOT_FOUND, message);
   }
 
+  static unauthenticated(code = ERROR_CODES.UNAUTHENTICATED, message = 'Please log in') {
+    return new AppError(401, code, message);
+  }
+
+  static forbidden(code = ERROR_CODES.FORBIDDEN, message = 'You do not have access to this') {
+    return new AppError(403, code, message);
+  }
+
+  static conflict(code, message) {
+    return new AppError(409, code, message);
+  }
+
   static validation(details, message = 'Validation failed') {
     return new AppError(422, ERROR_CODES.VALIDATION_ERROR, message, details);
   }
