@@ -82,7 +82,9 @@ test.describe('temple detail', () => {
     await expect(page.getByRole('region', { name: 'Map: Kedarnath Temple' })).toBeVisible();
   });
 
-  test('ships structured data and social metadata in the HTML', async ({ request }) => {
+  test('TC-TEMPLE-10 ships structured data and social metadata in the HTML', async ({
+    request,
+  }) => {
     const html = await (await request.get(KEDARNATH)).text();
     const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(
       (m) => JSON.parse(m[1]),

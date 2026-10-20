@@ -19,7 +19,8 @@
     "e2e:server": "node scripts/e2e-server.js",
     "seed:sample-tours": "node --env-file-if-exists=.env scripts/seed-sample-tours.js",
     "db:reconcile": "node --env-file-if-exists=.env scripts/reconcile-inventory.js",
-    "db:check-dashboard": "node --env-file-if-exists=.env scripts/check-dashboard.js"
+    "db:check-dashboard": "node --env-file-if-exists=.env scripts/check-dashboard.js",
+    "test:load": "node scripts/load-test.js"
   },
   "dependencies": {
     "bcryptjs": "3.0.3",

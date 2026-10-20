@@ -19,6 +19,14 @@ export default defineConfig({
   projects: [
     { name: 'chromium-desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'chromium-mobile', use: { ...devices['Pixel 7'] } },
+    // Cross-browser pass (Phase 9): `E2E_BROWSERS=all npm run test:e2e -w frontend`.
+    ...(process.env.E2E_BROWSERS === 'all'
+      ? [
+          { name: 'firefox-desktop', use: { ...devices['Desktop Firefox'] } },
+          { name: 'webkit-desktop', use: { ...devices['Desktop Safari'] } },
+          { name: 'webkit-mobile', use: { ...devices['iPhone 14'] } },
+        ]
+      : []),
   ],
   webServer: [
     {

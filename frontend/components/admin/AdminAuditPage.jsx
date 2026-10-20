@@ -147,7 +147,7 @@ export default function AdminAuditPage() {
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <label htmlFor="audit-from" className="text-sm text-text-muted">
             {t('adminOps.from')}
           </label>

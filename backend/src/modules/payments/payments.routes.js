@@ -22,18 +22,31 @@ const verifySchema = {
 /** POST /payments/verify: Checkout success handler (signed-in owner). */
 export function paymentsRouter(ctx) {
   const router = Router();
-  router.post('/verify', requireAuth(ctx.env), validate(verifySchema), async (req, res) => {
-    const { booking, state } = await verifyFromClient(ctx, req.user, {
-      orderId: req.valid.body.razorpay_order_id,
-      paymentId: req.valid.body.razorpay_payment_id,
-      signature: req.valid.body.razorpay_signature,
-    });
-    await booking.populate('tour', 'title slug images');
-    res.set('Cache-Control', 'no-store').json({
-      success: true,
-      data: { booking: toBookingSummary(booking), state },
-    });
+  // Per user (docs/02-architecture/04-security.md §7): Checkout calls this once per payment.
+  const verifyLimit = createRateLimiter({
+    enabled: ctx.env.RATE_LIMIT_ENABLED,
+    windowMs: ctx.env.RATE_LIMIT_VERIFY_WINDOW_MIN * 60_000,
+    limit: ctx.env.RATE_LIMIT_VERIFY_MAX,
+    keyGenerator: (req) => `verify:${req.user._id}`,
   });
+  router.post(
+    '/verify',
+    requireAuth(ctx.env),
+    verifyLimit,
+    validate(verifySchema),
+    async (req, res) => {
+      const { booking, state } = await verifyFromClient(ctx, req.user, {
+        orderId: req.valid.body.razorpay_order_id,
+        paymentId: req.valid.body.razorpay_payment_id,
+        signature: req.valid.body.razorpay_signature,
+      });
+      await booking.populate('tour', 'title slug images');
+      res.set('Cache-Control', 'no-store').json({
+        success: true,
+        data: { booking: toBookingSummary(booking), state },
+      });
+    },
+  );
   return router;
 }
 

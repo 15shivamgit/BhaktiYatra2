@@ -1,5 +1,7 @@
 # End-to-End Journeys (Playwright)
 
+As built (Phase 9): journeys live in `frontend/e2e/*.spec.js`; J2, J3 (ticket "Valid"), J7, J9, J10 and J11 are in `journeys.spec.js`, together with a keyboard-only booking. The E2E API exposes a test-only `GET /__e2e/ticket-token/:reference` for J3. Run `E2E_BROWSERS=all npm run test:e2e -w frontend` to add Firefox, WebKit desktop and WebKit iPhone. J2 step 2 reads the itinerary as a list: the itinerary is always open, not an accordion.
+
 Seed with `npm run seed:e2e -w backend`. CI uses stubbed Razorpay (`window.Razorpay` replaced by a fake that calls the handler or failure callback); manual runs use real test mode.
 
 ## J1 — Visitor explores a temple (Must)

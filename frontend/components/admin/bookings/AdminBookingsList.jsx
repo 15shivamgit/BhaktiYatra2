@@ -122,7 +122,7 @@ export default function AdminBookingsList() {
           PAYMENT_STATUSES,
           (s) => t(`adminOps.paymentStatus.${s}`),
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <label htmlFor="booking-from" className="text-sm text-text-muted">
             {t('adminOps.createdFrom')}
           </label>
@@ -196,7 +196,7 @@ export default function AdminBookingsList() {
                   <td className="p-3">
                     <Link
                       href={`/admin/bookings/${b.id}`}
-                      className="font-mono font-medium text-primary hover:underline"
+                      className="font-mono font-medium whitespace-nowrap text-primary hover:underline"
                     >
                       {b.bookingReference}
                     </Link>

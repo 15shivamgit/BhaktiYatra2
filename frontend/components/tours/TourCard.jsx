@@ -35,7 +35,7 @@ export default function TourCard({
             alt={image.alt || tour.title}
             fill
             sizes={sizes}
-            priority={priority}
+            loading={priority ? 'eager' : 'lazy'}
             className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
           />
         )}

@@ -212,3 +212,13 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **Settings page not built in v1** (it was a Should). Business details, booking parameters and cancellation slabs stay in code and env, changed through review and deployment.
 - **Admin UI:** filters live in the URL; the sidebar shows icons only at tablet width; the top bar search looks up bookings (reference, contact, phone digits, account email) and users. CSV exports neutralise spreadsheet formulas.
 
+## ADR-035 — Phase 9: security headers, rate limits, browser matrix, page weight
+**Date:** 2026-10-21 · **Status:** accepted
+**Decision:**
+- **Content Security Policy without nonces** (`frontend/next.config.mjs`). Nonces would make every page render per request and drop static caching and partial prerendering, so `script-src` keeps `'unsafe-inline'` (Next.js inline bootstrap) and every other source is an explicit list: the site, the API origin, Cloudinary, OpenStreetMap tiles, Google profile photos and Razorpay Checkout. `frame-ancestors 'none'`, `object-src 'none'`, `base-uri` and `form-action` limited; `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`; HSTS and `upgrade-insecure-requests` when the site URL is HTTPS. Hash-based CSP (experimental in Next 16) can replace `'unsafe-inline'` later.
+- **Rate limits match the security spec:** payment verification 30 per hour per user (new `RATE_LIMIT_VERIFY_*`), booking creation 20 per hour per user (window was 15 minutes).
+- **Browsers:** CI runs Chromium (desktop and an Android phone profile). Firefox, WebKit desktop and WebKit iPhone run on demand with `E2E_BROWSERS=all` before releases, because they triple the E2E time.
+- **Page weight:** photos 640 px and wider use Cloudinary `q_auto:eco`; the rupee sign uses a font already on the device (an `@font-face` with `local()` sources and `unicode-range: U+20B9`) instead of downloading an 84 KB extended font file; the account menu loads only for signed-in users; LCP photos use `fetchPriority="high"` (Next 16 deprecated `priority`).
+- **Load test** (`npm run test:load -w backend`) seeds release-sized data in memory and fails when a list endpoint exceeds p95 300 ms, a request fails or seat inventory drifts.
+- **Lighthouse Performance** is judged on the deployed site (PageSpeed Insights) in Phase 10; local laptop results swing with the machine's speed.
+

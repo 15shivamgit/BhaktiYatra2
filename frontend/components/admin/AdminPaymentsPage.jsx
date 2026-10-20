@@ -72,7 +72,7 @@ export default function AdminPaymentsPage() {
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <label htmlFor="payment-from" className="text-sm text-text-muted">
             {t('adminOps.from')}
           </label>
@@ -133,7 +133,7 @@ export default function AdminPaymentsPage() {
                     {p.booking ? (
                       <Link
                         href={`/admin/bookings/${p.booking.id}`}
-                        className="font-mono font-medium text-primary hover:underline"
+                        className="font-mono font-medium whitespace-nowrap text-primary hover:underline"
                       >
                         {p.booking.bookingReference}
                       </Link>

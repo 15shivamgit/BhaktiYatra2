@@ -143,7 +143,7 @@ describe('tour create and update', () => {
 });
 
 describe('publishing, archiving and deleting tours', () => {
-  it('publish lists every missing prerequisite, then succeeds once complete', async () => {
+  it('TC-TOUR-03 publish lists every missing prerequisite, then succeeds once complete', async () => {
     const tour = await makeTour({ status: 'draft', images: [], itinerary: [], inclusions: [] });
     const refused = await agent.post(`${base}/${tour.id}/publish`);
     expect(refused.status).toBe(422);
@@ -155,6 +155,18 @@ describe('publishing, archiving and deleting tours', () => {
     expect(ok.status).toBe(200);
     expect(ok.body.data.status).toBe('published');
     expect(ok.body.data.publishedAt).toBeTruthy();
+  });
+
+  it('TC-TOUR-03 an itinerary shorter than the duration blocks publishing', async () => {
+    const tour = await makeTour({ status: 'draft', publishedAt: undefined, durationDays: 3 });
+    tour.itinerary = tour.itinerary.slice(0, 2);
+    await tour.save();
+    const res = await agent.post(`${base}/${tour.id}/publish`);
+    expect(res.status).toBe(422);
+    expect(res.body.code).toBe('PUBLISH_PREREQUISITES');
+    expect(res.body.details).toEqual([
+      { path: 'itinerary', message: 'The itinerary needs exactly 3 days (it has 2)' },
+    ]);
   });
 
   it('itinerary days need titles', async () => {
@@ -324,7 +336,7 @@ describe('departures: update', () => {
 });
 
 describe('departures: inventory (TC-INV)', () => {
-  it('raises and lowers seats by the same delta and records the reason', async () => {
+  it('TC-DEP-02 raises and lowers seats by the same delta and records the reason', async () => {
     const departure = await makeDeparture(await makeTour(), { seats: 20 });
     await makeBooking(departure, user, { seats: 5 });
     const up = await agent
@@ -336,7 +348,7 @@ describe('departures: inventory (TC-INV)', () => {
     expect(audit.after).toMatchObject({ totalSeats: 30, reason: 'Added second bus' });
   });
 
-  it('refuses to go below committed seats with 409 and counts', async () => {
+  it('TC-DEP-01 refuses to go below committed seats with 409 and counts', async () => {
     const departure = await makeDeparture(await makeTour(), { seats: 20 });
     await makeBooking(departure, user, { seats: 6, status: 'confirmed' });
     await makeBooking(departure, user, { seats: 2, status: 'pending' });
@@ -358,7 +370,7 @@ describe('departures: inventory (TC-INV)', () => {
     expect(back.body.data).toMatchObject({ seatsAvailable: 4, status: 'scheduled' });
   });
 
-  it('keeps the invariant under concurrent adjustments and holds', async () => {
+  it('TC-DEP-03 keeps the invariant under concurrent adjustments and holds', async () => {
     const departure = await makeDeparture(await makeTour(), { seats: 20 });
     await makeBooking(departure, user, { seats: 10, status: 'confirmed' });
     // Simulated concurrent holds (the Phase 5 hold is the same conditional $inc).
@@ -384,7 +396,7 @@ describe('departures: inventory (TC-INV)', () => {
 });
 
 describe('departures: cancel, delete, complete', () => {
-  it('cancelling expires pending bookings and flags confirmed ones for refunds', async () => {
+  it('TC-DEP-04 cancelling expires pending bookings and flags confirmed ones for refunds', async () => {
     const departure = await makeDeparture(await makeTour(), { seats: 20 });
     const pending = await makeBooking(departure, user, { seats: 2, status: 'pending' });
     const confirmed = await makeBooking(departure, user, { seats: 3, status: 'confirmed' });

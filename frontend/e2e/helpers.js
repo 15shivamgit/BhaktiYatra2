@@ -67,6 +67,36 @@ export async function registerUser(page, { name = 'Pilgrim Test' } = {}) {
 }
 
 /**
+ * An unpaid booking made through the API by the signed-in page's user, on the first bookable
+ * date with enough seats. Returns the booking reference.
+ */
+export async function createBookingViaApi(page, slug, { seats = 1, name = 'Offline Payer' } = {}) {
+  const tour = await (await page.request.get(`${API}/tours/${slug}`)).json();
+  const departure = tour.data.departures.find((d) => d.isBookable && d.seatsAvailable >= seats);
+  const res = await page.request.post(`${API}/bookings`, {
+    data: {
+      departureId: departure.id,
+      seats,
+      contact: { name, email: 'offline.payer@e2e.test', phone: '9876543210' },
+      travellers: Array.from({ length: seats }, (_, i) => ({
+        name: `Traveller ${i + 1}`,
+        age: 50,
+        gender: 'female',
+      })),
+      acceptedTerms: true,
+    },
+  });
+  if (!res.ok()) throw new Error(`booking failed: ${res.status()} ${await res.text()}`);
+  return (await res.json()).data.booking.bookingReference;
+}
+
+/** Test-only API helper (backend/scripts/e2e-server.js): the token behind a ticket's QR code. */
+export async function ticketToken(page, reference) {
+  const res = await page.request.get(`http://localhost:5100/__e2e/ticket-token/${reference}`);
+  return (await res.json()).token;
+}
+
+/**
  * On phones the filter panel is collapsed behind a "Filters" button. A click that lands before
  * React has hydrated does nothing, so retry until the panel reports it is open.
  */

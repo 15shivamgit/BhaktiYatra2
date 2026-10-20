@@ -258,7 +258,7 @@ export default function AdminDashboard() {
                         <td className="p-3">
                           <Link
                             href={`/admin/bookings/${b.id}`}
-                            className="font-mono font-medium text-primary hover:underline"
+                            className="font-mono font-medium whitespace-nowrap text-primary hover:underline"
                           >
                             {b.bookingReference}
                           </Link>

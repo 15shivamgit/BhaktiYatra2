@@ -42,7 +42,9 @@ const envSchema = z.object({
   RATE_LIMIT_CONTACT_MAX: z.coerce.number().int().positive().default(5),
   RATE_LIMIT_CONTACT_WINDOW_MIN: z.coerce.number().int().positive().default(60),
   RATE_LIMIT_BOOKING_MAX: z.coerce.number().int().positive().default(20),
-  RATE_LIMIT_BOOKING_WINDOW_MIN: z.coerce.number().int().positive().default(15),
+  RATE_LIMIT_BOOKING_WINDOW_MIN: z.coerce.number().int().positive().default(60),
+  RATE_LIMIT_VERIFY_MAX: z.coerce.number().int().positive().default(30),
+  RATE_LIMIT_VERIFY_WINDOW_MIN: z.coerce.number().int().positive().default(60),
 
   // Phase 2: authentication
   JWT_SECRET: z.string().min(32, 'must be at least 32 characters'),

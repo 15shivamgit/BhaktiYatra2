@@ -31,6 +31,17 @@ function middlewareApp() {
   app.get('/boom-async', async () => {
     throw new Error('async internal detail');
   });
+  app.get('/mongo-duplicate', () => {
+    throw Object.assign(
+      new Error('E11000 duplicate key error collection: prod.users index: email_1 dup key'),
+      { name: 'MongoServerError', code: 11000, keyPattern: { email: 1 } },
+    );
+  });
+  app.get('/mongo-network', () => {
+    throw Object.assign(new Error('connection <monitor> to 10.0.0.5:27017 closed'), {
+      name: 'MongoNetworkError',
+    });
+  });
   app.use(notFound());
   app.use(errorHandler(createLogger({ level: 'silent' })));
   return app;
@@ -85,13 +96,17 @@ describe('error envelope and shared middleware', () => {
     expect(res.body.code).toBe('PAYLOAD_TOO_LARGE');
   });
 
-  it('unexpected sync and async errors return 500 without leaking details', async () => {
-    for (const path of ['/boom', '/boom-async']) {
+  it('TC-SEC-04 unexpected and database errors never leak stack traces or Mongo text', async () => {
+    for (const path of ['/boom', '/boom-async', '/mongo-network']) {
       const res = await request(app).get(path);
       expect(res.status).toBe(500);
       expect(res.body.code).toBe('INTERNAL_ERROR');
-      expect(JSON.stringify(res.body)).not.toMatch(/internal detail|stack/i);
+      expect(JSON.stringify(res.body)).not.toMatch(/internal detail|stack|27017|monitor/i);
     }
+    const dup = await request(app).get('/mongo-duplicate');
+    expect(dup.status).toBe(409);
+    expect(dup.body.message).toBe('A record with this email already exists');
+    expect(JSON.stringify(dup.body)).not.toMatch(/E11000|prod\.users|index/);
   });
 
   it('strips Mongo operator keys from bodies', async () => {

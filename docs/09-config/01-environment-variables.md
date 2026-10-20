@@ -40,7 +40,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `RATE_LIMIT_TICKET_VERIFY_MAX` | no | `60` | ticket checks per minute per IP |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
 | `HOLD_MINUTES` | no | `15` | seat hold length; fractions are allowed for tests (the E2E server uses 1) |
-| `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `15` | booking creations per user per window |
+| `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `60` | booking creations per user per window |
+| `RATE_LIMIT_VERIFY_MAX` / `RATE_LIMIT_VERIFY_WINDOW_MIN` | no | `30` / `60` | payment verifications per user per window |
 | `MAX_SEATS_PER_BOOKING` | no | `10` | |
 | `BOOKING_CUTOFF_HOURS` | no | `24` | default for new departures |
 | `RATE_LIMIT_ENABLED` | no | `true` | `false` in tests |

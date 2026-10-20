@@ -55,7 +55,8 @@ export default function TempleGallery({ images, name }) {
           src={images[0].url}
           alt={images[0].alt || name}
           fill
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="(min-width: 1280px) 1216px, 100vw"
           className="object-cover"
         />

@@ -16,6 +16,8 @@
 
 ## Exit criteria
 
-- [ ] Release-gate checklist fully ticked with evidence (screenshots, reports) stored in `docs/10-testing/reports/`.
-- [ ] No open critical or high defects.
+Status on 2026-10-21 (details in `10-testing/reports/phase-9.md`):
+
+- [ ] Release-gate checklist fully ticked with evidence (screenshots, reports) stored in `docs/10-testing/reports/`. (All lines met except Lighthouse Performance, the staging deployment (Phase 10) and the owner's manual checks.)
+- [x] No open critical or high defects.
 - [ ] Owner sign-off.

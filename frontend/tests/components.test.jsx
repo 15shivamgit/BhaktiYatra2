@@ -147,9 +147,16 @@ describe('formatting helpers and image loader', () => {
     expect(
       cloudinaryLoader({
         src: 'https://res.cloudinary.com/demo/image/upload/v1/a.jpg',
-        width: 640,
+        width: 384,
       }),
-    ).toBe('https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,c_limit,w_640/v1/a.jpg');
+    ).toBe('https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,c_limit,w_384/v1/a.jpg');
+    // Large photos use the lighter "eco" quality.
+    expect(
+      cloudinaryLoader({
+        src: 'https://res.cloudinary.com/demo/image/upload/v1/a.jpg',
+        width: 750,
+      }),
+    ).toBe('https://res.cloudinary.com/demo/image/upload/f_auto,q_auto:eco,c_limit,w_750/v1/a.jpg');
     expect(cloudinaryLoader({ src: 'https://lh3.googleusercontent.com/a/x', width: 64 })).toBe(
       'https://lh3.googleusercontent.com/a/x',
     );

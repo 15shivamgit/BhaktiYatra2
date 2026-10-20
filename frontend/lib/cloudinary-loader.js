@@ -6,7 +6,10 @@
 export default function cloudinaryLoader({ src, width, quality }) {
   const marker = '/image/upload/';
   if (!src.startsWith('https://res.cloudinary.com/') || !src.includes(marker)) return src;
-  const transform = `f_auto,q_${quality ?? 'auto'},c_limit,w_${width}`;
+  // Large photos use Cloudinary's "eco" quality: about a fifth fewer bytes, no visible loss
+  // at that size on phones, where the bandwidth matters most.
+  const q = quality ?? (width >= 640 ? 'auto:eco' : 'auto');
+  const transform = `f_auto,q_${q},c_limit,w_${width}`;
   return src.replace(marker, `${marker}${transform}/`);
 }
 

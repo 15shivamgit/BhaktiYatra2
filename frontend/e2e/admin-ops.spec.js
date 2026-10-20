@@ -1,35 +1,19 @@
 import { expect, test } from '@playwright/test';
-import { ACCOUNTS, expectNoSeriousA11yViolations, login, registerUser } from './helpers';
+import {
+  ACCOUNTS,
+  createBookingViaApi,
+  expectNoSeriousA11yViolations,
+  login,
+  registerUser,
+} from './helpers';
 
 /*
  * Admin operations (Phase 8): dashboard, bookings, payments, users and the audit log.
  * The E2E API runs on an in-memory database with sample tours (backend/scripts/e2e-server.js).
  */
 
-const API = 'http://localhost:5100/api/v1';
 const KASHI = 'kashi-ayodhya-darshan';
 const suffix = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-
-/** An unpaid booking made through the API by the signed-in page's user; returns its reference. */
-async function createBooking(page, slug, seats = 1) {
-  const tour = await (await page.request.get(`${API}/tours/${slug}`)).json();
-  const departure = tour.data.departures.find((d) => d.isBookable && d.seatsAvailable >= seats);
-  const res = await page.request.post(`${API}/bookings`, {
-    data: {
-      departureId: departure.id,
-      seats,
-      contact: { name: 'Offline Payer', email: 'offline.payer@e2e.test', phone: '9876543210' },
-      travellers: Array.from({ length: seats }, (_, i) => ({
-        name: `Traveller ${i + 1}`,
-        age: 50,
-        gender: 'female',
-      })),
-      acceptedTerms: true,
-    },
-  });
-  if (!res.ok()) throw new Error(`booking failed: ${res.status()} ${await res.text()}`);
-  return (await res.json()).data.booking.bookingReference;
-}
 
 test.describe('admin operations (Phase 8)', () => {
   test.skip(({ isMobile }) => isMobile, 'Admin journeys run on the desktop project');
@@ -41,7 +25,7 @@ test.describe('admin operations (Phase 8)', () => {
     test.slow(); // long journey; the full suite runs several workers in parallel
     const customer = await browser.newPage();
     await registerUser(customer, { name: 'Offline Payer' });
-    const reference = await createBooking(customer, KASHI);
+    const reference = await createBookingViaApi(customer, KASHI);
     await customer.close();
 
     await login(page, ACCOUNTS.admin);

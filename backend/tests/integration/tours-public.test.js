@@ -18,7 +18,7 @@ beforeEach(async () => {
 const list = (query = '') => request(app).get(`/api/v1/tours${query}`);
 
 describe('GET /tours pricing (FR-TOUR-02)', () => {
-  it('fromPrice is the cheapest bookable departure and nextDeparture the earliest bookable one', async () => {
+  it('TC-TOUR-01 fromPrice is the cheapest bookable departure and nextDeparture the earliest bookable one', async () => {
     const tour = await makeTour({ basePrice: 20000 });
     await makeDeparture(tour, { inDays: -5, price: 9000 }); // past
     await makeDeparture(tour, { inDays: 0, price: 9500 }); // inside the 24 h cutoff
@@ -61,7 +61,7 @@ describe('GET /tours pricing (FR-TOUR-02)', () => {
 });
 
 describe('GET /tours filters and sorting', () => {
-  it('month returns only tours with a departure in that month', async () => {
+  it('TC-TOUR-02 month returns only tours with a departure in that month', async () => {
     const may = await makeTour({ title: 'Has departure in month' });
     const other = await makeTour({ title: 'Departs later' });
     await makeDeparture(may, { inDays: 40 });
