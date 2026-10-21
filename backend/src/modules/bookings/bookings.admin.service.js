@@ -11,6 +11,7 @@ import { AppError } from '../../utils/app-error.js';
 import { escapeRegex } from '../../utils/crypto.js';
 import { addDays, istMidnight, toIstDateTime, toIstYmd } from '../../utils/dates.js';
 import { pageMeta, skipFor } from '../../utils/pagination.js';
+import { normalizePhone } from '../../utils/phone.js';
 import { recordAudit } from '../audit/audit.service.js';
 import { issueDocumentsQuietly, regenerateDocuments } from '../documents/documents.service.js';
 import { enqueueNotification } from '../notifications/notifications.service.js';
@@ -78,6 +79,41 @@ export function allowedActions(booking) {
 
 /* ---------- list and export ---------- */
 
+/**
+ * Search conditions for `q`. Recognisable input uses an index: a reference ("BY-…") or an email
+ * ("name@…") is matched as a prefix, a phone number exactly. Anything else (a name, part of an
+ * address) falls back to a case-insensitive match on every field, which scans.
+ */
+async function searchConditions(q) {
+  if (/^BY-/i.test(q)) {
+    return [{ bookingReference: new RegExp(`^${escapeRegex(q.toUpperCase())}`) }];
+  }
+  if (q.includes('@')) {
+    const prefix = new RegExp(`^${escapeRegex(q.toLowerCase())}`);
+    const users = await User.find({ email: prefix }).select('_id').limit(50);
+    return [
+      { 'contact.email': prefix },
+      ...(users.length ? [{ user: { $in: users.map((u) => u._id) } }] : []),
+    ];
+  }
+  const phone = normalizePhone(q);
+  if (phone) return [{ 'contact.phone': phone }];
+
+  const pattern = new RegExp(escapeRegex(q), 'i');
+  const or = [
+    { bookingReference: pattern },
+    { 'contact.email': pattern },
+    { 'contact.name': pattern },
+    { 'contact.phone': pattern },
+  ];
+  // Part of a number ("98765") still finds +919876543210.
+  const digits = q.replace(/\D/g, '');
+  if (digits.length >= 5) or.push({ 'contact.phone': new RegExp(digits.slice(-10)) });
+  const users = await User.find({ email: pattern }).select('_id').limit(50);
+  if (users.length) or.push({ user: { $in: users.map((u) => u._id) } });
+  return or;
+}
+
 async function buildFilter({ q, bookingStatus, paymentStatus, tour, departure, user, from, to }) {
   const filter = {};
   if (bookingStatus) filter.bookingStatus = bookingStatus;
@@ -91,21 +127,7 @@ async function buildFilter({ q, bookingStatus, paymentStatus, tour, departure, u
       ...(to && { $lt: addDays(istMidnight(to), 1) }),
     };
   }
-  if (q) {
-    const pattern = new RegExp(escapeRegex(q), 'i');
-    const or = [
-      { bookingReference: pattern },
-      { 'contact.email': pattern },
-      { 'contact.name': pattern },
-      { 'contact.phone': pattern },
-    ];
-    // "98765 43210" or "098765..." still finds +919876543210.
-    const digits = q.replace(/\D/g, '');
-    if (digits.length >= 5) or.push({ 'contact.phone': new RegExp(digits.slice(-10)) });
-    const users = await User.find({ email: pattern }).select('_id').limit(50);
-    if (users.length) or.push({ user: { $in: users.map((u) => u._id) } });
-    filter.$or = or;
-  }
+  if (q) filter.$or = await searchConditions(q);
   return filter;
 }
 

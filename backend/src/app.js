@@ -24,7 +24,8 @@ export function createApp({ env, logger, providers: overrides = {} }) {
   const app = express();
 
   app.disable('x-powered-by');
-  app.set('trust proxy', 1); // Render and similar hosts sit behind one proxy hop.
+  // Render adds one proxy hop; the Vercel rewrite in front of it adds another (ADR-036).
+  app.set('trust proxy', env.TRUST_PROXY_HOPS);
   app.set('query parser', 'simple'); // No nested query objects, so no operator injection via query.
 
   app.use(requestId());

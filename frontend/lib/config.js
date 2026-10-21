@@ -7,9 +7,18 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:30
 export const PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:5000/api/v1';
 
-/** API base used by Server Components; may point at a private network address in production. */
+/**
+ * API base used by Server Components; may point at a private network address in production.
+ * Required when the public base is relative ("/api/v1" through the Vercel rewrite), because the
+ * server has no page origin to resolve it against.
+ */
 export function serverApiBaseUrl() {
-  return process.env.API_BASE_URL_INTERNAL ?? PUBLIC_API_BASE_URL;
+  const internal = process.env.API_BASE_URL_INTERNAL;
+  if (internal) return internal;
+  if (PUBLIC_API_BASE_URL.startsWith('/')) {
+    throw new Error('API_BASE_URL_INTERNAL must be set when NEXT_PUBLIC_API_BASE_URL is relative');
+  }
+  return PUBLIC_API_BASE_URL;
 }
 
 /** Home hero photo (owner's Cloudinary upload, viewed and described). */

@@ -40,10 +40,16 @@ test.describe('home page', () => {
     ).toBeVisible();
   });
 
-  test('skip link moves focus to main content', async ({ page }) => {
+  test('skip link moves focus to main content', async ({ page, browserName }) => {
     await page.goto('/');
-    await page.keyboard.press('Tab');
     const skip = page.getByRole('link', { name: 'Skip to content' });
+    if (browserName === 'webkit') {
+      // Safari's Tab skips links unless "Press Tab to highlight each item" is turned on; check
+      // that the link itself works once focused.
+      await skip.focus();
+    } else {
+      await page.keyboard.press('Tab');
+    }
     await expect(skip).toBeFocused();
     await skip.press('Enter');
     await expect(page).toHaveURL(/#main$/);
@@ -63,6 +69,36 @@ test.describe('home page', () => {
     expect(body).toMatch(/Disallow: \/admin/);
     expect(body).toMatch(/Disallow: \/account/);
     expect(body).toMatch(/Sitemap: http:\/\/localhost:3100\/sitemap\.xml/);
+  });
+
+  test('sends security headers and loads key pages without Content Security Policy errors', async ({
+    page,
+    request,
+  }) => {
+    const headers = (await request.get('/')).headers();
+    expect(headers['content-security-policy']).toContain("frame-ancestors 'none'");
+    expect(headers['content-security-policy']).toContain("object-src 'none'");
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['x-frame-options']).toBe('DENY');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+
+    const blocked = [];
+    page.on('console', (message) => {
+      if (/Content[- ]Security[- ]Policy/i.test(message.text())) blocked.push(message.text());
+    });
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await page.goto('/temples/kedarnath-temple-rudraprayag');
+    const map = page.locator('#map').filter({ visible: true });
+    await expect(map).toBeVisible(); // the streamed copy replaces a hidden one first
+    await map.scrollIntoViewIfNeeded();
+    // Map tiles are requested (a blocked request would log a policy error above).
+    await expect
+      .poll(() => page.locator('.leaflet-tile').count(), { timeout: 15_000 })
+      .toBeGreaterThan(0);
+    await page.goto('/tours/char-dham-yatra-haridwar');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    expect(blocked).toEqual([]);
   });
 
   test('has no serious accessibility violations', async ({ page }) => {

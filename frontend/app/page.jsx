@@ -88,7 +88,7 @@ export default function HomePage() {
           src={HERO_IMAGE.url}
           alt={HERO_IMAGE.alt}
           fill
-          priority
+          preload
           sizes="100vw"
           className="-z-10 object-cover"
         />

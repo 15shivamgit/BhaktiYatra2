@@ -109,6 +109,7 @@ bookingSchema.index({ user: 1, createdAt: -1 });
 bookingSchema.index({ departure: 1, bookingStatus: 1 });
 bookingSchema.index({ razorpayOrderId: 1 });
 bookingSchema.index({ bookingStatus: 1, holdExpiresAt: 1 });
+bookingSchema.index({ bookingStatus: 1, createdAt: -1 }); // admin list by status
 bookingSchema.index({ 'contact.email': 1 });
 bookingSchema.index({ 'contact.phone': 1 });
 bookingSchema.index({ createdAt: -1 });

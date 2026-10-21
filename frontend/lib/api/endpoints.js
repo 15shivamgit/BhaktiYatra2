@@ -15,7 +15,7 @@ export const authApi = {
   resetPassword: (body) => apiFetch('/auth/reset-password', { method: 'POST', body }),
   /** Full-page navigation target that starts Google sign-in. */
   googleStartUrl: (next) => {
-    const url = new URL(`${PUBLIC_API_BASE_URL}/auth/google`);
+    const url = new URL(`${PUBLIC_API_BASE_URL}/auth/google`, window.location.origin);
     if (next && next !== '/') url.searchParams.set('next', next);
     return url.toString();
   },

@@ -24,7 +24,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `SITE_URL` | yes | `http://localhost:3000` | used in emails and QR links |
 | `REVALIDATE_SECRET` | yes | random | shared with frontend |
 | `TICKET_SIGNING_SECRET` | yes (Phase 7) | random | separate from JWT |
-| `PAYMENTS_PROVIDER` | no | `razorpay` | `stub` fakes orders for tests and offline development. The API refuses to start with `stub` when `NODE_ENV=production`, and with `razorpay` in staging or production unless all three `RAZORPAY_*` values are set |
+| `PAYMENTS_PROVIDER` | no | `razorpay` | `stub` fakes orders for tests and offline development; `disabled` closes online booking (booking requests answer 503; content-only launch, ADR-036). The API refuses to start with `stub` when `NODE_ENV=production`, and with `razorpay` in staging or production unless all three `RAZORPAY_*` values are set |
+| `TRUST_PROXY_HOPS` | no | `1` | proxies in front of the API: `1` for Render alone, `2` behind the Vercel `/api/v1` rewrite (ADR-036) |
 | `RATE_LIMIT_WEBHOOK_MAX` | no | `600` | webhook requests per minute per IP |
 | `RAZORPAY_KEY_ID` | yes (Phase 6) | `rzp_test_…` | public id |
 | `RAZORPAY_KEY_SECRET` | yes (Phase 6) | | server only |
@@ -40,7 +41,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 | `RATE_LIMIT_TICKET_VERIFY_MAX` | no | `60` | ticket checks per minute per IP |
 | `ADMIN_NOTIFY_EMAIL` | yes (Phase 7) | | receives admin alerts |
 | `HOLD_MINUTES` | no | `15` | seat hold length; fractions are allowed for tests (the E2E server uses 1) |
-| `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `15` | booking creations per user per window |
+| `RATE_LIMIT_BOOKING_MAX` / `RATE_LIMIT_BOOKING_WINDOW_MIN` | no | `20` / `60` | booking creations per user per window |
+| `RATE_LIMIT_VERIFY_MAX` / `RATE_LIMIT_VERIFY_WINDOW_MIN` | no | `30` / `60` | payment verifications per user per window |
 | `MAX_SEATS_PER_BOOKING` | no | `10` | |
 | `BOOKING_CUTOFF_HOURS` | no | `24` | default for new departures |
 | `RATE_LIMIT_ENABLED` | no | `true` | `false` in tests |
@@ -59,7 +61,8 @@ Validated at startup by `backend/src/config/env.js` (zod). Missing or invalid re
 |---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | yes | `http://localhost:3000` | canonical URLs, OG |
 | `NEXT_PUBLIC_API_BASE_URL` | yes | `http://localhost:5000/api/v1` | browser calls |
-| `API_BASE_URL_INTERNAL` | no | same as above | server-side fetch; can be a private URL |
+| `API_BASE_URL_INTERNAL` | when the public base is relative | same as above | server-side fetch; must be the absolute API address when `NEXT_PUBLIC_API_BASE_URL` is `/api/v1` |
+| `API_PROXY_TARGET` | deployed without a shared domain | `https://bhaktiyatra-api.onrender.com` | the website forwards `/api/v1/*` to this address; set `NEXT_PUBLIC_API_BASE_URL=/api/v1` with it (ADR-036) |
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | no | `rzp_test_…` | the API also returns it; used for preloading only |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | yes (Phase 3) | | image loader |
 | `REVALIDATE_SECRET` | yes (Phase 3) | | must match backend |
@@ -84,7 +87,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 | Variable | Local | Staging | Production |
 |---|---|---|---|
 | `NODE_ENV` | development | staging | production |
-| `COOKIE_DOMAIN` | (empty) | `.staging-domain` or proxy | `.bhaktiyatra.in` |
+| `COOKIE_DOMAIN` | (empty) | (empty: cookie set through the website rewrite) | (empty until a domain; then `.bhaktiyatra.in` if the API moves to `api.bhaktiyatra.in`) |
+| `TRUST_PROXY_HOPS` | 1 | 2 | 2 |
+| `PAYMENTS_PROVIDER` | stub or razorpay | stub (until new test keys) | disabled (until live keys) |
 | `RAZORPAY_*` | test | test | live |
 | `CLOUDINARY_FOLDER` | `bhaktiyatra/dev` | `bhaktiyatra/staging` | `bhaktiyatra/prod` |
 | `MAIL_FROM` | Resend test sender | verified domain | verified domain |

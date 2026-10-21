@@ -8,6 +8,7 @@
  * with NODE_ENV=production: real tours are created by the owner in the admin panel.
  */
 import { connectDb, disconnectDb } from '../src/config/db.js';
+import { isProductionDb } from './lib/production-db.js';
 import { parseEnv } from '../src/config/env.js';
 import { createLogger } from '../src/config/logger.js';
 import { seedSampleTours } from './lib/tour-seed.js';
@@ -16,7 +17,7 @@ const out = (line = '') => process.stdout.write(`${line}\n`);
 
 async function main() {
   const env = parseEnv(process.env);
-  if (env.NODE_ENV === 'production') {
+  if (env.NODE_ENV === 'production' || isProductionDb(env.MONGO_URL)) {
     out('Refusing to seed sample tours in production.');
     process.exit(1);
   }

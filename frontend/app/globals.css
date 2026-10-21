@@ -1,6 +1,19 @@
 @import 'tailwindcss';
 
 /*
+ * The rupee sign from a font already on the device. Inter and Cormorant keep U+20B9 in their
+ * latin-ext files (about 85 KB each), which a page with prices would otherwise download for a
+ * single character. Devices without any of these fonts fall back to the web font as before.
+ */
+@font-face {
+  font-family: Rupee;
+  src:
+    local('Roboto'), local('Noto Sans'), local('Nirmala UI'), local('Segoe UI'),
+    local('Helvetica Neue'), local('Arial');
+  unicode-range: U+20B9;
+}
+
+/*
  * Design tokens: docs/06-design/01-design-system.md.
  * Tailwind v4 reads tokens from @theme, so `bg-primary`, `text-text-muted`,
  * `rounded-md`, `max-w-page`, `font-display` etc. come from here.
@@ -34,8 +47,8 @@
   --color-info: #2b5f9e;
   --color-info-soft: #e1eaf6;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-sans: Rupee, var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: Rupee, var(--font-cormorant), ui-serif, Georgia, serif;
 
   --radius-sm: 6px;
   --radius-md: 10px;

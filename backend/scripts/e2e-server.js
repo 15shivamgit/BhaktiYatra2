@@ -3,11 +3,13 @@
  * port 5100. Never touches a real database or real Cloudinary. Started by
  * frontend/playwright.config.js.
  */
+import express from 'express';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import { createApp } from '../src/app.js';
 import { connectDb } from '../src/config/db.js';
 import { parseEnv } from '../src/config/env.js';
 import { createLogger } from '../src/config/logger.js';
+import { Booking } from '../src/models/Booking.js';
 import { User } from '../src/models/User.js';
 import { hashPassword } from '../src/modules/auth/password.js';
 import { createPaymentsProvider } from '../src/providers/payments.provider.js';
@@ -111,12 +113,21 @@ const fakeImages = {
   async destroy() {},
 };
 
-const server = createApp({ env, logger, providers: { images: fakeImages, payments } }).listen(
-  PORT,
-  () => {
-    process.stdout.write(`E2E API listening on http://localhost:${PORT}\n`);
-  },
-);
+/*
+ * Test-only helper (docs/10-testing/03-e2e-journeys.md J3): the ticket token behind a booking's
+ * QR code, so a journey can open /verify/<token> without decoding the PDF. Exists only here.
+ */
+const outer = express();
+outer.get('/__e2e/ticket-token/:reference', async (req, res) => {
+  const booking = await Booking.findOne({ bookingReference: req.params.reference }).select(
+    'ticket',
+  );
+  res.json({ token: booking?.ticket?.token ?? null });
+});
+outer.use(createApp({ env, logger, providers: { images: fakeImages, payments } }));
+const server = outer.listen(PORT, () => {
+  process.stdout.write(`E2E API listening on http://localhost:${PORT}\n`);
+});
 
 const stop = async () => {
   server.close();

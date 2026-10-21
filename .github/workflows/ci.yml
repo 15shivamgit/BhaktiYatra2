@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      # TC-SEC-06: no secrets in the repository or its history
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,6 +64,9 @@ jobs:
         env:
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
           NEXT_PUBLIC_API_BASE_URL: http://localhost:5000/api/v1
+          # Run the site the way it is deployed: the browser calls /api/v1 on the website and
+          # Next.js forwards it to the API (ADR-036).
+          E2E_API_PROXY: '1'
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

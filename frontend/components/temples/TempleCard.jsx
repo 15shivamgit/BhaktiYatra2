@@ -32,7 +32,7 @@ export default function TempleCard({
             alt={image.alt || temple.name}
             fill
             sizes={sizes}
-            priority={priority}
+            loading={priority ? 'eager' : 'lazy'}
             className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
           />
         ) : (

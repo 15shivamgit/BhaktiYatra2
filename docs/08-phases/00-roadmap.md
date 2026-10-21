@@ -13,8 +13,8 @@ Phases run strictly in order. A phase starts only when the previous phase's exit
 | 6 | Payments | Razorpay order, verify, webhook, idempotent confirmation, payment UI | 5 | built and tested with a fake Razorpay; a real test-mode payment needs new test keys (`10-testing/reports/phase-6.md`) |
 | 7 | Documents & Email | Ticket, QR verify, invoice, email queue with retry, secure downloads | 6 | built; real inbox delivery and phone QR scan to check (`10-testing/reports/phase-7.md`) |
 | 8 | Admin Operations | Dashboard, bookings/payments/users/contacts admin, cancellations, audit viewer | 7 | built; Excel check of the CSV by the owner (`10-testing/reports/phase-8.md`) |
-| 9 | Quality Assurance | Full test pass, E2E, a11y, performance, security review | 8 | planned |
-| 10 | Deployment & Handover | Staging + production live, smoke tests, runbook | 9 | planned |
+| 9 | Quality Assurance | Full test pass, E2E, a11y, performance, security review | 8 | automated QA done; Lighthouse Performance, 60 temples and owner checks open (`10-testing/reports/phase-9.md`) |
+| 10 | Deployment & Handover | Staging + production live, smoke tests, runbook | 9 | prepared (render.yaml, rewrite, guide); waiting for the owner to create the services (`09-config/05-deployment-guide.md`) |
 
 ```mermaid
 gantt

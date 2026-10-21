@@ -78,11 +78,15 @@ test.describe('temple detail', () => {
     const nearby = page.locator('#nearby');
     await expect(nearby.getByRole('link', { name: 'Badrinath Temple' })).toBeVisible();
 
-    await page.locator('#map').scrollIntoViewIfNeeded();
+    const map = page.locator('#map').filter({ visible: true });
+    await expect(map).toBeVisible(); // the streamed copy replaces a hidden one first
+    await map.scrollIntoViewIfNeeded();
     await expect(page.getByRole('region', { name: 'Map: Kedarnath Temple' })).toBeVisible();
   });
 
-  test('ships structured data and social metadata in the HTML', async ({ request }) => {
+  test('TC-TEMPLE-10 ships structured data and social metadata in the HTML', async ({
+    request,
+  }) => {
     const html = await (await request.get(KEDARNATH)).text();
     const blocks = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map(
       (m) => JSON.parse(m[1]),

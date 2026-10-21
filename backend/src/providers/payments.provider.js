@@ -7,7 +7,7 @@ const RAZORPAY_API = 'https://api.razorpay.com/v1';
 
 /**
  * Payment provider interface:
- *   name                    'stub' | 'razorpay'
+ *   name                    'stub' | 'razorpay' | 'disabled'
  *   keyId                   public key for Checkout (null for the stub)
  *   simulate                true when the dev-only "simulate payment" endpoint may be used
  *   createOrder({ amountPaise, currency, receipt, notes }) → { id, amount, currency }
@@ -16,7 +16,7 @@ const RAZORPAY_API = 'https://api.razorpay.com/v1';
  *   verifyPaymentSignature({ orderId, paymentId, signature }) → boolean
  *   verifyWebhookSignature(rawBody, signature) → boolean
  *
- * @param {{ provider: 'stub' | 'razorpay', nodeEnv: string, keyId?: string, keySecret?: string,
+ * @param {{ provider: 'stub' | 'razorpay' | 'disabled', nodeEnv: string, keyId?: string, keySecret?: string,
  *   webhookSecret?: string, fetchImpl?: typeof fetch, timeoutMs?: number }} options
  */
 export function createPaymentsProvider({
@@ -29,6 +29,7 @@ export function createPaymentsProvider({
   timeoutMs = 10_000,
 }) {
   if (provider === 'stub') return createStubProvider(nodeEnv);
+  if (provider === 'disabled') return createDisabledProvider();
   return createRazorpayProvider({ keyId, keySecret, webhookSecret, fetchImpl, timeoutMs });
 }
 
@@ -43,6 +44,35 @@ function createStubProvider(nodeEnv) {
     },
     async fetchPayment() {
       throw new AppError(503, ERROR_CODES.SERVICE_UNAVAILABLE, 'The stub provider has no payments');
+    },
+    async fetchOrderPayments() {
+      return [];
+    },
+    verifyPaymentSignature: () => false,
+    verifyWebhookSignature: () => false,
+  };
+}
+
+/**
+ * Online booking switched off (a content-only launch, ADR-036): no order can be created, so no
+ * seat is ever held and no money is taken. Webhooks and verification always fail closed.
+ */
+function createDisabledProvider() {
+  const closed = () =>
+    new AppError(
+      503,
+      ERROR_CODES.SERVICE_UNAVAILABLE,
+      'Online booking is not open yet. Please contact us to book this tour.',
+    );
+  return {
+    name: 'disabled',
+    keyId: null,
+    simulate: false,
+    async createOrder() {
+      throw closed();
+    },
+    async fetchPayment() {
+      throw closed();
     },
     async fetchOrderPayments() {
       return [];

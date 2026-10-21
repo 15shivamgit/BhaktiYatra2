@@ -13,7 +13,7 @@ export default function CircuitCard({ circuit, priority = false }) {
             src={circuit.image.url}
             alt={circuit.image.alt || circuit.name}
             fill
-            priority={priority}
+            loading={priority ? 'eager' : 'lazy'}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
           />

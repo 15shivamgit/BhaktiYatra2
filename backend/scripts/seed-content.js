@@ -14,6 +14,7 @@ import { connectDb, disconnectDb } from '../src/config/db.js';
 import { parseEnv } from '../src/config/env.js';
 import { createLogger } from '../src/config/logger.js';
 import { seedContent } from './lib/content-seed.js';
+import { isProductionDb } from './lib/production-db.js';
 
 const out = (line = '') => process.stdout.write(`${line}\n`);
 
@@ -22,9 +23,11 @@ async function main() {
     options: { draft: { type: 'boolean' }, 'allow-production': { type: 'boolean' } },
   });
   const env = parseEnv(process.env);
-  if (env.NODE_ENV === 'production' && !values['allow-production']) {
+  // Drafts are safe anywhere; publishing straight into production needs an explicit flag.
+  const production = env.NODE_ENV === 'production' || isProductionDb(env.MONGO_URL);
+  if (production && !values.draft && !values['allow-production']) {
     out(
-      'Refusing to seed production: review the drafted content first, then pass --allow-production.',
+      'Refusing to publish into production: load as --draft and publish after review, or pass --allow-production.',
     );
     process.exit(1);
   }

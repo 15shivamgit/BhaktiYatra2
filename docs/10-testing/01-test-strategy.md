@@ -6,9 +6,9 @@
 |---|---|---|---|
 | Unit | Vitest | Services, utils, validators, pricing, transitions, signature helpers, formatters, React components in isolation | Every commit (CI) |
 | Integration | Vitest + Supertest + mongodb-memory-server (replica set) | HTTP routes end-to-end inside the API with real Mongo and mocked providers | Every commit (CI) |
-| End-to-end | Playwright | Browser journeys across Next.js + API with seeded data; Razorpay stubbed in CI, real test mode manually | Every PR (CI, Chromium), nightly (all browsers) |
+| End-to-end | Playwright | Browser journeys across Next.js + API with seeded data; Razorpay stubbed in CI, real test mode manually | Every PR (CI, Chromium); all browsers with `E2E_BROWSERS=all` before releases (ADR-035) |
 | Accessibility | @axe-core/playwright | Key pages | With E2E |
-| Performance | Lighthouse CI (Should), autocannon/k6 | Key pages, list and booking APIs | Phase 9 and before releases |
+| Performance | Lighthouse, `npm run test:load -w backend` (own load runner, in-memory data) | Key pages, list and booking APIs | Phase 9 and before releases |
 | Manual | Checklists | Real devices, real Razorpay test mode, email rendering | Phase exits |
 
 ## Principles

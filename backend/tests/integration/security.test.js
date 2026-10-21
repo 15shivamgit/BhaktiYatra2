@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { makeUser } from '../helpers/factories.js';
+import { loginAgent, makeUser } from '../helpers/factories.js';
 import { buildTestApp, clearTestDb, connectTestDb, disconnectTestDb } from '../helpers/test-app.js';
 
 beforeAll(() => connectTestDb());
@@ -60,5 +60,26 @@ describe('auth rate limit', () => {
     }
     expect(statuses.slice(0, 10).every((s) => s === 401)).toBe(true);
     expect(statuses[10]).toBe(429);
+  });
+});
+
+describe('payment verify rate limit', () => {
+  it('limits verification attempts per signed-in user', async () => {
+    const { app } = buildTestApp({ RATE_LIMIT_ENABLED: 'true', RATE_LIMIT_VERIFY_MAX: '2' });
+    const user = await makeUser({ email: 'verify@example.com' });
+    const agent = request.agent(app);
+    await loginAgent(agent, user.email);
+    const body = {
+      razorpay_order_id: 'order_abcdef',
+      razorpay_payment_id: 'pay_abcdef',
+      razorpay_signature: 'a'.repeat(64),
+    };
+    const statuses = [];
+    for (let i = 0; i < 3; i += 1) {
+      statuses.push((await agent.post('/api/v1/payments/verify').send(body)).status);
+    }
+    expect(statuses[0]).not.toBe(429);
+    expect(statuses[1]).not.toBe(429);
+    expect(statuses[2]).toBe(429);
   });
 });

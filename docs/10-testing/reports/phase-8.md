@@ -40,6 +40,10 @@ Critical cases covered:
 - Guests get 401 and customers 403 on every new admin route.
 - E2E: an admin finds a booking from the top bar, records a bank payment, adds a note, cancels with a ₹1,000 refund and sees it in the audit log with the reason; the dashboard, bookings list, booking page and audit log pass axe; the CSV downloads; the bookings list has no sideways page scroll at tablet width; your own user row has no role or deactivate buttons.
 
+## CI
+
+GitHub Actions run 39491087214 (commit c33b754) passed all three jobs: secrets-scan, build-and-test, e2e.
+
 ## Dashboard figures against hand-written queries
 
 `backend/src/modules/dashboard/dashboard.check.js` runs plain MongoDB queries, written separately from the dashboard's aggregation pipelines, and lists each figure next to the dashboard's. The queries:
