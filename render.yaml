@@ -1,0 +1,114 @@
+# Render Blueprint for the API (docs/09-config/05-deployment-guide.md, ADR-036).
+# Render → New → Blueprint → pick this repository. Values marked `sync: false` are asked for
+# once in the Render dashboard and never stored in Git. `generateValue` creates a random secret.
+#
+# Both services start on the free plan. Free services sleep after 15 minutes without traffic,
+# which also pauses the background jobs (seat-hold expiry, emails). Upgrade production to the
+# Starter plan before turning online booking on.
+
+services:
+  - type: web
+    name: bhaktiyatra-api-staging
+    runtime: node
+    region: singapore
+    plan: free
+    branch: shivam-kumar-dev
+    autoDeploy: true
+    buildCommand: npm ci --workspace backend --include-workspace-root=false
+    startCommand: npm run start --workspace backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      - key: NODE_ENV
+        value: staging
+      - key: APP_VERSION
+        value: 1.0.0
+      - key: LOG_LEVEL
+        value: info
+      # Two proxies in front of the API: the Vercel rewrite and Render's load balancer.
+      - key: TRUST_PROXY_HOPS
+        value: '2'
+      # Test mode with the "simulate payment" buttons until new Razorpay test keys exist;
+      # then set razorpay and the three RAZORPAY_* values.
+      - key: PAYMENTS_PROVIDER
+        value: stub
+      - key: CLOUDINARY_FOLDER
+        value: bhaktiyatra/staging
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TICKET_SIGNING_SECRET
+        generateValue: true
+      - key: REVALIDATE_SECRET
+        generateValue: true
+      - key: MONGO_URL
+        sync: false
+      - key: FRONTEND_URLS
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ADMIN_NOTIFY_EMAIL
+        sync: false
+      - key: MAIL_REPLY_TO
+        sync: false
+
+  - type: web
+    name: bhaktiyatra-api
+    runtime: node
+    region: singapore
+    plan: free
+    branch: main
+    autoDeploy: true
+    buildCommand: npm ci --workspace backend --include-workspace-root=false
+    # Production runs with autoIndex off; indexes are synced as a release step.
+    startCommand: npm run db:sync-indexes --workspace backend && npm run start --workspace backend
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      - key: NODE_ENV
+        value: production
+      - key: APP_VERSION
+        value: 1.0.0
+      - key: LOG_LEVEL
+        value: info
+      - key: TRUST_PROXY_HOPS
+        value: '2'
+      # Content-only launch: online booking stays closed until live Razorpay keys exist
+      # (ADR-036). Then set razorpay and the three RAZORPAY_* values.
+      - key: PAYMENTS_PROVIDER
+        value: disabled
+      - key: CLOUDINARY_FOLDER
+        value: bhaktiyatra/prod
+      - key: JWT_SECRET
+        generateValue: true
+      - key: TICKET_SIGNING_SECRET
+        generateValue: true
+      - key: REVALIDATE_SECRET
+        generateValue: true
+      - key: MONGO_URL
+        sync: false
+      - key: FRONTEND_URLS
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ADMIN_NOTIFY_EMAIL
+        sync: false
+      - key: MAIL_REPLY_TO
+        sync: false

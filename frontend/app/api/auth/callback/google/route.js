@@ -7,5 +7,7 @@ import { PUBLIC_API_BASE_URL } from '@/lib/config';
  */
 export function GET(request) {
   const { search } = new URL(request.url);
-  return Response.redirect(`${PUBLIC_API_BASE_URL}/auth/google/callback${search}`, 302);
+  // The API base may be relative (same-site rewrite), so resolve it against this request.
+  const target = new URL(`${PUBLIC_API_BASE_URL}/auth/google/callback${search}`, request.url);
+  return Response.redirect(target, 302);
 }

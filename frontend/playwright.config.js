@@ -3,6 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 const WEB_PORT = 3100;
 const API_PORT = 5100;
 const REVALIDATE_SECRET = 'e2e-revalidate-secret';
+// E2E_API_PROXY=1 runs the site the way it is deployed (ADR-036): the browser calls /api/v1 on
+// the site itself and Next.js forwards it to the API.
+const PROXY = process.env.E2E_API_PROXY === '1';
+const API = `http://localhost:${API_PORT}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -47,7 +51,8 @@ export default defineConfig({
       command: `node e2e/wait-for-api.mjs http://localhost:${API_PORT}/api/v1/health && npx next build && npx next start -p ${WEB_PORT}`,
       url: `http://localhost:${WEB_PORT}`,
       env: {
-        NEXT_PUBLIC_API_BASE_URL: `http://localhost:${API_PORT}/api/v1`,
+        NEXT_PUBLIC_API_BASE_URL: PROXY ? '/api/v1' : `${API}/api/v1`,
+        ...(PROXY && { API_PROXY_TARGET: API, API_BASE_URL_INTERNAL: `${API}/api/v1` }),
         NEXT_PUBLIC_SITE_URL: `http://localhost:${WEB_PORT}`,
         NEXT_PUBLIC_FEATURE_BOOKING: 'true',
         REVALIDATE_SECRET,

@@ -222,3 +222,15 @@ Format: ID, date, status, context, decision, consequences. Add new entries at th
 - **Load test** (`npm run test:load -w backend`) seeds release-sized data in memory and fails when a list endpoint exceeds p95 300 ms, a request fails or seat inventory drifts.
 - **Lighthouse Performance** is judged on the deployed site (PageSpeed Insights) in Phase 10; local laptop results swing with the machine's speed.
 
+## ADR-036 — Phase 10: deployment without an own domain
+**Date:** 2026-10-21 · **Status:** accepted (applies the fallback in `02-architecture/04-security.md` §14)
+**Context:** the owner has Vercel and Render accounts but no domain yet, wants staging and production online now, and has no working Razorpay keys.
+**Decision:**
+- **Same-site API through a Vercel rewrite.** The browser calls `/api/v1/…` on the website (`NEXT_PUBLIC_API_BASE_URL=/api/v1`); `next.config.mjs` rewrites it to the Render service (`API_PROXY_TARGET`). The session cookie is set without a `Domain` and stays first-party on the website, which browsers that block third-party cookies accept. Server-side rendering calls Render directly (`API_BASE_URL_INTERNAL`). Razorpay webhooks go straight to Render. A custom domain later needs no code change.
+- **Client IP:** behind the rewrite the API sees two proxies (Vercel, then Render's load balancer), so `TRUST_PROXY_HOPS=2` in deployed environments; rate limits then count per visitor. Requests sent to the Render address directly can still choose their forwarded address; accepted until a domain and a WAF exist (global and per-route limits still apply, and passwords are bcrypt-hashed).
+- **Two Vercel projects** (`bhaktiyatra-staging` on `shivam-kumar-dev`, `bhaktiyatra` on `main`) instead of preview deployments, so staging has a stable public address without Vercel's preview login wall; **two Render services** from one Blueprint (`render.yaml`, region Singapore, free plan to start).
+- **Content-only production:** a new `PAYMENTS_PROVIDER=disabled` lets production run without Razorpay keys; booking requests answer 503 "Online booking is not open yet" and never hold seats; "Book now" stays off (`NEXT_PUBLIC_FEATURE_BOOKING=false`). Production must move to the Starter plan before booking opens, because free services sleep and pause the jobs.
+- **Release steps:** production starts with `npm run db:sync-indexes` (autoIndex is off in production). Seeding runs from the owner's laptop with gitignored `backend/.env.staging` / `.env.production`; seeding scripts also recognise the production database by its name (`bhaktiyatra`), so publishing drafted content or sample tours there is refused even when `NODE_ENV` says development.
+- **Backups:** Atlas free clusters have no snapshots, so `db:backup` / `db:restore` export and import Extended JSON with the Node driver (no extra tools); restore refuses the production database without `--production`.
+- **Staging is hidden** from search engines with both robots.txt and an `X-Robots-Tag: noindex` header.
+

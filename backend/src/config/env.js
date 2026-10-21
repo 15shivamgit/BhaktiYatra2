@@ -36,6 +36,8 @@ const envSchema = z.object({
   RATE_LIMIT_GLOBAL_MAX: z.coerce.number().int().positive().default(300),
   RATE_LIMIT_GLOBAL_WINDOW_MIN: z.coerce.number().int().positive().default(15),
   JOBS_ENABLED: booleanFromString.default(true),
+  /** Proxies in front of the API: 1 for Render alone, 2 behind the Vercel rewrite (ADR-036). */
+  TRUST_PROXY_HOPS: z.coerce.number().int().min(0).max(5).default(1),
 
   RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
   RATE_LIMIT_AUTH_WINDOW_MIN: z.coerce.number().int().positive().default(15),
@@ -68,7 +70,7 @@ const envSchema = z.object({
   MAX_SEATS_PER_BOOKING: z.coerce.number().int().min(1).max(10).default(10),
 
   // Razorpay from Phase 6; `stub` fakes orders for tests and offline development (ADR-031/032)
-  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub']).default('razorpay'),
+  PAYMENTS_PROVIDER: z.enum(['razorpay', 'stub', 'disabled']).default('razorpay'),
   RATE_LIMIT_WEBHOOK_MAX: z.coerce.number().int().positive().default(600),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
@@ -120,7 +122,7 @@ export function parseEnv(raw) {
   const problems = [];
   if (data.NODE_ENV === 'production' && data.PAYMENTS_PROVIDER === 'stub') {
     // The stub confirms bookings without money changing hands; never allow it live.
-    problems.push('PAYMENTS_PROVIDER must be razorpay in production');
+    problems.push('PAYMENTS_PROVIDER must be razorpay or disabled in production');
   }
   // Deployed environments must be able to take payments; locally a missing key only makes
   // booking creation answer "payment is not configured".
